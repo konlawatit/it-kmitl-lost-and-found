@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: false }))
 //Custom middleware
 app.use(logger);
 
+
 // Router
 app.use('/apis/mockup', mockup);
 
