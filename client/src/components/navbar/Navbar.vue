@@ -13,7 +13,7 @@
           <a>สมัครสมาชิก</a>
       </div>
       <div class="navbar-item">
-        <a>Log in</a>
+        <a>เข้าสู่ระบบ</a>
       </div>
       <div class="navbar-item">
         <span class="icon is-large is-left mt-2" id="iconcolor">
