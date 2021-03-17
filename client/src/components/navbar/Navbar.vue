@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="mt-3" href="">
       <img src="./lost 2.png" width="250" height="28">
@@ -43,6 +43,7 @@ a{
 }
 nav{
   background-color: #0f3057;
+  width: 100%;
 }
 #iconcolor{
   background-color: #E7E7DE;

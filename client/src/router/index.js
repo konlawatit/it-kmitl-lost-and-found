@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-//import Home from '../views/Home.vue'
-import About from '../views/About.vue'
+import Home from '../views/Home.vue'
+// import About from '../views/About.vue'
 import Mockup from '../views/MockupView.vue'
 import login from '../views/auth/Login.vue'
 
@@ -14,9 +14,9 @@ const routes = [
     component: login
   },
   {
-    path: '/about',
-    name: 'About',
-    component: About
+    path: '/home',
+    name: 'Home',
+    component: Home
   },
   {
     path: '/mockup/:id',

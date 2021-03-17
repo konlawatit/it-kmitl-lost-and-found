@@ -86,8 +86,10 @@ export default {
     },
     async onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      let profile = googleUser.getBasicProfile();
-      let email = profile.nt;
+      let profile = await googleUser.getBasicProfile();
+      console.log(profile)
+      let email = profile.getEmail();
+      console.log(email)
       if (email.split("@")[1] !== "it.kmitl.ac.th") {
         this.onSignOut();
       } else {
