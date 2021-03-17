@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Login from '../../components/login/Login.vue';
+import Login from '../../components/auth/Login.vue';
 import Navbar from '../../components/navbar/Navbar.vue';
 // @ is an alias to /src
 //import HelloWorld from '@/components/HelloWorld.vue'

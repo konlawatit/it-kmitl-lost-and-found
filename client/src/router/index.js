@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 //import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 import Mockup from '../views/MockupView.vue'
-import login from '../views/login/Login.vue'
+import login from '../views/auth/Login.vue'
 
 Vue.use(VueRouter)
 
