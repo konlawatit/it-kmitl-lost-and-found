@@ -4,6 +4,11 @@
     <a class="mt-3" href="">
       <img src="./lost 2.png" width="190">
     </a>
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" id="menu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
   </div>
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
@@ -53,5 +58,8 @@ nav{
 a:hover{
   color: gray;
   transition-duration: 0.2s;
+}
+#menu{
+  margin-top: 0.5rem;
 }
 </style>

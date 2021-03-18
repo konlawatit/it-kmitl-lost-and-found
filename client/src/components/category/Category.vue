@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="columns mt-1">
-      <div class="column is - 6" id="categoryitem">
+  <div class="container">
+    <div class="columns is-mobile is-centered mt-1">
+      <div class="column is-12" id="categoryitem">
         <div class="columns">
           <button class="button" id="iconleft">
             <i class="fas fa-angle-left" id="angle"></i>
@@ -25,6 +25,8 @@
           <button class="button" id="iconright">
             <i class="fas fa-angle-right" id="angle"></i>
           </button>
+          <div class="column is-2"></div>
+          <div class="column is-2"></div>
         </div>
       </div>
     </div>
@@ -80,8 +82,5 @@ img {
   text-align: center;
   font-family: "Kanit", sans-serif;
   color: rgb(245, 243, 243);
-}
-#categoryitem{
-    margin-left: 15rem;
 }
 </style>

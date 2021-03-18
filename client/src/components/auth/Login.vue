@@ -28,14 +28,14 @@
         </p>
       </div>
     </div>
-    <div class="columns is-centered mt-4">
+    <div class="columns is-centered mt-4 is-mobile">
       <div class="field">
         <p class="control">
           <button @click="onSignIn()" class="button is-rounded">Login</button>
         </p>
       </div>
     </div>
-    <div class="columns is-centered mt-4">
+    <div class="columns is-centered mt-4 is-mobile">
       <div class="field">
         <p class="control">
           <GoogleLogin
@@ -48,7 +48,7 @@
         </p>
       </div>
     </div>
-    <div class="columns is-centered mt-4">
+    <div class="columns is-centered mt-4 is-mobile">
       <div class="field">
         <p class="control">
           <button @click="onSignOut()" class="button is-rounded">Logout</button>
