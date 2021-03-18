@@ -6,7 +6,7 @@
           <input
             class="input is-medium mt-4"
             type="text"
-            placeholder="  ชื่อผู้ใช้"
+            placeholder="  Username"
           />
           <span class="icon is-small is-left mt-4" id="iconcolor">
             <i class="fas fa-user"></i>

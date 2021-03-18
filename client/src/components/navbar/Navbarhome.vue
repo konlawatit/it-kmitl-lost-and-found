@@ -3,7 +3,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="mt-3" href="">
-          <img src="./lost 2.png" width="250" height="28" />
+          <img src="./lost 2.png" width="190"/>
         </a>
       </div>
       <div id="navbarBasicExample" class="navbar-menu">
@@ -16,8 +16,8 @@
             <a>เข้าสู่ระบบ</a>
           </div>
           <div class="navbar-item">
-            <span class="icon is-large is-left mt-2" id="iconcolor">
-              <i class="fas fa-user fa-xs"></i>
+            <span class="icon is-large mr-4" id="iconcolor">
+              <i class="fas fa-user"></i>
             </span>
           </div>
         </div>
@@ -51,7 +51,7 @@
             </div>
           </div>
           <div class="navbar-item">
-            <button class="button is-primary is-normal is-focused">
+            <button class="button is-normal is-focused" id="createpost">
               <i class="fas fa-pen">
                 <span> เขียนโพสต์</span>
               </i>
@@ -77,7 +77,7 @@ export default {
 a {
   font-family: "Kanit", sans-serif;
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 nav {
   background-color: #0f3057;
@@ -90,11 +90,12 @@ nav {
   font-size: 2rem;
 }
 #navbarsearch {
-  margin-top: 5.8rem;
+  margin-top: 4.6rem;
   background-color: #234772;
 }
 #navbaritem {
   margin-left: 5rem;
+  font-size: 1.1rem;
 }
 input {
   width: 20rem;
@@ -103,5 +104,18 @@ input {
 button {
   font-family: "Kanit", sans-serif;
   width: 10rem;
+}
+#createpost{
+  background-color: #61cbd2;
+  border-radius: 10px;
+  color: white;
+}
+#createpost:hover{
+  background-color: #419096;
+  transition-duration: 0.4s;
+}
+a:hover{
+  color: gray;
+  transition-duration: 0.2s;
 }
 </style>

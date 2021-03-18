@@ -2,7 +2,7 @@
   <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="mt-3" href="">
-      <img src="./lost 2.png" width="250" height="28">
+      <img src="./lost 2.png" width="190">
     </a>
   </div>
   <div id="navbarBasicExample" class="navbar-menu">
@@ -16,8 +16,8 @@
         <a>เข้าสู่ระบบ </a>
       </div>
       <div class="navbar-item">
-        <span class="icon is-large is-left mt-2" id="iconcolor">
-            <i class="fas fa-user fa-xs"></i>
+        <span class="icon is-large mr-4" id="iconcolor">
+            <i class="fas fa-user"></i>
         </span>
       </div>
     </div>
@@ -39,7 +39,7 @@ export default {
 a{
   font-family: "Kanit", sans-serif;
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 nav{
   background-color: #0f3057;
@@ -49,5 +49,9 @@ nav{
   background-color: #E7E7DE;
   border-radius: 40px;
   font-size: 2rem;
+}
+a:hover{
+  color: gray;
+  transition-duration: 0.2s;
 }
 </style>
