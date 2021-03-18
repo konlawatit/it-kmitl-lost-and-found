@@ -1,33 +1,25 @@
 <template>
-  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="mt-3" href="">
-      <img src="./lost 2.png" width="190">
-    </a>
-    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" id="menu">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
+  <div>
+    <v-app-bar
+      dark
+      class="mx-auto overflow-hidden"
+      color= "#0f3057"
+      height="80"
+    >
+      <v-toolbar-title class="logo">
+        <a href="">
+          <img src="./lost 2.png">
+        </a>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn color="green" class="but">
+        Sign-up
+      </v-btn>
+      <v-btn color="black" class="but">
+        Sign-in
+      </v-btn>
+    </v-app-bar>
   </div>
-  <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-start">
-    </div>
-    <div class="navbar-end">
-      <div class="navbar-item">
-          <a>สมัครสมาชิก</a>
-      </div>
-      <div class="navbar-item">
-        <a>เข้าสู่ระบบ </a>
-      </div>
-      <div class="navbar-item">
-        <span class="icon is-large mr-4" id="iconcolor">
-            <i class="fas fa-user"></i>
-        </span>
-      </div>
-    </div>
-  </div>
-</nav>
 </template>
 
 <script>
@@ -41,25 +33,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-a{
-  font-family: "Kanit", sans-serif;
-  color: white;
-  font-size: 1.1rem;
+img{
+  margin-top: 0.2rem !important;
 }
-nav{
-  background-color: #0f3057;
-  width: 100%;
-}
-#iconcolor{
-  background-color: #E7E7DE;
-  border-radius: 40px;
-  font-size: 2rem;
-}
-a:hover{
-  color: gray;
-  transition-duration: 0.2s;
-}
-#menu{
-  margin-top: 0.5rem;
+.but{
+  margin-left: 1rem !important;
 }
 </style>

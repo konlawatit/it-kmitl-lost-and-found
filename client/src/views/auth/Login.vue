@@ -1,10 +1,6 @@
 <template>
   <div>
     <Navbar></Navbar>
-    <br>
-    <br>
-    <br>
-    <br>
     <h1 class="is-size-1 pt-6" id="text1">
       เข้าสู่<span id="text2">ระบบ</span>
     </h1>

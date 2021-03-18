@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { LoaderPlugin } from 'vue-google-login';
+import vuetify from './plugins/vuetify';
 
 Vue.use(LoaderPlugin, {
     client_id: "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com"
@@ -16,7 +17,8 @@ Vue.GoogleAuth.then(auth2 => {
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
 }).$mount('#app')

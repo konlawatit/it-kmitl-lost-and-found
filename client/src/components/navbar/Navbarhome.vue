@@ -1,77 +1,61 @@
 <template>
   <div>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="mt-3" href="">
-          <img src="./lost 2.png" width="190" />
+    <v-app-bar app fixed dark class="mx-auto overflow-hidden" color="#0f3057" height="80">
+      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+      <v-toolbar-title class="logo">
+        <a href="/">
+          <img src="./lost 2.png" />
         </a>
-        <a
-          role="button"
-          class="navbar-burger burger"
-          aria-label="menu"
-          aria-expanded="false"
-          data-target="navbarBasicExample"
-          id="menu"
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <div class="control has-icons-right is-mobile" id="inputsearch">
+          <input class="input is-normal" placeholder="ค้นหา"/>
+          <span class="icon is-small is-right">
+            <i class="fas fa-search"></i>
+          </span>
+      </div>
+      <p id="namenavbar" class="is-mobile">นายธีรภัทร์</p>
+      <p id="namenavbar" class="is-mobile">บุญช่วยแล้ว</p>
+      <span class="icon is-large mr-4" id="navbaruser">
+        <i class="fas fa-user"></i>
+      </span>
+    </v-app-bar>
+    <v-navigation-drawer v-model="drawer" temporary disable-resize-watcher fixed app>
+      <v-list nav dense>
+        <v-list-item-group
+          v-model="group"
+          active-class="deep-black--text text--accent-4"
         >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start"></div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <a>สมัครสมาชิก</a>
-          </div>
-          <div class="navbar-item">
-            <a>เข้าสู่ระบบ</a>
-          </div>
-          <div class="navbar-item">
-            <span class="icon is-large mr-4" id="iconcolor">
-              <i class="fas fa-user"></i>
-            </span>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <nav
-      class="navbar"
-      role="navigation"
-      aria-label="main navigation"
-      id="navbarsearch"
-    >
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <div class="navbar-item" id="navbaritem">
-            <a>หน้าหลัก</a>
-          </div>
-          <div class="navbar-item" id="navbaritem">
-            <a>โพสต์ของฉัน</a>
-          </div>
-          <div class="navbar-item" id="navbaritem">
-            <a>จัดอันดับ</a>
-          </div>
-        </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="control has-icons-right">
-              <input class="input is-small" type="email" placeholder="ค้นหา" />
-              <span class="icon is-small is-right">
-                <i class="fas fa-search"></i>
-              </span>
-            </div>
-          </div>
-          <div class="navbar-item">
-            <button class="button is-normal is-focused" id="createpost">
-              <i class="fas fa-pen">
-                <span> เขียนโพสต์</span>
-              </i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>นายธีรภัทร์ บุญช่วยแล้ว</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>fas fa-edit</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>My post</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>fas fa-list</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Leaderboard</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -79,55 +63,31 @@
 export default {
   name: "Navbar",
   data() {
-    return {};
+    return { drawer: false, group: null };
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-a {
-  font-family: "Kanit", sans-serif;
-  color: white;
-  font-size: 1.1rem;
+#iconuser {
+  font-size: 2rem;
+  margin-left: auto;
+  margin-right: auto;
 }
-nav {
-  background-color: #0f3057;
-  width: 100%;
-  position: fixed;
-}
-#iconcolor {
-  background-color: #e7e7de;
-  border-radius: 40px;
+#navbaruser {
   font-size: 2rem;
 }
-#navbarsearch {
-  margin-top: 4.6rem;
-  background-color: #234772;
+#nameuser {
+  font-size: 1rem;
 }
-#navbaritem {
-  margin-left: 5rem;
-  font-size: 1.1rem;
-}
-input {
-  width: 20rem;
-  margin-left: 9rem;
-}
-button {
+#namenavbar {
+  margin-top: 1rem;
+  margin-right: 1rem;
   font-family: "Kanit", sans-serif;
-  width: 10rem;
 }
-#createpost {
-  background-color: #61cbd2;
-  border-radius: 10px;
-  color: white;
-}
-#createpost:hover {
-  background-color: #419096;
-  transition-duration: 0.4s;
-}
-a:hover {
-  color: gray;
-  transition-duration: 0.2s;
+#inputsearch{
+  width: 25rem;
+  margin-right: 15rem
 }
 </style>
