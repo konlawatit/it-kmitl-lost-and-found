@@ -5,7 +5,9 @@ const state = {
     lname: '',
     email: '',
     image: '',
-    id: ''
+    id: '',
+    role: '',
+    isSigned: false
 }
 
 const getters = {
@@ -27,6 +29,12 @@ const getters = {
     getId: (state) => {
         return state.id
     },
+    getRole: (state) => {
+        return state.role
+    },
+    getSigned: (state) => {
+        return state.isSigned
+    }
 
 }
 
@@ -38,6 +46,8 @@ const mutations = {
         state.email = payload.email
         state.image = payload.image
         state.id = payload.id
+        state.role = payload.role
+        state.isSigned = payload.isSigned
     },
     clearProfile: (state) => {
         state.fullname = ''
@@ -46,6 +56,8 @@ const mutations = {
         state.email = ''
         state.image = ''
         state.id = ''
+        state.role = ''
+        state.isSigned = false
     }
 
 }

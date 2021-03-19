@@ -21,8 +21,12 @@
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <p id="namenavbar" class="is-mobile">{{store.getters['auth/getfname']}}</p>
-      <p id="namenavbar" class="is-mobile">{{store.getters['auth/getlname']}}</p>
+      <p id="namenavbar" class="is-mobile">
+        {{ store.getters["auth/getfname"] }}
+      </p>
+      <p id="namenavbar" class="is-mobile">
+        {{ store.getters["auth/getlname"] }}
+      </p>
       <span class="icon is-large mr-4" id="navbaruser">
         <i class="fas fa-user"></i>
       </span>
@@ -43,7 +47,9 @@
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{store.getters['auth/getFullName']}}</v-list-item-title>
+            <v-list-item-title>{{
+              store.getters["auth/getFullName"]
+            }}</v-list-item-title>
           </v-list-item>
 
           <v-list-item>
@@ -71,7 +77,9 @@
             <v-list-item-icon>
               <v-icon>fas fa-list</v-icon>
             </v-list-item-icon>
-            <v-list-item-title @click="onSignOut()" >ออกจากระบบ</v-list-item-title>
+            <v-list-item-title @click="onSignOut()"
+              >ออกจากระบบ</v-list-item-title
+            >
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -90,22 +98,22 @@ export default {
       group: null,
     };
   },
-  methods : {
+  methods: {
     async onSignOut() {
       store.dispatch("auth/clearProfile");
       await window.gapi.auth2
         .getAuthInstance()
         .signOut()
         .then(() => {
-            console.log("Disconnected")
-            this.redirect('')
-            });
+          console.log("Disconnected");
+          this.redirect("");
+        });
     },
-    redirect(way) {
-        console.log(way)
-        this.$router.push(`/${way}`)
-    }
-  }
+    redirect(path) {
+      console.log("redirect to : ", path);
+      this.$router.push(`/${path}`);
+    },
+  },
 };
 </script>
 

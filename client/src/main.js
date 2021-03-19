@@ -10,15 +10,20 @@ Vue.use(LoaderPlugin, {
 });
 
 Vue.GoogleAuth.then(auth2 => {
-    let profile = auth2.currentUser.get().getBasicProfile();
-    store.dispatch('auth/setProfile', {
-        fullname: profile.getName(),
-        fname: profile.getGivenName(),
-        lname: profile.getFamilyName(),
-        email: profile.getEmail(),
-        image: profile.getImageUrl(),
-        id: profile.getId()
-    })
+    if (auth2.isSignedIn.get()) {
+        let profile = auth2.currentUser.get().getBasicProfile();
+        store.dispatch('auth/setProfile', {
+            fullname: profile.getName(),
+            fname: profile.getGivenName(),
+            lname: profile.getFamilyName(),
+            email: profile.getEmail(),
+            image: profile.getImageUrl(),
+            id: profile.getId(),
+            role: profile.getEmail().split('@')[0][3] === '7' ? 'student' : 'personnel',
+            isSigned: true
+        })
+        router.push(`/home`)
+    }
     console.log(auth2.isSignedIn.get());
     console.log(auth2.currentUser.get());
 })

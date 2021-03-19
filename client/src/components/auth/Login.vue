@@ -90,10 +90,8 @@ export default {
     async onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
       let profile = await googleUser.getBasicProfile();
-      console.log(profile);
       let email = profile.getEmail();
-      console.log(email);
-      if (email.split("@")[1] !== "it.kmitl.ac.th") {
+      if (email.split("@")[1] === "it.kmitl.ac.th") {
         this.onSignOut();
       } else {
         await AuthService.login(googleUser.getAuthResponse().id_token).then(
@@ -105,8 +103,10 @@ export default {
               email: result.data.email,
               image: result.data.picture,
               id: result.data.sub,
+              role: result.data.email.split('@')[0][3] === '7' ? 'student' : 'personnel', //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
+              isSigned: true
             });
-            this.redirect()
+            this.redirect('home')
           }
         );
       }
@@ -115,9 +115,9 @@ export default {
       alert("Login Fail");
       this.onSignOut();
     },
-    redirect() {
-        console.log('home')
-        this.$router.push('/Home')
+    redirect(path) {
+        console.log('redirect to : ', path)
+        this.$router.push(`/${path}`)
     }
   },
   components: {
