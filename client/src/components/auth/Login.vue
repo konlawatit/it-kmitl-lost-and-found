@@ -92,6 +92,11 @@ export default {
       let profile = await googleUser.getBasicProfile();
       let email = profile.getEmail();
       if (email.split("@")[1] !== "it.kmitl.ac.th") {
+        this.$swal.fire({
+          icon: "error",
+          title: "ไม่สามารถเข้าระบบได้",
+          text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
+        });
         this.onSignOut();
       } else {
         await AuthService.login(googleUser.getAuthResponse().id_token).then(
@@ -103,22 +108,23 @@ export default {
               email: result.data.email,
               image: result.data.picture,
               id: result.data.sub,
-              role: result.data.email.split('@')[0][3] === '7' ? 'student' : 'personnel', //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
-              isSigned: true
+              role:
+                result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
+              isSigned: true,
             });
-            this.redirect('home')
+            this.redirect("home");
           }
         );
       }
     },
     onFailure() {
-      alert("Login Fail");
-      this.onSignOut();
+    //   alert("Login Fail");
+    //   this.onSignOut();
     },
     redirect(path) {
-        console.log('redirect to : ', path)
-        this.$router.push(`/${path}`)
-    }
+      console.log("redirect to : ", path);
+      this.$router.push(`/${path}`);
+    },
   },
   components: {
     GoogleLogin,

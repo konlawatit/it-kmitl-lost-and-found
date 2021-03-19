@@ -73,11 +73,11 @@
             <v-list-item-title>Leaderboard</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="onSignOut()">
             <v-list-item-icon>
               <v-icon>fa fa-power-off</v-icon>
             </v-list-item-icon>
-            <v-list-item-title @click="onSignOut()"
+            <v-list-item-title
               >ออกจากระบบ</v-list-item-title
             >
           </v-list-item>
@@ -100,14 +100,27 @@ export default {
   },
   methods: {
     async onSignOut() {
-      store.dispatch("auth/clearProfile");
-      await window.gapi.auth2
-        .getAuthInstance()
-        .signOut()
-        .then(() => {
-          console.log("Disconnected");
-          this.redirect("");
-        });
+      await this.$swal.fire({
+        title: "คุณต้องการออกจากระบบ?",
+        text: "คุณต้องการออกจากระบบหรือไม่!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      }).then((result) => {
+        if (result.isConfirmed) {
+            store.dispatch("auth/clearProfile");
+            window.gapi.auth2
+            .getAuthInstance()
+            .signOut()
+            .then(() => {
+                console.log("Disconnected");
+                this.redirect("");
+            });
+          this.$swal.fire("ออกจากระบบ!", "คุณได้ออกสู่ระบบเรียบร้อย", "success");
+        }
+      });
     },
     redirect(path) {
       console.log("redirect to : ", path);

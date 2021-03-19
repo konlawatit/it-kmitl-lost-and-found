@@ -4,6 +4,11 @@ import router from './router'
 import store from './store/index'
 import { LoaderPlugin } from 'vue-google-login';
 import vuetify from './plugins/vuetify';
+import VueSweetalert2 from 'vue-sweetalert2';
+
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+Vue.use(VueSweetalert2);
 
 Vue.use(LoaderPlugin, {
     client_id: "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com"
