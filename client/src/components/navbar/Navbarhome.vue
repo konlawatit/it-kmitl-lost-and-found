@@ -75,7 +75,7 @@
 
           <v-list-item>
             <v-list-item-icon>
-              <v-icon>fas fa-list</v-icon>
+              <v-icon>fa fa-power-off</v-icon>
             </v-list-item-icon>
             <v-list-item-title @click="onSignOut()"
               >ออกจากระบบ</v-list-item-title
