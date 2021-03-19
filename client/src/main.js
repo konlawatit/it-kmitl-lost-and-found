@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import store from './store/index'
 import { LoaderPlugin } from 'vue-google-login';
 import vuetify from './plugins/vuetify';
 
@@ -10,9 +10,19 @@ Vue.use(LoaderPlugin, {
 });
 
 Vue.GoogleAuth.then(auth2 => {
+    let profile = auth2.currentUser.get().getBasicProfile();
+    store.dispatch('auth/setProfile', {
+        fullname: profile.getName(),
+        fname: profile.getGivenName(),
+        lname: profile.getFamilyName(),
+        email: profile.getEmail(),
+        image: profile.getImageUrl(),
+        id: profile.getId()
+    })
     console.log(auth2.isSignedIn.get());
-    console.log(auth2.currentUser.get())
+    console.log(auth2.currentUser.get());
 })
+
 
 Vue.config.productionTip = false
 

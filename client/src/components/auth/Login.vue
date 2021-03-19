@@ -61,11 +61,13 @@
 <script>
 import GoogleLogin from "vue-google-login";
 import AuthService from "../../service/AuthService";
+import store from "../../store/index.js";
 
 export default {
   name: "Login",
   data() {
     return {
+      store,
       params: {
         client_id:
           "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com",
@@ -79,6 +81,7 @@ export default {
   },
   methods: {
     async onSignOut() {
+      store.dispatch("auth/clearProfile");
       await window.gapi.auth2
         .getAuthInstance()
         .signOut()
@@ -87,14 +90,23 @@ export default {
     async onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
       let profile = await googleUser.getBasicProfile();
-      console.log(profile)
+      console.log(profile);
       let email = profile.getEmail();
-      console.log(email)
+      console.log(email);
       if (email.split("@")[1] !== "it.kmitl.ac.th") {
         this.onSignOut();
       } else {
-        await AuthService.login(googleUser.getAuthResponse().id_token).then((result) => {
-            console.log(result);
+        await AuthService.login(googleUser.getAuthResponse().id_token).then(
+          (result) => {
+            store.dispatch("auth/setProfile", {
+              fullname: result.data.name,
+              fname: result.data.given_name,
+              lname: result.data.family_name,
+              email: result.data.email,
+              image: result.data.picture,
+              id: result.data.sub,
+            });
+            this.redirect()
           }
         );
       }
@@ -103,6 +115,10 @@ export default {
       alert("Login Fail");
       this.onSignOut();
     },
+    redirect() {
+        console.log('home')
+        this.$router.push('/Home')
+    }
   },
   components: {
     GoogleLogin,

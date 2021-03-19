@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-app-bar app fixed dark class="mx-auto overflow-hidden" color="#0f3057" height="80">
+    <v-app-bar
+      app
+      fixed
+      dark
+      class="mx-auto overflow-hidden"
+      color="#0f3057"
+      height="80"
+    >
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title class="logo">
         <a href="/">
@@ -9,18 +16,24 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <div class="control has-icons-right is-mobile" id="inputsearch">
-          <input class="input is-normal" placeholder="ค้นหา"/>
-          <span class="icon is-small is-right">
-            <i class="fas fa-search"></i>
-          </span>
+        <input class="input is-normal" placeholder="ค้นหา" />
+        <span class="icon is-small is-right">
+          <i class="fas fa-search"></i>
+        </span>
       </div>
-      <p id="namenavbar" class="is-mobile">นายธีรภัทร์</p>
-      <p id="namenavbar" class="is-mobile">บุญช่วยแล้ว</p>
+      <p id="namenavbar" class="is-mobile">{{store.getters['auth/getfname']}}</p>
+      <p id="namenavbar" class="is-mobile">{{store.getters['auth/getlname']}}</p>
       <span class="icon is-large mr-4" id="navbaruser">
         <i class="fas fa-user"></i>
       </span>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" temporary disable-resize-watcher fixed app>
+    <v-navigation-drawer
+      v-model="drawer"
+      temporary
+      disable-resize-watcher
+      fixed
+      app
+    >
       <v-list nav dense>
         <v-list-item-group
           v-model="group"
@@ -30,7 +43,7 @@
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>นายธีรภัทร์ บุญช่วยแล้ว</v-list-item-title>
+            <v-list-item-title>{{store.getters['auth/getFullName']}}</v-list-item-title>
           </v-list-item>
 
           <v-list-item>
@@ -53,6 +66,13 @@
             </v-list-item-icon>
             <v-list-item-title>Leaderboard</v-list-item-title>
           </v-list-item>
+
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>fas fa-list</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title @click="onSignOut()" >ออกจากระบบ</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -60,11 +80,32 @@
 </template>
 
 <script>
+import store from "../../store/index.js";
 export default {
   name: "Navbar",
   data() {
-    return { drawer: false, group: null };
+    return {
+      store,
+      drawer: false,
+      group: null,
+    };
   },
+  methods : {
+    async onSignOut() {
+      store.dispatch("auth/clearProfile");
+      await window.gapi.auth2
+        .getAuthInstance()
+        .signOut()
+        .then(() => {
+            console.log("Disconnected")
+            this.redirect('')
+            });
+    },
+    redirect(way) {
+        console.log(way)
+        this.$router.push(`/${way}`)
+    }
+  }
 };
 </script>
 
@@ -86,8 +127,8 @@ export default {
   margin-right: 1rem;
   font-family: "Kanit", sans-serif;
 }
-#inputsearch{
+#inputsearch {
   width: 25rem;
-  margin-right: 15rem
+  margin-right: 15rem;
 }
 </style>
