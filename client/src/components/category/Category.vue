@@ -16,6 +16,7 @@
             @click="toggle"
           >
           <img :src="`${publicPath}`+item.url">
+          <p class="mt-3">{{item.title}}</p>
             <v-row class="fill-height" align="center" justify="center">
               <v-scale-transition>
                 <v-icon v-if="active" color="white"></v-icon>
@@ -38,23 +39,28 @@ export default {
       categoryArr: [
         {
           id: 1,
-          url: 'category/bag.png'
+          url: 'category/bag.png',
+          title: 'Bag'
         },
         {
           id: 2,
-          url: 'category/costume.png'
+          url: 'category/costume.png',
+          title: 'Costume'
         }, 
         {
           id: 3,
-          url: 'category/glasses.png'
+          url: 'category/glasses.png',
+          title: 'Glasses'
         }, 
         {
           id: 4,
-          url: 'category/electronic.png'
+          url: 'category/electronic.png',
+          title: 'Electronic'
         },
         {
           id: 5,
-          url: 'category/electronic.png'
+          url: 'category/electronic.png',
+          title: 'Electronic'
         }]
     };
   },
@@ -66,4 +72,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+img{
+  margin-left:2rem;
+  margin-top:1rem
+}
+p{
+  text-align: center;
+  color: white
+}
 </style>

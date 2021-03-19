@@ -91,7 +91,7 @@ export default {
       // This only gets the user information: id, name, imageUrl and email
       let profile = await googleUser.getBasicProfile();
       let email = profile.getEmail();
-      if (email.split("@")[1] === "it.kmitl.ac.th") {
+      if (email.split("@")[1] !== "it.kmitl.ac.th") {
         this.onSignOut();
       } else {
         await AuthService.login(googleUser.getAuthResponse().id_token).then(
