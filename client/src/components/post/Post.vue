@@ -84,7 +84,7 @@
 
 <script>
 export default {
-  name: "filterpost",
+  name: "Post",
   data() {
     return {};
   },
