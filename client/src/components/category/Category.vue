@@ -1,30 +1,40 @@
 <template>
   <div class="columns is-centered">
-    <div class="column is-6">
-      <v-slide-group
-        v-model="model"
-        class="pa-4"
-        active-class="cyan lighten-1"
-        show-arrows
-      >
-        <v-slide-item v-for="(item, index) in categoryArr" :key="index" v-slot="{ active, toggle }">
-          <v-card
-            :color="active ? undefined : 'blue darken-4'"
-            class="ma-4"
-            height="120"
-            width="120"
-            @click="toggle"
+    <div class="column is-12">
+      <div class="columns">
+        <div class="column is-2"></div>
+        <div class="column is-8">
+          <v-slide-group
+            v-model="model"
+            class="pa-4"
+            active-class="cyan lighten-1"
+            show-arrows
           >
-          <img :src="`${publicPath}`+item.url">
-          <p class="mt-3">{{item.title}}</p>
-            <v-row class="fill-height" align="center" justify="center">
-              <v-scale-transition>
-                <v-icon v-if="active" color="white"></v-icon>
-              </v-scale-transition>
-            </v-row>
-          </v-card>
-        </v-slide-item>
-      </v-slide-group>
+            <v-slide-item
+              v-for="(item, index) in categoryArr"
+              :key="index"
+              v-slot="{ active, toggle }"
+            >
+              <v-card
+                :color="active ? undefined : 'blue darken-4'"
+                class="ma-4"
+                height="130"
+                width="140"
+                @click="toggle"
+              >
+                <img :src="`${publicPath}` + item.url" />
+                <p class="mt-3">{{ item.title }}</p>
+                <v-row class="fill-height" align="center" justify="center">
+                  <v-scale-transition>
+                    <v-icon v-if="active" color="white"></v-icon>
+                  </v-scale-transition>
+                </v-row>
+              </v-card>
+            </v-slide-item>
+          </v-slide-group>
+        </div>
+        <div class="column is-2"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -39,45 +49,71 @@ export default {
       categoryArr: [
         {
           id: 1,
-          url: 'category/bag.png',
-          title: 'Bag'
+          url: "category/bag.png",
+          title: "Bag",
         },
         {
           id: 2,
-          url: 'category/costume.png',
-          title: 'Costume'
-        }, 
+          url: "category/costume.png",
+          title: "Costume",
+        },
         {
           id: 3,
-          url: 'category/glasses.png',
-          title: 'Glasses'
-        }, 
+          url: "category/glasses.png",
+          title: "Glasses",
+        },
         {
           id: 4,
-          url: 'category/electronic.png',
-          title: 'Electronic'
+          url: "category/electronic.png",
+          title: "Electronic",
         },
         {
           id: 5,
-          url: 'category/electronic.png',
-          title: 'Electronic'
-        }]
+          url: "category/electronic.png",
+          title: "Electronic",
+        },
+        {
+          id: 1,
+          url: "category/bag.png",
+          title: "Bag",
+        },
+        {
+          id: 2,
+          url: "category/costume.png",
+          title: "Costume",
+        },
+        {
+          id: 3,
+          url: "category/glasses.png",
+          title: "Glasses",
+        },
+        {
+          id: 4,
+          url: "category/electronic.png",
+          title: "Electronic",
+        },
+        {
+          id: 5,
+          url: "category/electronic.png",
+          title: "Electronic",
+        },
+      ],
     };
   },
-  created(){
-    console.log(this.publicPath)
-  }
+  created() {
+    console.log(this.publicPath);
+  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-img{
-  margin-left:2rem;
-  margin-top:1rem
+img {
+  margin-left: 2rem;
+  margin-top: 1rem;
 }
-p{
+p {
   text-align: center;
-  color: white
+  color: white;
 }
 </style>

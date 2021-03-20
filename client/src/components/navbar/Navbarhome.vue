@@ -21,6 +21,10 @@
           <i class="fas fa-search"></i>
         </span>
       </div>
+      <button class="button mr-6 is-success">
+        <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
+        เขียนโพสต์
+      </button>
       <p id="namenavbar" class="is-mobile">
         {{ store.getters["auth/getfname"] }}
       </p>
@@ -150,6 +154,9 @@ export default {
 }
 #inputsearch {
   width: 25rem;
-  margin-right: 15rem;
+  margin-right: 10rem;
+}
+button{
+  font-family: "Kanit", sans-serif;
 }
 </style>

@@ -2,6 +2,8 @@
   <div class="home">
     <NavbarHome></NavbarHome>
     <Category></Category>
+    <Filterpost></Filterpost>
+    <Post></Post>
   </div>
 </template>
 
@@ -9,12 +11,16 @@
 // @ is an alias to /src
 import NavbarHome from "../components/navbar/Navbarhome";
 import Category from "../components/category/Category"
+import Filterpost from "../components/filterpost/Filterpost"
+import Post from "../components/post/Post"
 
 export default {
   name: "Home",
   components: {
     NavbarHome,
-    Category
+    Category,
+    Filterpost,
+    Post
   },
 };
 </script>
