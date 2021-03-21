@@ -16,7 +16,7 @@
               <div class="column is-2">
                 <div class="ml-6 mt-6">12:59</div>
                 <div class="mt-2">
-                  <v-chip class="ma-2" color="primary"> ประเภท </v-chip>
+                  <v-chip class="ma-2" color="primary">ประเภท</v-chip>
                 </div>
               </div>
               <div class="column is-1 mt-6">
@@ -24,11 +24,11 @@
               </div>
               <div class="column is-6 mt-3 ml-6">
                 ธีรภัทร์ บุญช่วยแล้ว
-                <v-chip class="ma-2" color="primary"> M03 </v-chip>
-                <v-chip class="ma-2" color="primary"> L207 </v-chip><br />
+                <v-chip class="ma-2" color="primary">M03</v-chip>
+                <v-chip class="ma-2" color="primary">L207</v-chip><br />
                 <p class="mt-3">ใครเจอโทรศัพท์บ้างครับ</p>
               </div>
-              <div class="column is-2">
+              <div class="column is-2 is-mobile">
                 <img
                   src="https://cdn.vuetifyjs.com/images/john.jpg"
                   alt="John"
@@ -85,7 +85,7 @@
         >
           <v-list-item three-line>
             <div class="columns">
-              <div class="column is-8">
+              <div class="column is-8 is-mobile">
                 <v-list-item-content>
                   <div class="overline is-white" id="prepost">
                     10/02/2564 02:25
@@ -97,22 +97,20 @@
                     ธีรภัทร์ บุญช่วยแล้ว<br />
                   </v-list-item-title>
                   <v-list-item-subtitle id="prepost">
-                    <v-chip class="ma-1 mr-2 mt-3 mb-1" color="primary">
+                    <v-chip class="ma-1 mr-2 mt-3" color="primary">
                       M03
                     </v-chip>
-                    <v-chip class="ma-1 mr-2 mt-3 mb-1" color="primary">
+                    <v-chip class="ma-1 mr-2 mt-3" color="primary">
                       L207 </v-chip
                     ><br />
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </div>
               <div class="column is-4">
-                <v-list-item-avatar
-                  tile
-                  size="120"
-                  color="grey"
-                  class="mt-5"
-                ></v-list-item-avatar>
+                <img
+                  src="https://cdn.vuetifyjs.com/images/john.jpg"
+                  alt="John" class="mt-3"
+                />
               </div>
             </div>
           </v-list-item>
