@@ -1,40 +1,5 @@
 <template>
   <div class="container">
-    <div class="columns is-centered">
-      <div class="field column is-4">
-        <p class="control has-icons-left has-icons-right">
-          <input
-            class="input is-medium mt-4"
-            type="text"
-            placeholder="  Username"
-          />
-          <span class="icon is-small is-left mt-4" id="iconcolor">
-            <i class="fas fa-user"></i>
-          </span>
-        </p>
-      </div>
-    </div>
-    <div class="columns is-centered">
-      <div class="field column is-4">
-        <p class="control has-icons-left">
-          <input
-            class="input is-medium mt-4"
-            type="password"
-            placeholder="  Password"
-          />
-          <span class="icon is-small is-left mt-4" id="iconcolor">
-            <i class="fas fa-lock"></i>
-          </span>
-        </p>
-      </div>
-    </div>
-    <div class="columns is-centered mt-4 is-mobile">
-      <div class="field">
-        <p class="control">
-          <button @click="onSignIn()" class="button is-rounded">Login</button>
-        </p>
-      </div>
-    </div>
     <div class="columns is-centered mt-4 is-mobile">
       <div class="field">
         <p class="control">
@@ -48,10 +13,47 @@
         </p>
       </div>
     </div>
+    <h2 class="is-size-3 mt-3" id="text1">
+      <strong>บุคลากร</strong>
+      <strong id="text2">ภายนอก</strong>
+    </h2>
+    <div class="columns is-centered">
+      <div class="field column is-4">
+        <p class="control has-icons-left has-icons-right">
+          <input
+            class="input is-medium mt-4"
+            type="text"
+            placeholder="  ชื่อผู้ใช้งาน"
+          />
+          <span class="icon is-small is-left mt-4" id="iconcolor">
+            <i class="fas fa-user"></i>
+          </span>
+        </p>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="field column is-4">
+        <p class="control has-icons-left">
+          <input
+            class="input is-medium"
+            type="password"
+            placeholder="  รหัสผ่าน"
+          />
+          <span class="icon is-small is-left" id="iconcolor">
+            <i class="fas fa-lock"></i>
+          </span>
+        </p>
+      </div>
+    </div>
     <div class="columns is-centered mt-4 is-mobile">
       <div class="field">
         <p class="control">
-          <button @click="onSignOut()" class="button is-rounded">Logout</button>
+          <button @click="onSignIn()" class="button is-rounded">เข้าสู่ระบบ</button>
+        </p>
+      </div>
+      <div class="field">
+        <p class="control">
+          <button class="button is-rounded ml-6">สมัครสมาชิก</button>
         </p>
       </div>
     </div>
@@ -158,5 +160,17 @@ button {
   cursor: pointer;
   width: 10rem;
   font-family: "Kanit", sans-serif;
+}
+#text1 {
+  font-family: "Kanit", sans-serif;
+  color: black;
+}
+#text2 {
+  font-family: "Kanit", sans-serif;
+  color: #00878f;
+}
+h1, h2{
+  text-align: center;
+  text-shadow: 1px 1.5px 3px #000000;
 }
 </style>

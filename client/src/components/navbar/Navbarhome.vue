@@ -8,32 +8,40 @@
       color="#0f3057"
       height="80"
     >
-      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="drawer = true" v-show="window.width < 760"></v-app-bar-nav-icon>
+      <template v-slot:extension>
+        <v-tabs align-with-title v-show="window.width >= 760">
+          <v-tab>Home</v-tab>
+          <v-tab>My post</v-tab>
+          <v-tab>Leaderboard</v-tab>
+        </v-tabs>
+      </template>
       <v-toolbar-title class="logo">
         <a href="/">
           <img src="./lost 2.png" />
         </a>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="control has-icons-right is-mobile" id="inputsearch">
+      <div class="control has-icons-right is-mobile" id="inputsearch" >
         <input class="input is-normal" placeholder="ค้นหา" />
         <span class="icon is-small is-right">
           <i class="fas fa-search"></i>
         </span>
       </div>
+      <p id="namenavbar" class="is-mobile" v-show="window.width >= 760">
+        {{ store.getters["auth/getfname"] }}
+      </p>
+      <p id="namenavbar" class="is-mobile" v-show="window.width >= 760">
+        {{ store.getters["auth/getlname"] }}
+      </p>
       <button class="button mr-6 is-success">
         <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
         เขียนโพสต์
       </button>
-      <p id="namenavbar" class="is-mobile">
-        {{ store.getters["auth/getfname"] }}
-      </p>
-      <p id="namenavbar" class="is-mobile">
-        {{ store.getters["auth/getlname"] }}
-      </p>
-      <span class="icon is-large mr-4" id="navbaruser">
-        <i class="fas fa-user"></i>
-      </span>
+      <button class="button mr-6 is-danger" v-show="window.width >= 760" @click="onSignOut()">
+        <v-icon class="mr-2">fa fa-power-off</v-icon>
+        ออกจากระบบ
+      </button>
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
@@ -100,6 +108,10 @@ export default {
       store,
       drawer: false,
       group: null,
+      window: {
+        width: 0,
+        height: 0
+      }
     };
   },
   methods: {
@@ -130,6 +142,17 @@ export default {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
     },
+    handleResize() {
+            this.window.width = window.innerWidth;
+            this.window.height = window.innerHeight;
+    }
+  },
+  created() {
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+  },
+  destroyed() {
+      window.removeEventListener('resize', this.handleResize);
   },
 };
 </script>
@@ -154,7 +177,7 @@ export default {
 }
 #inputsearch {
   width: 25rem;
-  margin-right: 10rem;
+  margin-right: 1rem;
 }
 button{
   font-family: "Kanit", sans-serif;

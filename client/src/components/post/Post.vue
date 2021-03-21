@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column is-2"></div>
+      <div class="column is-1"></div>
       <div class="column is-8">
-        <h1>20 มี.ค. 2564</h1>
+        <h1 class="ml-2">20 มี.ค. 2564</h1>
         <v-expansion-panels focusable id="post" class="mt-3">
           <v-expansion-panel v-for="(item, i) in 5" :key="i" class="mt-6">
-            <v-expansion-panel-header>
-              <div class="columns">
+            <i class="fas fa-ellipsis-h m-2" style="float:right;"></i>
+            <div class="columns mt-6 is-mobile">
                 <div class="column is-2">
                   <div class="ml-6 mt-6">12:59</div>
                   <div class="mt-2">
@@ -30,54 +30,58 @@
                   />
                 </div>
               </div>
+            <v-expansion-panel-header>
+              Comments
             </v-expansion-panel-header>
             <v-expansion-panel-content class="mt-6">
               <div class="columns">
-                  <div class="column is-1">
-                      <v-avatar color="primary" size="40">TT</v-avatar>
-                  </div>
-                  <div class="column is-6">
-                      13:24 น.
-                      <br>
-                      <p class="mt-2">ไม่เจอเลยครับ</p>
-                  </div>
+                <div class="column is-1">
+                  <v-avatar color="primary" size="40">TT</v-avatar>
+                </div>
+                <div class="column is-6">
+                  13:24 น.
+                  <br />
+                  <p class="mt-2">ไม่เจอเลยครับ</p>
+                </div>
               </div>
               <div class="columns">
-                  <div class="column is-1">
-                      <v-avatar color="red" size="40">AA</v-avatar>
-                  </div>
-                  <div class="column is-6">
-                      13:30 น.
-                      <br>
-                      <p class="mt-2">เจอค่ะ</p>
-                  </div>
+                <div class="column is-1">
+                  <v-avatar color="red" size="40">AA</v-avatar>
+                </div>
+                <div class="column is-6">
+                  13:30 น.
+                  <br />
+                  <p class="mt-2">เจอค่ะ</p>
+                </div>
               </div>
               <div class="columns">
-                  <div class="column is-9">
-                      <input type="text" placeholder="comments" class="input is-black">
-                  </div>
-                  <div class="column is-2">
-                      <button class="button is-info">เพิ่มความคิดเห็น</button>
-                  </div>
+                <div class="column is-9">
+                  <input
+                    type="text"
+                    placeholder="comments"
+                    class="input is-black"
+                  />
+                </div>
+                <div class="column is-2">
+                  <button class="button is-info">เพิ่มความคิดเห็น</button>
+                </div>
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
-      <div class="column is-2"></div>
+      <div class="column is-3"></div>
     </div>
-    <div class="columns">
-      <div class="column is-2"></div>
-      <div class="column is-8">
-        <h1>17 มี.ค. 2564</h1>
-        <v-expansion-panels focusable id="post" class="mt-6">
-          <v-expansion-panel v-for="(item, i) in 5" :key="i">
-            <v-expansion-panel-header>Item</v-expansion-panel-header>
-            <v-expansion-panel-content> comment.... </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+    <div class="columns mb-6">
+      <div class="column is-3"></div>
+      <div class="column is-8 ml-6">
+        <v-pagination
+          v-model="page"
+          :length="15"
+          :total-visible="7"
+        ></v-pagination>
       </div>
-      <div class="column is-2"></div>
+      <div class="column is-1"></div>
     </div>
   </div>
 </template>
@@ -86,7 +90,9 @@
 export default {
   name: "Post",
   data() {
-    return {};
+    return {
+      page: 1,
+    };
   },
 };
 </script>
@@ -94,9 +100,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #post {
-  width: 85%;
+  width: 100%;
 }
 img {
-  width: 200rem;
+  width: 100%;
+}
+h1 {
+  font-family: "Kanit", sans-serif;
+}
+.font {
+  font-family: "Kanit", sans-serif;
 }
 </style>
