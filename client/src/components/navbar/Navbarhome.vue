@@ -8,7 +8,10 @@
       color="#0f3057"
       height="80"
     >
-      <v-app-bar-nav-icon @click="drawer = true" v-show="window.width < 760"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click="drawer = true"
+        v-show="window.width < 760"
+      ></v-app-bar-nav-icon>
       <template v-slot:extension>
         <v-tabs align-with-title v-show="window.width >= 760">
           <v-tab>Home</v-tab>
@@ -22,26 +25,45 @@
         </a>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="control has-icons-right is-mobile" id="inputsearch" >
+      <div class="control has-icons-right is-mobile" id="inputsearch">
         <input class="input is-normal" placeholder="ค้นหา" />
         <span class="icon is-small is-right">
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <p id="namenavbar" class="is-mobile" v-show="window.width >= 760">
-        {{ store.getters["auth/getfname"] }}
-      </p>
-      <p id="namenavbar" class="is-mobile" v-show="window.width >= 760">
-        {{ store.getters["auth/getlname"] }}
-      </p>
       <button class="button mr-6 is-success">
         <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
         เขียนโพสต์
       </button>
-      <button class="button mr-6 is-danger" v-show="window.width >= 760" @click="onSignOut()">
-        <v-icon class="mr-2">fa fa-power-off</v-icon>
-        ออกจากระบบ
-      </button>
+      <div v-show="window.width >= 760">
+      <v-menu bottom min-width="200px" rounded offset-y >
+        <template v-slot:activator="{ on }" >
+          <v-btn icon x-large v-on="on">
+            <v-avatar color="brown" size="48">
+              <img :src="store.getters['auth/getImage']" alt="profile" />
+            </v-avatar>
+          </v-btn>
+        </template>
+        <v-card  >
+          <v-list-item-content class="justify-center" >
+            <div class="mx-auto text-center">
+              <v-avatar color="brown mb-2">
+                <img :src="store.getters['auth/getImage']" alt="profile" />
+              </v-avatar>
+              <h3>{{ store.getters["auth/getFullName"] }}</h3>
+              <p class="caption mt-1">
+                {{ store.getters["auth/getEmail"] }}
+              </p>
+              <v-divider class="my-3"></v-divider>
+              <v-btn depressed rounded text> Edit Account </v-btn>
+              <v-divider class="my-3"></v-divider>
+              <v-btn depressed rounded text @click="onSignOut()" > ออกจากระบบ </v-btn>
+            </div>
+          </v-list-item-content>
+        </v-card>
+      </v-menu>
+
+      </div>
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
@@ -89,9 +111,7 @@
             <v-list-item-icon>
               <v-icon>fa fa-power-off</v-icon>
             </v-list-item-icon>
-            <v-list-item-title
-              >ออกจากระบบ</v-list-item-title
-            >
+            <v-list-item-title>ออกจากระบบ</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -110,49 +130,55 @@ export default {
       group: null,
       window: {
         width: 0,
-        height: 0
-      }
+        height: 0,
+      },
     };
   },
   methods: {
     async onSignOut() {
-      await this.$swal.fire({
-        title: "คุณต้องการออกจากระบบ?",
-        text: "คุณต้องการออกจากระบบหรือไม่!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes",
-      }).then((result) => {
-        if (result.isConfirmed) {
+      await this.$swal
+        .fire({
+          title: "คุณต้องการออกจากระบบ?",
+          text: "คุณต้องการออกจากระบบหรือไม่!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
             store.dispatch("auth/clearProfile");
             window.gapi.auth2
-            .getAuthInstance()
-            .signOut()
-            .then(() => {
+              .getAuthInstance()
+              .signOut()
+              .then(() => {
                 console.log("Disconnected");
                 this.redirect("");
-            });
-          this.$swal.fire("ออกจากระบบ!", "คุณได้ออกสู่ระบบเรียบร้อย", "success");
-        }
-      });
+              });
+            this.$swal.fire(
+              "ออกจากระบบ!",
+              "คุณได้ออกสู่ระบบเรียบร้อย",
+              "success"
+            );
+          }
+        });
     },
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
     },
     handleResize() {
-            this.window.width = window.innerWidth;
-            this.window.height = window.innerHeight;
-    }
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
   },
   created() {
-        window.addEventListener('resize', this.handleResize);
-        this.handleResize();
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
   },
   destroyed() {
-      window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
   },
 };
 </script>
@@ -179,7 +205,7 @@ export default {
   width: 25rem;
   margin-right: 1rem;
 }
-button{
+button {
   font-family: "Kanit", sans-serif;
 }
 </style>
