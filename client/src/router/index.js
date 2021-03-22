@@ -2,8 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 //import store from '../store/index'
 import Home from '../views/Home.vue'
-// import About from '../views/About.vue'
-import Mockup from '../views/MockupView.vue'
+import Register from '../views/Register.vue'
+// import Mockup from '../views/MockupView.vue'
 import login from '../views/auth/Login.vue'
 
 Vue.use(VueRouter)
@@ -20,9 +20,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/mockup/:id',
-    name: 'Mockup',
-    component: Mockup
+    path: '/register',
+    name: 'Register',
+    component: Register
   }
 ]
 

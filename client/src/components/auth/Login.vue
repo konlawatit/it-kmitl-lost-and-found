@@ -53,7 +53,7 @@
       </div>
       <div class="field">
         <p class="control">
-          <button class="button is-rounded ml-6">สมัครสมาชิก</button>
+          <a href="/register"><button class="button is-rounded ml-6">สมัครสมาชิก</button></a>
         </p>
       </div>
     </div>
