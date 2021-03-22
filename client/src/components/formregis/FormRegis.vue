@@ -35,7 +35,9 @@
           :rules="passwordRules"
           label="Password"
           required
-          type="password"
+          :type="show1 ? 'text' : 'password'"
+          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="show1 = !show1"
         ></v-text-field>
 
         <v-text-field
@@ -43,12 +45,14 @@
           :rules="confrimpasswordRules"
           label="Confrim Password"
           required
-          type="password"
+          :type="show2 ? 'text' : 'password'"
+          :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="show2 = !show2"
         ></v-text-field>
 
         <div class="columns is-centered mt-3">
             <button class="button is-rounded">สมัครสมาชิก</button>
-            <button class="button is-rounded is-danger ml-6">ยกเลิก</button>
+            <button class="button is-rounded is-danger ml-6" @click="goHome()">ยกเลิก</button>
         </div>
       </v-form>
     </div>
@@ -91,8 +95,16 @@ export default {
         (v) => !!v || "Confirm passwoord is required",
         (v) => (v && v == this.password) || "Password is not match",
       ],
+      show1: false,
+      show2: false
     };
   },
+  methods:{
+    goHome(){
+      this.$router.push('/')
+      this.$router.go()
+    }
+  }
 };
 </script>
 

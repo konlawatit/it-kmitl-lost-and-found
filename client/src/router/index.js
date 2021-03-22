@@ -5,6 +5,7 @@ import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 // import Mockup from '../views/MockupView.vue'
 import login from '../views/auth/Login.vue'
+import CreatePost from '../views/CreatePost.vue'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register
+  },
+  {
+    path: '/createpost',
+    name: 'CreatePost',
+    component: CreatePost
   }
 ]
 

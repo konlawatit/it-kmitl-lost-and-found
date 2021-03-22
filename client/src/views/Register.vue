@@ -1,11 +1,11 @@
 <template>
   <div class="register">
     <Navbar></Navbar>
-    <h1 class="is-size-1 mt-6" id="text1">
+    <h1 class="is-size-1 mt-3" id="text1">
       <strong>สมัคร</strong>
       <strong id="text2">สมาชิก</strong>
     </h1>
-    <div class="columns mt-6 mb-6">
+    <div class="columns mt-3 mb-6">
         <div class="column is-2"></div>
         <div class="column is-8" id="bodylogin">
             <FormRegis></FormRegis>

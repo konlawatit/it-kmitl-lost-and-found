@@ -11,13 +11,6 @@
           <img src="./lost 2.png">
         </a>
       </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn color="green" class="but">
-        Sign-up
-      </v-btn>
-      <v-btn color="black" class="but">
-        Sign-in
-      </v-btn>
     </v-app-bar>
   </div>
 </template>
@@ -28,6 +21,12 @@ export default {
   data() {
     return {};
   },
+  methods:{
+    goHome(){
+      this.$router.push('/')
+      this.$router.go()
+    }
+  }
 };
 </script>
 

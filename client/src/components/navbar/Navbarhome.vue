@@ -20,7 +20,7 @@
         </v-tabs>
       </template>
       <v-toolbar-title class="logo">
-        <a href="/">
+        <a @click="redirect('home')">
           <img src="./lost 2.png" />
         </a>
       </v-toolbar-title>
@@ -31,38 +31,41 @@
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <button class="button mr-6 is-success">
-        <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
-        เขียนโพสต์
-      </button>
+      <a @click="redirect('createpost')"
+        ><button class="button mr-6 is-success" go>
+          <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
+          เขียนโพสต์
+        </button></a
+      >
       <div v-show="window.width >= 768">
-      <v-menu bottom min-width="200px" rounded offset-y >
-        <template v-slot:activator="{ on }" >
-          <v-btn icon x-large v-on="on">
-            <v-avatar color="brown" size="48">
-              <img :src="store.getters['auth/getImage']" alt="profile" />
-            </v-avatar>
-          </v-btn>
-        </template>
-        <v-card  >
-          <v-list-item-content class="justify-center" >
-            <div class="mx-auto text-center">
-              <v-avatar color="brown mb-2">
+        <v-menu bottom min-width="200px" rounded offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn icon x-large v-on="on">
+              <v-avatar color="brown" size="48">
                 <img :src="store.getters['auth/getImage']" alt="profile" />
               </v-avatar>
-              <h3>{{ store.getters["auth/getFullName"] }}</h3>
-              <p class="caption mt-1">
-                {{ store.getters["auth/getEmail"] }}
-              </p>
-              <v-divider class="my-3"></v-divider>
-              <v-btn depressed rounded text> Edit Account </v-btn>
-              <v-divider class="my-3"></v-divider>
-              <v-btn depressed rounded text @click="onSignOut()" > ออกจากระบบ </v-btn>
-            </div>
-          </v-list-item-content>
-        </v-card>
-      </v-menu>
-
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list-item-content class="justify-center">
+              <div class="mx-auto text-center">
+                <v-avatar color="brown mb-2">
+                  <img :src="store.getters['auth/getImage']" alt="profile" />
+                </v-avatar>
+                <h3>{{ store.getters["auth/getFullName"] }}</h3>
+                <p class="caption mt-1">
+                  {{ store.getters["auth/getEmail"] }}
+                </p>
+                <v-divider class="my-3"></v-divider>
+                <v-btn depressed rounded text> Edit Account </v-btn>
+                <v-divider class="my-3"></v-divider>
+                <v-btn depressed rounded text @click="onSignOut()">
+                  ออกจากระบบ
+                </v-btn>
+              </div>
+            </v-list-item-content>
+          </v-card>
+        </v-menu>
       </div>
     </v-app-bar>
     <v-navigation-drawer
