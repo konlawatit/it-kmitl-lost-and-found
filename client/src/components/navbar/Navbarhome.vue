@@ -10,10 +10,10 @@
     >
       <v-app-bar-nav-icon
         @click="drawer = true"
-        v-show="window.width < 760"
+        v-show="window.width < 768"
       ></v-app-bar-nav-icon>
       <template v-slot:extension>
-        <v-tabs align-with-title v-show="window.width >= 760">
+        <v-tabs align-with-title v-show="window.width >= 768">
           <v-tab>Home</v-tab>
           <v-tab>My post</v-tab>
           <v-tab>Leaderboard</v-tab>
@@ -35,7 +35,7 @@
         <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
         เขียนโพสต์
       </button>
-      <div v-show="window.width >= 760">
+      <div v-show="window.width >= 768">
       <v-menu bottom min-width="200px" rounded offset-y >
         <template v-slot:activator="{ on }" >
           <v-btn icon x-large v-on="on">

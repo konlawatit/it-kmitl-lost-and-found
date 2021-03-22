@@ -1,7 +1,6 @@
 <template>
-  <div class="columns">
-    <div class="column is-1"></div>
-    <div class="column is-7">
+  <div class="columns is-mobile is-tablet">
+    <div class="column is-8">
       <v-btn-toggle tile color="blue darken-4" group>
         <v-btn id="buttonfilter" value="all"> ทั้งหมด </v-btn>
 
@@ -12,7 +11,6 @@
         <input type="date" class="input mt-2" v-model="date"/>
       </v-btn-toggle>
     </div>
-    <div class="column is-4"></div>
   </div>
 </template>
 
