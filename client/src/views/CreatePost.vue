@@ -1,16 +1,16 @@
 <template>
   <div>
-    aksldskal
+    <Navbarcreate></Navbarcreate>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-// import Navbarhome from "../components/navbar/Navbarhome";
+import Navbarcreate from "../components/navbar/Navbarcreate";
 export default {
   name: "CreatePost",
   components: {
-    
+    Navbarcreate
   },
 };
 </script>

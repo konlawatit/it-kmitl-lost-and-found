@@ -52,7 +52,7 @@
 
         <div class="columns is-centered mt-3">
             <button class="button is-rounded">สมัครสมาชิก</button>
-            <button class="button is-rounded is-danger ml-6" @click="goHome()">ยกเลิก</button>
+            <button class="button is-rounded is-danger ml-6" @click="redirect('')">ยกเลิก</button>
         </div>
       </v-form>
     </div>
@@ -100,10 +100,10 @@ export default {
     };
   },
   methods:{
-    goHome(){
-      this.$router.push('/')
-      this.$router.go()
-    }
+    redirect(path) {
+      console.log("redirect to : ", path);
+      this.$router.push(`/${path}`);
+    },
   }
 };
 </script>
