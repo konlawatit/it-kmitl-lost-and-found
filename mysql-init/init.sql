@@ -1,4 +1,4 @@
-CREATE DATABASE it_lost_and_found;
+-- CREATE DATABASE it_lost_and_found;
 USE it_lost_and_found;
 
 -- CREATE TABLE Accounts (
@@ -18,6 +18,19 @@ USE it_lost_and_found;
 -- );
 
 CREATE TABLE USER (
+    user_id int(10) primary key,
+    user_name varchar(255),
+    firstname varchar(255),
+    lastname varchar(255),
+    birthday varchar(255),
+    age int(10),
+    phone_number char(10),
+    role ENUM('a', 'b'),
+    merit int(10),
+    type ENUM('personnel', 'student')
+);
+
+CREATE TABLE USER2 (
     user_id int(10) primary key,
     user_name varchar(255),
     firstname varchar(255),

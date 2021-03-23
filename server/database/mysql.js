@@ -1,10 +1,10 @@
 const mysql = require('mysql');
 const db = mysql.createConnection({   // config ค่าการเชื่อมต่อฐานข้อมูล
-   host     : '127.0.0.1', 
+   host     : 'db', 
    user     : 'root',
    password : '123456',
-   port: '3999'
-   //database : `db_docker`
+   // port: '3999',
+   database : `it_lost_and_found`
 })
 db.connect() // เชื่อมต่อฐานข้อมูล
 
