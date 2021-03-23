@@ -5,6 +5,9 @@ const {
     OAuth2Client
 } = require('google-auth-library');
 
+const querySqlModel = require('../model/querySql')
+const querySql = new querySqlModel()
+
 controller.post('/login', (req, res) => {
     try {
         let CLIENT_ID = '869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com'
@@ -20,14 +23,14 @@ controller.post('/login', (req, res) => {
             });
             const payload = ticket.getPayload();
             const userid = payload['sub'];
+            console.log(payload)
 
-            let sqlIsExists = `SELECT EXISTS(SELECT user_id FROM it_lost_and_found.USER WHERE user_id = ${payload.email.split('@')[0]})`
-            await db.query(sqlIsExists, async (err, check) => {
-                if (err) res.status(404).send(err)
-                console.log(check)
-                if (check[0][sqlIsExists.slice(7)] == 1) { //เช็คว่าอยู่ใน database มั้ย
-                    console.log(check[0][sqlIsExists])
-                    res.status(200).send({ 
+            querySql.existsUser('USER', 'user_id', 62070007).then(exists => {
+                if (exists.exists == 1) {
+                    // querySql.getUser(62070007).then(result => {
+                    //     console.log(result)
+                    // })
+                    res.status(200).send({
                         statusCode: '200',
                         statusText: 'Request Success',
                         error: false,
@@ -35,28 +38,39 @@ controller.post('/login', (req, res) => {
                         data: payload, //เดะต้องแก้ดึงจาก database
                     });
                 } else {
-                    let sql = `insert into it_lost_and_found.USER (user_id, user_name, firstname, lastname) values (${payload.email.split('@')[0]}, '${payload.name}', '${payload.given_name}', '${payload.family_name}');`
-                    await db.query(sql, (err, result) => { //ไม่มีใน database ก็เพิ่มข้อมูล
-                        if (err) res.status(404).send(err)
-                        console.log(result)
-                        res.status(200).send({ 
+                    let sqlPayload = [
+                        [payload.email.split('@')[0], payload.name, payload.given_name, payload.family_name]
+                    ]
+                    querySql.createUser(sqlPayload).then(result => {
+                        res.status(200).send({
                             statusCode: '200',
                             statusText: 'Request Success',
                             error: false,
                             messge: 'New user, login successful',
-                            data: payload, 
-                            sql: result
+                            data: payload,
                         });
+                    }).catch(err => {
+                        res.status(400).send({
+                            statusCode: '400',
+                            statusText: 'Bad Request',
+                            error: true,
+                            message: 'user invalid'
+                        })
                     })
                 }
+            }).catch((err) => {
+                res.status(400).send({
+                    statusCode: '400',
+                    statusText: 'Bad Request',
+                    error: true,
+                    message: 'user invalid'
+                })
             })
-            
-
-
             // If request specified a G Suite domain:
             // const domain = payload['hd'];
         }
         verify().catch(e => {
+            console.log(e)
             res.status(400).send({
                 statusCode: '400',
                 statusText: 'Bad Request',
