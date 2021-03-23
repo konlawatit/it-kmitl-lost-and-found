@@ -27,19 +27,19 @@ controller.post('/login', (req, res) => {
 
             querySql.existsUser('USER', 'user_id', 62070007).then(exists => {
                 if (exists.exists == 1) {
-                    // querySql.getUser(62070007).then(result => {
-                    //     console.log(result)
-                    // })
-                    res.status(200).send({
-                        statusCode: '200',
-                        statusText: 'Request Success',
-                        error: false,
-                        messge: 'login successful',
-                        data: payload, //เดะต้องแก้ดึงจาก database
-                    });
+                    querySql.getUser(62070007).then(result => {
+                        res.status(200).send({
+                            statusCode: '200',
+                            statusText: 'Request Success',
+                            error: false,
+                            messge: 'login successful',
+                            data: result, //เดะต้องแก้ดึงจาก database
+                        });
+                    })
+                    
                 } else {
                     let sqlPayload = [
-                        [payload.email.split('@')[0], payload.name, payload.given_name, payload.family_name]
+                        [payload.email.split('@')[0], payload.name, payload.given_name, payload.family_name,payload.email, payload.picture]
                     ]
                     querySql.createUser(sqlPayload).then(result => {
                         res.status(200).send({

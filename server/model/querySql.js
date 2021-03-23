@@ -16,7 +16,7 @@ class QuerySql {
         })
     }
     createUser(payload) {
-        let sql = `insert into it_lost_and_found.USER (user_id, user_name, firstname, lastname) values ?;`
+        let sql = `insert into it_lost_and_found.USER (user_id, user_name, firstname, lastname, email, picture) values ?;`
         return new Promise((resolve, reject) => {
             console.log(payload)
             db.query(sql, [payload], (err, result) => {
@@ -32,7 +32,16 @@ class QuerySql {
         return new Promise((resolve, reject) => {
             db.query(sql, (err, result) => {
                 if (err) reject(err)
-                resolve(result[0])
+                let user_data = result[0]
+                resolve({
+                    "sub": user_data.user_id,
+                    "name":user_data.user_name,
+                    "sub":user_data.user_id,
+                    "email": user_data.email,
+                    "given_name": user_data.firstname,
+                    "family_name": user_data.lastname,
+                    "picture": user_data.picture
+                })
             })
         })
     }

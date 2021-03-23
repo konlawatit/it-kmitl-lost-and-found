@@ -2,9 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store/index'
-import { LoaderPlugin } from 'vue-google-login';
+import {
+    LoaderPlugin
+} from 'vue-google-login';
 import vuetify from './plugins/vuetify';
 import VueSweetalert2 from 'vue-sweetalert2';
+
+import AuthService from './service/AuthService'
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -14,20 +18,23 @@ Vue.use(LoaderPlugin, {
     client_id: "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com"
 });
 
-Vue.GoogleAuth.then(auth2 => {
+Vue.GoogleAuth.then(async auth2 => {
     if (auth2.isSignedIn.get()) {
-        let profile = auth2.currentUser.get().getBasicProfile();
-        store.dispatch('auth/setProfile', {
-            fullname: profile.getName(),
-            fname: profile.getGivenName(),
-            lname: profile.getFamilyName(),
-            email: profile.getEmail(),
-            image: profile.getImageUrl(),
-            id: profile.getId(),
-            role: profile.getEmail().split('@')[0][3] === '7' ? 'student' : 'personnel',
-            isSigned: true
-        })
-        router.push(`/home`)
+        await AuthService.login(auth2.currentUser.get().getAuthResponse().id_token).then(
+            (result) => {
+                store.dispatch("auth/setProfile", {
+                    fullname: result.data.name,
+                    fname: result.data.given_name,
+                    lname: result.data.family_name,
+                    email: result.data.email,
+                    image: result.data.picture,
+                    id: result.data.sub,
+                    role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
+                    isSigned: true,
+                });
+                router.push(`/home`)
+            }
+        );
     }
     console.log(auth2.isSignedIn.get());
     console.log(auth2.currentUser.get());
