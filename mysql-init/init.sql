@@ -27,7 +27,9 @@ CREATE TABLE USER (
     phone_number char(10),
     role ENUM('a', 'b'),
     merit int(10),
-    type ENUM('personnel', 'student')
+    type ENUM('personnel', 'student'),
+    email varchar(255),
+    picture text
 );
 
 CREATE TABLE USER2 (
