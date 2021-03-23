@@ -35,8 +35,8 @@ class QuerySql {
                 let user_data = result[0]
                 resolve({
                     "sub": user_data.user_id,
-                    "name":user_data.user_name,
-                    "sub":user_data.user_id,
+                    "name": user_data.user_name,
+                    "sub": user_data.user_id,
                     "email": user_data.email,
                     "given_name": user_data.firstname,
                     "family_name": user_data.lastname,

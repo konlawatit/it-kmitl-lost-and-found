@@ -25,15 +25,15 @@ controller.post('/login', (req, res) => {
             const userid = payload['sub'];
             console.log(payload)
 
-            querySql.existsUser('USER', 'user_id', 62070007).then(exists => {
+            querySql.existsUser('USER', 'user_id', payload.email.split('@')[0]).then(exists => {
                 if (exists.exists == 1) {
-                    querySql.getUser(62070007).then(result => {
+                    querySql.getUser(payload.email.split('@')[0]).then(result => {
                         res.status(200).send({
                             statusCode: '200',
                             statusText: 'Request Success',
                             error: false,
                             messge: 'login successful',
-                            data: result, //เดะต้องแก้ดึงจาก database
+                            data: result
                         });
                     })
                     
