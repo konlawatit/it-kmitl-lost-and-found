@@ -1,49 +1,94 @@
-const db = require('../database/mysql')
+const pool = require('../database/mysql')
+//const db = require('../database/mysql')
+
 class QuerySql {
     // constructor(sql, payload) {
     //     this.sql = sql;
     //     this.payload = sql;
     // }
-    existsUser(table, column, target) {
-        let sqlIsExists = `SELECT EXISTS(SELECT ${column} FROM it_lost_and_found.${table} WHERE ${column} = ${target})`
-        return new Promise((resolve, reject) => {
-            db.query(sqlIsExists, (err, check) => {
-                if (err) reject(err)
-                resolve({
-                    'exists': check[0][sqlIsExists.slice(7)]
-                })
-            })
-        })
+    async test() {
+        const conn = await pool.getConnection()
+        await conn.beginTransaction();
+        try {
+            let name = await conn.query('UPDATE USER SET user_name = ?  WHERE `user_id` = 62070007;', ['กลวัชร หัสไทรทอง'])
+            console.log(name)
+            conn.commit();
+            return name
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally test')
+            conn.release();
+        }
     }
-    createUser(payload) {
-        let sql = `insert into it_lost_and_found.USER (user_id, user_name, firstname, lastname, email, picture) values ?;`
-        return new Promise((resolve, reject) => {
-            console.log(payload)
-            db.query(sql, [payload], (err, result) => {
-                if (err) reject(err)
-                resolve({
-                    result
-                })
-            })
-        })
+    
+    async exists(table, column, target) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            let sql = `SELECT EXISTS(SELECT ${column} FROM ${table} WHERE ${column} = ${target})`
+            let isExists = await conn.query(sql)
+            conn.commit();
+            return {
+                'exists': isExists[0][0][sql.slice(7)]
+            }
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally exists')
+            conn.release();
+        }
     }
-    getUser(user) {
-        let sql = `SELECT * FROM it_lost_and_found.USER WHERE user_id = ${user};`
-        return new Promise((resolve, reject) => {
-            db.query(sql, (err, result) => {
-                if (err) reject(err)
-                let user_data = result[0]
-                resolve({
-                    "sub": user_data.user_id,
-                    "name": user_data.user_name,
-                    "sub": user_data.user_id,
-                    "email": user_data.email,
-                    "given_name": user_data.firstname,
-                    "family_name": user_data.lastname,
-                    "picture": user_data.picture
-                })
-            })
-        })
+
+    async createUser(payload) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `insert into USER(user_id, user_name, firstname, lastname, email, picture) values ?;`
+            let result = await conn.query(sql, [payload])
+            conn.commit();
+            return {
+                result
+            }
+        } catch (err) {
+            await conn.rollback();
+            console.log(`create user rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally create user')
+            conn.release();
+        }
+    }
+
+    async getUser(user) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT * FROM USER WHERE user_id = ${user};`
+            let result = await conn.query(sql)
+            let user_info = result[0][0]
+            conn.commit();
+            return {
+                "sub": user_info.user_id,
+                "name": user_info.user_name,
+                "sub": user_info.user_id,
+                "email": user_info.email,
+                "given_name": user_info.firstname,
+                "family_name": user_info.lastname,
+                "picture": user_info.picture
+            }
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally get user')
+            conn.release();
+        }
     }
 }
 

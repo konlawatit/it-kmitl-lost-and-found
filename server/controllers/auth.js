@@ -8,7 +8,7 @@ const {
 const querySqlModel = require('../model/querySql')
 const querySql = new querySqlModel()
 
-controller.post('/login', (req, res) => {
+controller.post('/login', async (req, res) => {
     try {
         let CLIENT_ID = '869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com'
         let token = req.body.idtoken
@@ -25,49 +25,33 @@ controller.post('/login', (req, res) => {
             const userid = payload['sub'];
             console.log(payload)
 
-            querySql.existsUser('USER', 'user_id', payload.email.split('@')[0]).then(exists => {
-                if (exists.exists == 1) {
-                    querySql.getUser(payload.email.split('@')[0]).then(result => {
-                        res.status(200).send({
-                            statusCode: '200',
-                            statusText: 'Request Success',
-                            error: false,
-                            messge: 'login successful',
-                            data: result
-                        });
-                    })
-                    
-                } else {
-                    let sqlPayload = [
-                        [payload.email.split('@')[0], payload.name, payload.given_name, payload.family_name,payload.email, payload.picture]
-                    ]
-                    querySql.createUser(sqlPayload).then(result => {
-                        res.status(200).send({
-                            statusCode: '200',
-                            statusText: 'Request Success',
-                            error: false,
-                            messge: 'New user, login successful',
-                            data: payload,
-                        });
-                    }).catch(err => {
-                        res.status(400).send({
-                            statusCode: '400',
-                            statusText: 'Bad Request',
-                            error: true,
-                            message: 'user invalid'
-                        })
-                    })
-                }
-            }).catch((err) => {
-                res.status(400).send({
-                    statusCode: '400',
-                    statusText: 'Bad Request',
-                    error: true,
-                    message: 'user invalid'
-                })
-            })
+            if ((await querySql.exists('USER', 'user_id', payload.email.split('@')[0] + 2)).exists) {
+                let user_info = await querySql.getUser(payload.email.split('@')[0]);
+                res.status(200).send({
+                    statusCode: '200',
+                    statusText: 'Request Success',
+                    error: false,
+                    messge: 'login successful',
+                    data: user_info
+                });
+            } else {
+                let sqlPayload = [
+                    [payload.email.split('@')[0] + 2, payload.name, payload.given_name, payload.family_name, payload.email, payload.picture]
+                ]
+                await querySql.createUser(sqlPayload);
+                console.log('weeeeee')
+                res.status(200).send({
+                    statusCode: '200',
+                    statusText: 'Request Success',
+                    error: false,
+                    messge: 'New user, login successful',
+                    data: payload,
+                });
+            }
+
             // If request specified a G Suite domain:
             // const domain = payload['hd'];
+            //res.send('success')
         }
         verify().catch(e => {
             console.log(e)

@@ -1,13 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
+const querySqlModel = require('../model/querySql')
+const querySql = new querySqlModel()
+
 //const db = require('../database/mysql');
 
-router.get('/test', (req, res) => {
+router.get('/test', async (req, res,) => {
     try {
-        console.log('Mockup Testing')
-        res.status(200).send('Mockup Testing')
+        let test = await querySql.exists('USER', 'user_id', '62070007');
+        console.log('main', test)
+        //console.log('auth', name)
+        res.status(200).send({'info': test})
     } catch (err) {
+        console.log(err)
         res.status(404).send(err)
     }
 })
