@@ -1,6 +1,6 @@
 const express = require('express');
 const controller = express.Router();
-const db = require('../database/mysql')
+
 const {
     OAuth2Client
 } = require('google-auth-library');
@@ -25,7 +25,7 @@ controller.post('/login', async (req, res) => {
             const userid = payload['sub'];
             console.log(payload)
 
-            if ((await querySql.exists('USER', 'user_id', payload.email.split('@')[0] + 2)).exists) {
+            if ((await querySql.exists('USER', 'user_id', payload.email.split('@')[0])).exists) {
                 let user_info = await querySql.getUser(payload.email.split('@')[0]);
                 res.status(200).send({
                     statusCode: '200',
@@ -36,7 +36,7 @@ controller.post('/login', async (req, res) => {
                 });
             } else {
                 let sqlPayload = [
-                    [payload.email.split('@')[0] + 2, payload.name, payload.given_name, payload.family_name, payload.email, payload.picture]
+                    [payload.email.split('@')[0], payload.name, payload.given_name, payload.family_name, payload.email, payload.picture]
                 ]
                 await querySql.createUser(sqlPayload);
                 console.log('weeeeee')

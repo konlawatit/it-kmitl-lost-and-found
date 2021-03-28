@@ -23,7 +23,7 @@ class QuerySql {
             conn.release();
         }
     }
-    
+
     async exists(table, column, target) {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
@@ -87,6 +87,28 @@ class QuerySql {
             throw new Error(err)
         } finally {
             console.log('finally get user')
+            conn.release();
+        }
+    }
+    
+    async allPosts() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT * FROM INFO_POST;`
+            let posts = (await conn.query(sql))[0]
+            let result = posts.map(async data => {
+                data['user'] = await this.getUser(data.user_id)
+                return data
+            })
+            conn.commit();
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
             conn.release();
         }
     }

@@ -8,7 +8,7 @@ const querySql = new querySqlModel()
 
 router.get('/test', async (req, res,) => {
     try {
-        let test = await querySql.exists('USER', 'user_id', '62070007');
+        let test = await querySql.allPosts();
         console.log('main', test)
         //console.log('auth', name)
         res.status(200).send({'info': test})

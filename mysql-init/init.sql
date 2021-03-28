@@ -32,15 +32,23 @@ CREATE TABLE USER (
     picture text
 );
 
-CREATE TABLE USER2 (
-    user_id int(10) primary key,
-    user_name varchar(255),
-    firstname varchar(255),
-    lastname varchar(255),
-    birthday varchar(255),
-    age int(10),
-    phone_number char(10),
-    role ENUM('a', 'b'),
-    merit int(10),
-    type ENUM('personnel', 'student')
-);
+CREATE TABLE INFO_POST (
+    post_id int(10) auto_increment primary key,
+    `user_id` int(10),
+    `topic` varchar(255),
+    category_post ENUM('found', 'lost'),
+    post_desc text,
+    `status` boolean,
+    place varchar(255),
+    post_date date, 
+    post_time datetime,
+    picture text 
+) CHARACTER SET 'utf8' COLLATE 'utf8_icelandic_ci';
+
+INSERT INTO INFO_POST(user_id, topic, post_desc, post_date, picture) VALUES('62070007', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28', 'https://scontent.fbkk7-2.fna.fbcdn.net/v/t1.15752-9/166327698_776500569906547_6614718348313859894_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeElIe43co5I27xD-vlilj6GJqXI3E_8jPUmpcjcT_yM9fj6xVIaGkaXpsluV2GPMaHz-LFR_bt5zxXMUzdPpENO&_nc_ohc=pj_yFhtqvIUAX-PrYeG&_nc_ht=scontent.fbkk7-2.fna&oh=7b8f83b8d71e07466221b7b3285a553f&oe=6084B37D');
+INSERT INTO INFO_POST(user_id, topic, post_desc, post_date, picture) VALUES('62070007', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28', 'https://scontent.fbkk7-3.fna.fbcdn.net/v/t1.15752-9/165827485_159358352623499_4855381441308277690_n.jpg?_nc_cat=107&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeG5GP9dDHp9F-R8uGmTE3ZlWCQUuLoXpXFYJBS4uhelcfpk-a1vm7ebx6Gw5bLnZSpzj4NBC6pemNtcTacvlmKo&_nc_ohc=KVmzka4Ic28AX9cg_Dl&_nc_ht=scontent.fbkk7-3.fna&oh=3813bc1f40c096bb3a8e01c615410481&oe=6088066E');
+INSERT INTO INFO_POST(user_id, topic, post_desc, post_date, picture) VALUES('62070007', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28'
+, 'https://scontent.fbkk7-2.fna.fbcdn.net/v/t1.15752-9/165280283_859141274643190_8489336105055123969_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeE0kaaNU3N1o_R0WeIT4dcI1x7pe0_wkXbXHul7T_CRdsMD99Itad3BoWYdDIeqXd3OIcXZPWxscjm-Zd8h_ihF&_nc_ohc=eN-r7TWbsfUAX8xmaj6&_nc_ht=scontent.fbkk7-2.fna&oh=f1ce50f06f3f45d70282473db571cb3e&oe=6085AD5C');
+INSERT INTO INFO_POST(user_id, topic, post_desc, post_date, picture) VALUES('62070007', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28', 'https://scontent.fbkk7-2.fna.fbcdn.net/v/t1.15752-9/165533935_896196034492239_3141671990484018006_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeGINckz0sdZe5eB_emjvg3yyJKQ7EJ8UH7IkpDsQnxQfnmItyNEsECTN893PS6TKg0H8v5w5FeiN2RWMaEPtvbC&_nc_ohc=BaVIGS_UZZoAX_QNfxW&_nc_ht=scontent.fbkk7-2.fna&oh=85cc39502e7d669b182099ef9bf5fc80&oe=6085C758');
+INSERT INTO INFO_POST(user_id, topic, post_desc, post_date, picture) VALUES('62070007', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28', 'https://scontent.fbkk7-2.fna.fbcdn.net/v/t1.15752-9/165677853_247613530405062_1490061857720354813_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeFDIQvPV8Aj_0MWkn-2HL1tE74g1uL4zaETviDW4vjNoX9sSpcNPtfAbaezkEDaHWbWXAM3uwPSmuMuOJSq4swR&_nc_ohc=XapHD53ZOd0AX_C-l9r&_nc_ht=scontent.fbkk7-2.fna&oh=e05bd4101d9bf647f42be1fd2d1158b5&oe=608550E7');
+INSERT INTO INFO_POST(user_id, topic, post_desc, post_date, picture) VALUES('62070007', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28', 'https://scontent.fbkk7-3.fna.fbcdn.net/v/t1.15752-9/165885117_487149712326877_2947398921459878053_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeEni5hai0mHqkrhUK-KvSZbKayhTlPcvmkprKFOU9y-aZ4A5Sw-l7fl871rr3W0fInwLlY-AgZjpphVyWx14zbZ&_nc_ohc=wCY2CLadd8sAX_nroNg&_nc_ht=scontent.fbkk7-3.fna&oh=cd8d3fa4ba9aa238c2e53a338c90dbd1&oe=60881004');

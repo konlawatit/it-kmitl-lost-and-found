@@ -6,6 +6,7 @@ const cors = require('cors'); //Use cors to solve : No 'Access-Control-Allow-Ori
 const logger = require('./middleware/logger');
 const mockup = require('./controllers/mockup');
 const auth = require('./controllers/auth');
+const post = require('./controllers/post');
 
 const app = express();
 app.use(cors());
@@ -19,7 +20,8 @@ app.use(logger);
 
 // Router
 app.use('/apis/mockup', mockup);
-app.use('/apis/auth', auth)
+app.use('/apis/auth', auth);
+app.use('/apis/post', post);
 
 
 app.get('/', (reg, res) => {
