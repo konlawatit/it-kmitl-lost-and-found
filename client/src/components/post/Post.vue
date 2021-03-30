@@ -3,10 +3,10 @@
     <div class="columns" id="body">
       <div class="column is-12">
         <h1 class="ml-2 is-size-3">
-          <strong>20 มี.ค. 2564</strong>
+          <strong>20 มีนาคม 2564</strong>
         </h1>
-        <v-expansion-panels focusable id="post" class="mt-3">
-          <v-expansion-panel v-for="(item, i) in 5" :key="i" class="mt-6">
+        <v-expansion-panels focusable id="post" class="mt-3" style="border-radius: 1rem">
+          <v-expansion-panel v-for="(post, i) in posts" :key="i" class="mt-6">
             <i
               class="fas fa-ellipsis-h m-3"
               style="float: right; font-size: 1.3rem"
@@ -20,17 +20,17 @@
                 </div>
               </div>
               <div class="column is-1 mt-6">
-                <v-avatar color="primary" size="60">TB</v-avatar>
+                <v-avatar color="primary" size="60"><img :src="post.user.picture" alt="profile"></v-avatar>
               </div>
               <div class="column is-6 mt-3 ml-6">
-                ธีรภัทร์ บุญช่วยแล้ว
+                {{post.topic}}
                 <v-chip class="ma-2" color="primary">M03</v-chip>
                 <v-chip class="ma-2" color="primary">L207</v-chip><br />
-                <p class="mt-3">ใครเจอโทรศัพท์บ้างครับ</p>
+                <p class="mt-3">{{post.post_desc}}</p>
               </div>
               <div class="column is-3 is-mobile">
                 <img
-                  src="https://cdn.vuetifyjs.com/images/john.jpg"
+                  :src="post.picture"
                   alt="John"
                 />
               </div>
@@ -87,13 +87,23 @@
 </template>
 
 <script>
+import PostService from "../../service/PostService"
+
 export default {
   name: "Post",
   data() {
     return {
       page: 1,
+      posts: []
+      
     };
   },
+  created: async function () {
+    await PostService.getAllPosts().then(result => {
+      console.log(result)
+      this.posts = result.data
+    })
+  }
 };
 </script>
 

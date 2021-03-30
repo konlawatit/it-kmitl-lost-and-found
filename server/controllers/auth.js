@@ -1,6 +1,24 @@
 const express = require('express');
 const controller = express.Router();
 
+const multer = require('multer')
+
+const path = require("path")
+
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './static/uploads') // path to save file
+  },
+  filename: function (req, file, callback) {
+    // set file name
+    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({
+  storage: storage
+})
+
 const {
     OAuth2Client
 } = require('google-auth-library');
@@ -32,7 +50,8 @@ controller.post('/login', async (req, res) => {
                     statusText: 'Request Success',
                     error: false,
                     messge: 'login successful',
-                    data: user_info
+                    data: user_info,
+                    new_user: false,
                 });
             } else {
                 let sqlPayload = [
@@ -46,6 +65,7 @@ controller.post('/login', async (req, res) => {
                     error: false,
                     messge: 'New user, login successful',
                     data: payload,
+                    new_user: true
                 });
             }
 
@@ -71,6 +91,23 @@ controller.post('/login', async (req, res) => {
             messge: 'Internal Server Error',
         })
     }
+})
+
+controller.post('/login/confirm', upload.single('file'), async (req, res) => {
+    try {
+        let {name, firstname, lastname, phone, birthday, role} = req.body
+        console.log(req.file)
+        console.log(req.body)
+        let picture = req.file.path
+        let userPayload = [name, firstname, lastname, birthday, picture]
+        
+        let result = await querySql.updateProfile(userPayload)
+        console.log(result)
+        res.send(req.file)
+      } catch (err) {
+        console.log(err)
+        res.send(err)
+      }
 })
 
 module.exports = controller;

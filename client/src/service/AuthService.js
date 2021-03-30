@@ -12,6 +12,15 @@ class AuthService {
             return err
         }
     }
+    static saveProfile(payload) {
+        try {
+            return axios.post(`${url}/login/confirm`, payload).then(result => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default AuthService;

@@ -1,6 +1,7 @@
 //require library
 const express = require('express');
 const cors = require('cors'); //Use cors to solve : No 'Access-Control-Allow-Origin'
+const path = require('path')
 
 //require file
 const logger = require('./middleware/logger');
@@ -9,6 +10,10 @@ const auth = require('./controllers/auth');
 const post = require('./controllers/post');
 
 const app = express();
+
+// Statics
+app.use("/static", express.static(path.join(__dirname, "static")))
+
 app.use(cors());
 
 //middleware when the user request will make read the body

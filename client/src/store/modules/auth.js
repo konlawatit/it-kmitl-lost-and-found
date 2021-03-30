@@ -4,7 +4,7 @@ const state = {
     fname: '',
     lname: '',
     email: '',
-    image: '',
+    image: window.API_URL + "/",
     id: '',
     role: '',
     isSigned: false

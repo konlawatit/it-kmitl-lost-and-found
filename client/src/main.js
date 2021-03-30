@@ -22,12 +22,13 @@ Vue.GoogleAuth.then(async auth2 => {
     if (auth2.isSignedIn.get()) {
         await AuthService.login(auth2.currentUser.get().getAuthResponse().id_token).then(
             (result) => {
+                console.log('main',result)
                 store.dispatch("auth/setProfile", {
                     fullname: result.data.name,
                     fname: result.data.given_name,
                     lname: result.data.family_name,
                     email: result.data.email,
-                    image: result.data.picture,
+                    image: "http://localhost:8888" + "/"+result.data.picture,
                     id: result.data.sub,
                     role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
                     isSigned: true,
@@ -42,6 +43,7 @@ Vue.GoogleAuth.then(async auth2 => {
 
 
 Vue.config.productionTip = false
+Vue.prototype.API_URL = "http://localhost:8888"
 
 new Vue({
     router,

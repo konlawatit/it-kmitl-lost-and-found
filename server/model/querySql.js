@@ -64,6 +64,25 @@ class QuerySql {
         }
     }
 
+    async updateProfile(payload) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ?, birthday = ?, picture = ? WHERE user_id = 62070007`
+            console.log('payload', payload)
+            let result = await conn.query(sql, payload)
+            conn.commit();
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`update profile rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally create user')
+            conn.release();
+        }
+    }
+
     async getUser(user) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
@@ -90,7 +109,7 @@ class QuerySql {
             conn.release();
         }
     }
-    
+
     async allPosts() {
         const conn = await pool.getConnection();
         await conn.beginTransaction()

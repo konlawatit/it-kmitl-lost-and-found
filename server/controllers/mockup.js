@@ -1,21 +1,49 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer')
+
+const path = require("path")
+
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './static/uploads') // path to save file
+  },
+  filename: function (req, file, callback) {
+    // set file name
+    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({
+  storage: storage
+})
 
 const querySqlModel = require('../model/querySql')
 const querySql = new querySqlModel()
 
 //const db = require('../database/mysql');
 
-router.get('/test', async (req, res,) => {
-    try {
-        let test = await querySql.allPosts();
-        console.log('main', test)
-        //console.log('auth', name)
-        res.status(200).send({'info': test})
-    } catch (err) {
-        console.log(err)
-        res.status(404).send(err)
-    }
+router.get('/test', async (req, res, ) => {
+  try {
+    //let test = await querySql.allPosts();
+    //console.log('main', test)
+    //console.log('auth', name)
+    console.log('path', path.resolve('static/uploads'))
+    res.status(200).send('info')
+  } catch (err) {
+    console.log(err)
+    res.status(404).send(err)
+  }
+})
+
+router.post('/upload', upload.single('file'), async (req, res) => {
+  try {
+    console.log(req.file)
+    res.send(req.file)
+  } catch (err) {
+    console.log(err)
+    res.send(err)
+  }
 })
 
 // router.post('/create', (req, res) => {
