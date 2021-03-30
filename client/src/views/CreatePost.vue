@@ -2,10 +2,11 @@
   <div>
     <Navbarcreate></Navbarcreate>
     <div class="columns mt-6 mb-6">
-      <div class="column is-1"></div>
-      <div class="column is-7">
+      <div class="column is-2"></div>
+      <div class="column is-8">
         <FormCreatePost></FormCreatePost>
       </div>
+      <div class="column is-2"></div>
     </div>
   </div>
 </template>

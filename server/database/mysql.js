@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
 const pool = mysql.createPool({ // config ค่าการเชื่อมต่อฐานข้อมูล
-   host: '127.0.0.1', //ใช้ docker ให้เปลี่ยนเป็น db
+   host: 'db', //ใช้ docker ให้เปลี่ยนเป็น db
    user: 'root',
    password: '123456',
    port: '3999', //ใช้ docker ให้ปิดตรงนี้
