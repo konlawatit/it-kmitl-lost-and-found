@@ -1,25 +1,25 @@
 version: '3.8'
 services:
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    volumes:
-      - ./server:/server
-    ports:
-      - 8888:8888
-    command:
-      sh -c 'npm i && npm start'
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    volumes:
-      - ./client:/client
-    ports: 
-      - 8080:8080
-    command:
-      sh -c 'npm i && npm run serve'
+  # server:
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./server:/server
+  #   ports:
+  #     - 8888:8888
+  #   command:
+  #     sh -c 'npm i && npm start'
+  # client:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./client:/client
+  #   ports: 
+  #     - 8080:8080
+  #   command:
+  #     sh -c 'npm i && npm run serve'
   db:
     image: mysql:8
     cap_add:

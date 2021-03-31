@@ -123,7 +123,7 @@ export default {
                     fname: result.data.given_name,
                     lname: result.data.family_name,
                     email: result.data.email,
-                    image: "http://localhost:8888" + "/"+result.data.picture,
+                    image: result.data.picture,
                     id: result.data.sub,
                     role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
                     isSigned: true,

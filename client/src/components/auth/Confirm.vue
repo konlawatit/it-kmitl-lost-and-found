@@ -106,7 +106,7 @@
       </div>
       <div class="columns is-centered mt-3">
         <button class="button is-rounded" @click="onSave()">ยืนยัน</button>
-        <button class="button is-rounded is-danger ml-6" @click="redirect('')">
+        <button class="button is-rounded is-danger ml-6" @click="cancel()">
           ยกเลิก
         </button>
       </div>
@@ -159,6 +159,38 @@ export default {
     save(date) {
       this.$refs.menu.save(date);
     },
+    cancel() {
+      this.onSignOut()
+    },
+    async onSignOut() {
+      await this.$swal
+        .fire({
+          title: "คุณต้องการยกหรือไม่?",
+          text: "คุณต้องการยกเลิกการยืนยันสมาชิกหรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            store.dispatch("auth/clearProfile");
+            window.gapi.auth2
+              .getAuthInstance()
+              .signOut()
+              .then(() => {
+                console.log("Disconnected");
+                this.redirect("");
+              });
+            // this.$swal.fire(
+            //   "ออกจากระบบ!",
+            //   "คุณได้ออกสู่ระบบเรียบร้อย",
+            //   "success"
+            // );
+          }
+        });
+    },
     selectImage(file) {
       //reader image
       if (file) {
@@ -177,13 +209,21 @@ export default {
     async onSave() {
       const fd = new FormData();
       console.log(this.saveImage);
-      fd.append("file", this.saveImage, this.saveImage.name);
+      if (this.profileImage.substring(0,4) === 'data') {
+        fd.append("file", this.saveImage, this.saveImage.name);
+      } else {
+        console.log(1111111111111)
+        fd.append("file", null)
+        fd.append('linkImage', this.profileImage)
+      }
       fd.append("name", this.name);
       fd.append("firstname", this.firstname);
       fd.append("lastname", this.lastname);
       fd.append("phone", this.phone);
       fd.append("birthday", this.birthday);
       fd.append("role", this.role);
+      fd.append("user_id", store.getters['auth/getId']);
+      fd.append("email", store.getters['auth/getEmail']);
       if (!this.role) {
         console.log(this.name);
         this.$swal.fire({
@@ -220,21 +260,35 @@ export default {
           text: "กรุณากรอกข้อมูล Birthdat date",
         });
       } else {
-        try {
-          await AuthService.saveProfile(fd).then((result) => {
-            //this.profileImage = this.API_URL + "/" + result.path;
-            store.dispatch("auth/setProfile", {
-                fullname: this.name,
-                fname: this.firstname,
-                lname: this.lastname,
-                image: this.API_URL + "/" + result.path,
-                role: this.role
+        await this.$swal
+        .fire({
+          title: "ยืนยัน",
+          text: "ยืนยัน",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await AuthService.saveProfile({fd, user_id:store.getters['auth/getId']}).then((result) => {
+                //this.profileImage = this.API_URL + "/" + result.path;
+                store.dispatch("auth/setProfile", {
+                    fullname: this.name,
+                    fname: this.firstname,
+                    lname: this.lastname,
+                    image: result.path,
+                    role: this.role
+                  });
+                this.redirect('home')
               });
-            this.redirect('home')
-          });
-        } catch (err) {
-          console.log(err);
-        }
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        });
       }
     },
   },

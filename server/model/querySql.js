@@ -48,7 +48,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `insert into USER(user_id, user_name, firstname, lastname, email, picture) values ?;`
+            let sql = `insert into USER(user_id, user_name, firstname, lastname, email, picture, birthday) values ?;`
             let result = await conn.query(sql, [payload])
             conn.commit();
             return {
@@ -68,7 +68,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ?, birthday = ?, picture = ? WHERE user_id = 62070007`
+            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ?, birthday = ?, picture = ? WHERE user_id = ?`
             console.log('payload', payload)
             let result = await conn.query(sql, payload)
             conn.commit();
@@ -98,7 +98,7 @@ class QuerySql {
                 "email": user_info.email,
                 "given_name": user_info.firstname,
                 "family_name": user_info.lastname,
-                "picture": user_info.picture
+                "picture": 'http://localhost:8888/'+user_info.picture
             }
         } catch (err) {
             await conn.rollback();

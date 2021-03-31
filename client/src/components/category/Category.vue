@@ -101,7 +101,8 @@ export default {
     };
   },
   created() {
-    console.log(this.publicPath);
+    console.log('path', this.publicPath);
+    console.log('base path', process)
   },
 };
 </script>

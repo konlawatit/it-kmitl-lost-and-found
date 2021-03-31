@@ -20,22 +20,29 @@ Vue.use(LoaderPlugin, {
 
 Vue.GoogleAuth.then(async auth2 => {
     if (auth2.isSignedIn.get()) {
-        await AuthService.login(auth2.currentUser.get().getAuthResponse().id_token).then(
+        await AuthService.login(auth2.currentUser.get().getAuthResponse().id_token, 'reload').then(
             (result) => {
-                console.log('main',result)
-                store.dispatch("auth/setProfile", {
-                    fullname: result.data.name,
-                    fname: result.data.given_name,
-                    lname: result.data.family_name,
-                    email: result.data.email,
-                    image: "http://localhost:8888" + "/"+result.data.picture,
-                    id: result.data.sub,
-                    role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
-                    isSigned: true,
-                });
-                router.push(`/home`)
+                if (!result.error) {
+                    console.log('main',result)
+                    store.dispatch("auth/setProfile", {
+                        fullname: result.data.name,
+                        fname: result.data.given_name,
+                        lname: result.data.family_name,
+                        email: result.data.email,
+                        image: result.data.picture,
+                        id: result.data.sub,
+                        role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
+                        isSigned: true,
+                    });
+                    router.push(`/home`)
+                } else {
+                    auth2.signOut()
+                    router.push(`/`)
+                }
             }
         );
+    } else {
+        router.push(`/`)
     }
     console.log(auth2.isSignedIn.get());
     console.log(auth2.currentUser.get());

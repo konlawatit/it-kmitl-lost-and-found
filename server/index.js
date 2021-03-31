@@ -23,6 +23,11 @@ app.use(express.urlencoded({ extended: false }))
 //Custom middleware
 app.use(logger);
 
+// app.use(function (req, res, next) {
+//     console.log('dddd',req.url)
+//     next()
+//   })
+
 // Router
 app.use('/apis/mockup', mockup);
 app.use('/apis/auth', auth);
