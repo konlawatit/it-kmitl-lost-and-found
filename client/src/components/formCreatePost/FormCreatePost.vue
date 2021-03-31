@@ -151,7 +151,7 @@
           </v-btn>
         </div>
         <div class="column is-2">
-          <v-btn tile color="error">
+          <v-btn tile color="error" @click="redirect('home')">
             Cancle
           </v-btn>
         </div>
@@ -173,6 +173,12 @@ export default {
       valueLocation: "",
     };
   },
+  methods:{
+    redirect(path) {
+      console.log("redirect to : ", path);
+      this.$router.push(`/${path}`);
+    },
+  }
 };
 </script>
 

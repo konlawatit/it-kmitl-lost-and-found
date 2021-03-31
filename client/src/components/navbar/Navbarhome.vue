@@ -57,7 +57,9 @@
                   {{ store.getters["auth/getEmail"] }}
                 </p>
                 <v-divider class="my-3"></v-divider>
-                <v-btn depressed rounded text> Edit Account </v-btn>
+                <v-btn depressed rounded text @click="editProfile = true">
+                  Edit Account
+                </v-btn>
                 <v-divider class="my-3"></v-divider>
                 <v-btn depressed rounded text @click="onSignOut()">
                   ออกจากระบบ
@@ -119,6 +121,78 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
+    <div class="modal" :class="{ 'is-active': editProfile }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered">Edit account</p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="editProfile = false"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns mt-1">
+            <div class="column is-2"></div>
+            <div class="column is-8">
+              <v-file-input
+                label="Change image"
+                filled
+                prepend-icon="mdi-image"
+                type="file"
+                @change="selectImage"
+              ></v-file-input>
+              <v-text-field
+                label="ชื่อจริง"
+                :rules="rules"
+                hide-details="auto"
+                value=""
+              ></v-text-field>
+              <v-text-field label="นามสกุล"></v-text-field>
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="birthday"
+                    label="Birthday date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  ref="picker"
+                  v-model="birthday"
+                  :max="new Date().toISOString().substr(0, 10)"
+                  min="1950-01-01"
+                  @change="save"
+                ></v-date-picker>
+              </v-menu>
+              <v-text-field
+                v-model="phone"
+                :counter="10"
+                label="Phone number"
+                required
+                maxlength="10"
+              ></v-text-field>
+            </div>
+            <div class="column is-2"></div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Save changes</button>
+          <button class="button" @click="editProfile = false">Cancel</button>
+        </footer>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -135,6 +209,7 @@ export default {
         width: 0,
         height: 0,
       },
+      editProfile: false,
     };
   },
   methods: {

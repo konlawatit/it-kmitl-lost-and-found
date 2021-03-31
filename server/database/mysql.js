@@ -3,7 +3,7 @@ const pool = mysql.createPool({ // config ค่าการเชื่อม�
    host: 'db', //ใช้ docker ให้เปลี่ยนเป็น db
    user: 'root',
    password: '123456',
-   port: '3999', //ใช้ docker ให้ปิดตรงนี้
+   // port: '3999', //ใช้ docker ให้ปิดตรงนี้
    database: `it_lost_and_found`,
    waitForConnections: true,
    connectionLimit: 10,
