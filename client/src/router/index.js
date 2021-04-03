@@ -7,6 +7,8 @@ import Register from '../views/Register.vue'
 import login from '../views/auth/Login.vue'
 import Confirm from '../views/auth/Confirm.vue'
 import CreatePost from '../views/CreatePost.vue'
+import MyPost from '../views/MyPost.vue'
+import Leaderboard from '../views/Leaderboard.vue'
 
 Vue.use(VueRouter)
 
@@ -35,6 +37,16 @@ const routes = [
     path: '/createpost',
     name: 'CreatePost',
     component: CreatePost
+  },
+  {
+    path: '/mypost',
+    name: 'MyPost',
+    component: MyPost
+  },
+  {
+    path: '/leaderboard',
+    name: 'Leaderboard',
+    component: Leaderboard
   }
 ]
 

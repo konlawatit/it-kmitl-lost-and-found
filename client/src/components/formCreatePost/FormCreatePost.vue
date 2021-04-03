@@ -3,7 +3,7 @@
     <div class="column is-12" id="bodyblackground">
       <div class="columns">
         <div class="column is-1 ml-6">
-          <v-avatar color="primary" size="90" class="mt-3">TB</v-avatar>
+          <v-avatar color="primary" size="90" class="mt-3"><img :src="store.getters['auth/getImage']" alt="profile" /></v-avatar>
         </div>
         <div class="column is-10">
           <div class="columns">
@@ -16,7 +16,7 @@
           </div>
           <div class="columns">
             <div class="column is-12">
-              <p class="is-size-5 ml-6">ธีรภัทร์ บุญช่วยแล้ว</p>
+              <p class="is-size-5 ml-6">{{ store.getters["auth/getFullName"] }}</p>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@
         </div>
         <div class="column is-2">
           <v-btn tile color="error" @click="redirect('home')">
-            Cancle
+            Cancel
           </v-btn>
         </div>
       </div>
@@ -161,10 +161,12 @@
 </template>
 
 <script>
+import store from "../../store/index.js";
 export default {
   name: "formCreatePost",
   data() {
     return {
+      store,
       tagsPost: ["ตามหาเจ้าของ", "ตามหาของหาย"],
       tagsTime: ["เช้า", "กลางวัน", "เย็น", "กลางคืน"],
       items: ["กระเป๋า", "เสื้อ", "แว่นตา", "Electronic"],

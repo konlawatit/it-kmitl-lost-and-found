@@ -94,8 +94,7 @@ export default {
   data() {
     return {
       page: 1,
-      posts: []
-      
+      posts: [],
     };
   },
   created: async function () {

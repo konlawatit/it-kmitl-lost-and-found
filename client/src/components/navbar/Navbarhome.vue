@@ -14,9 +14,17 @@
       ></v-app-bar-nav-icon>
       <template v-slot:extension>
         <v-tabs align-with-title v-show="window.width >= 768">
-          <v-tab>Home</v-tab>
-          <v-tab>My post</v-tab>
-          <v-tab>Leaderboard</v-tab>
+          <div class="columns ml-1">
+            <div class="column is-6" id="tabs1" @click="redirect('home')">
+              <p>Home</p>
+            </div>
+            <div class="column is-6" id="tabs2" @click="redirect('mypost')">
+              <p>My post</p>
+            </div>
+            <div class="column is-7" id="tabs3" @click="redirect('leaderboard')">
+              <p>Leaderboard</p>
+            </div>
+          </div>
         </v-tabs>
       </template>
       <v-toolbar-title class="logo">
@@ -285,5 +293,15 @@ export default {
 }
 button {
   font-family: "Kanit", sans-serif;
+}
+#tabs1, #tabs2, #tabs3{
+  font-family: "Kanit", sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+}
+#tabs1 :hover, #tabs2 :hover, #tabs3 :hover{
+  background: #61cbd2;
+  border-radius: 10rem;
+  transition-duration: 0.3s;
 }
 </style>
