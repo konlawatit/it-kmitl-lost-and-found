@@ -21,7 +21,11 @@
             <div class="column is-6" id="tabs2" @click="redirect('mypost')">
               <p>My post</p>
             </div>
-            <div class="column is-7" id="tabs3" @click="redirect('leaderboard')">
+            <div
+              class="column is-7"
+              id="tabs3"
+              @click="redirect('leaderboard')"
+            >
               <p>Leaderboard</p>
             </div>
           </div>
@@ -65,7 +69,7 @@
                   {{ store.getters["auth/getEmail"] }}
                 </p>
                 <v-divider class="my-3"></v-divider>
-                <v-btn depressed rounded text @click="editProfile = true">
+                <v-btn depressed rounded text @click="setProfile">
                   Edit Account
                 </v-btn>
                 <v-divider class="my-3"></v-divider>
@@ -141,6 +145,13 @@
           ></button>
         </header>
         <section class="modal-card-body">
+          <div class="is-flex is-justify-content-center">
+            <template>
+              <v-avatar color="black" size="100">
+                <img :src="profile.image" alt="John" />
+              </v-avatar>
+            </template>
+          </div>
           <div class="columns mt-1">
             <div class="column is-2"></div>
             <div class="column is-8">
@@ -152,15 +163,25 @@
                 @change="selectImage"
               ></v-file-input>
               <v-text-field
-                label="ชื่อจริง"
-                :rules="rules"
+                label="user name"
                 hide-details="auto"
+                v-model="profile.name"
                 value=""
               ></v-text-field>
-              <v-text-field label="นามสกุล"></v-text-field>
+              <v-text-field
+                label="ชื่อจริง"
+                hide-details="auto"
+                v-model="profile.fname"
+                value=""
+              ></v-text-field>
+              <v-text-field
+                label="นามสกุล"
+                hide-details="auto"
+                v-model="profile.lname"
+                value=""
+              ></v-text-field>
               <v-menu
                 ref="menu"
-                v-model="menu"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 offset-y
@@ -168,35 +189,38 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="birthday"
                     label="Birthday date"
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    v-model="profile.birthday"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   ref="picker"
-                  v-model="birthday"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
+                  hint="MM/DD/YYYY format"
+                  v-model="profile.birthday"
                   @change="save"
                 ></v-date-picker>
               </v-menu>
               <v-text-field
-                v-model="phone"
                 :counter="10"
                 label="Phone number"
                 required
                 maxlength="10"
+                v-model="profile.phone_number"
               ></v-text-field>
             </div>
             <div class="column is-2"></div>
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
+          <button class="button is-success" @click="saveProfile">
+            Save changes
+          </button>
           <button class="button" @click="editProfile = false">Cancel</button>
         </footer>
       </div>
@@ -206,6 +230,8 @@
 
 <script>
 import store from "../../store/index.js";
+import ProfileSerice from "../../service/ProfileService";
+import { mapGetters } from "vuex";
 export default {
   name: "Navbar",
   data() {
@@ -218,6 +244,15 @@ export default {
         height: 0,
       },
       editProfile: false,
+      profile: {
+        fname: "",
+        lname: "",
+        image: "",
+        imgaeFile: "",
+        birthday: "",
+        name: "",
+        phone_number: "",
+      },
     };
   },
   methods: {
@@ -250,6 +285,9 @@ export default {
           }
         });
     },
+    save(date) {
+      this.$refs.menu.save(date);
+    },
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
@@ -258,13 +296,151 @@ export default {
       this.window.width = window.innerWidth;
       this.window.height = window.innerHeight;
     },
+    setProfile() {
+      this.editProfile = true;
+      this.profile = {
+        email: this.getEmail,
+        fname: this.getfname,
+        lname: this.getlname,
+        image: this.getImage,
+        imageFile: false,
+        birthday: this.getBirthday,
+        phone_number: this.getPhone_number,
+        name: this.getFullName,
+      };
+    },
+    selectImage(file) {
+      //reader image
+      if (file) {
+        this.profile.imageFile = file;
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          this.profile.image = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.profile.imageFile = false;
+        this.profile.image = this.getImage;
+      }
+    },
+    async saveProfile() {
+      const fd = new FormData();
+
+      if (this.profile.image.substring(0, 4) === "data") {
+        console.log('dddddddddddddddddddd',this.profile.image);
+        fd.append("file", this.profile.imageFile);
+      } else {
+        console.log("fiel");
+        fd.append("file", null);
+        console.log(this.profile.image);
+        fd.append("linkImage", this.profile.image);
+        console.log(fd);
+      }
+      fd.append("name", this.profile.name);
+      fd.append("firstname", this.profile.fname);
+      fd.append("lastname", this.profile.lname);
+      fd.append("phone_number", this.profile.phone_number);
+      fd.append("birthday", this.profile.birthday);
+
+      if (!this.profile.name) {
+        this.profile.name = this.getFullName
+        this.$swal.fire({
+          icon: "error",
+          title: "ข้อมูลไม่ครบถ้วน",
+          text: "กรุณากรอกข้อมูล Name",
+        });
+      } else if (!this.profile.fname) {
+        this.profile.fname = this.getfname
+        this.$swal.fire({
+          icon: "error",
+          title: "ข้อมูลไม่ครบถ้วน",
+          text: "กรุณากรอกข้อมูล First name",
+        });
+      } else if (!this.profile.lname) {
+        this.profile.lname = this.getlname
+        this.$swal.fire({
+          icon: "error",
+          title: "ข้อมูลไม่ครบถ้วน",
+          text: "กรุณากรอกข้อมูล Last name",
+        });
+      } else if (!this.profile.birthday) {
+        this.profile.birthday = this.birthday
+        this.$swal.fire({
+          icon: "error",
+          title: "ข้อมูลไม่ครบถ้วน",
+          text: "กรุณากรอกข้อมูล Birthdat date",
+        });
+      } else if (!this.profile.phone_number || this.profile.phone_number.length < 10) {
+        this.$swal.fire({
+          icon: "error",
+          title: "ข้อมูลไม่ครบถ้วน",
+          text: "กรุณากรอกข้อมูล เบอร์โทรศัพท์",
+        });
+      } else {
+        await this.$swal
+          .fire({
+            title: "ยืนยัน",
+            text: "ยืนยัน",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+          })
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                console.log("user", this.getId);
+                await ProfileSerice.updateProfile({
+                  fd,
+                  user_id: store.getters["auth/getId"],
+                }).then(() => {
+                  store.dispatch("auth/updateProfile", {
+                    fullname: this.profile.name,
+                    fname: this.profile.fname,
+                    lname: this.profile.lname,
+                    image: this.profile.image,
+                    birthday: this.profile.birthday,
+                    phone_number: this.profile.phone_number,
+                  });
+                });
+                this.$swal.fire(
+                  "Success",
+                  "เปลี่ยนแปลงข้อมูลเรียบร้อย",
+                  "success"
+                );
+              } catch (err) {
+                this.$swal.fire(
+                  "Error",
+                  "การเปลี่ยนแปลงข้อมูลเกิดการผิดพลาด",
+                  "error"
+                );
+                console.log(err);
+              }
+            }
+          });
+      }
+    },
   },
   created() {
+    console.log("created", this.getEmail);
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResize);
+  },
+  computed: {
+    ...mapGetters("auth", [
+      "getfname",
+      "getEmail",
+      "getlname",
+      "getImage",
+      "getFullName",
+      "getBirthday",
+      "getPhone_number",
+      "getId",
+    ]),
   },
 };
 </script>
@@ -294,12 +470,16 @@ export default {
 button {
   font-family: "Kanit", sans-serif;
 }
-#tabs1, #tabs2, #tabs3{
+#tabs1,
+#tabs2,
+#tabs3 {
   font-family: "Kanit", sans-serif;
   font-size: 1.5rem;
   text-align: center;
 }
-#tabs1 :hover, #tabs2 :hover, #tabs3 :hover{
+#tabs1 :hover,
+#tabs2 :hover,
+#tabs3 :hover {
   background: #61cbd2;
   border-radius: 10rem;
   transition-duration: 0.3s;

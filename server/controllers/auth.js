@@ -116,39 +116,43 @@ controller.post('/login/confirm/:id', upload.single('file'), async (req, res) =>
             lastname,
             phone,
             birthday,
-            role,
-            user_id,
+            type,
             email
         } = req.body
+        let user_id = req.params.id
+        console.log(user_id)
         let picture = ''
-        //let userPayload = [name, firstname, lastname, birthday, picture, user_id]
         if (req.file) {
             picture = req.file.path
-            //let result = await querySql.updateProfile(userPayload)
-            //res.send({path: 'http://localhost:8888/'+picture})
         } else {
             const url = req.body.linkImage
             picture = `static\\uploads\\profile-${req.params.id}.png`
             const response = await fetch(url);
             const buffer = await response.buffer();
             fs.writeFile(`./static/uploads/profile-${req.params.id}.png`, buffer, async () => {
-                //let result = await querySql.updateProfile(userPayload)
-                //console.log(result)
                 console.log('finished downloading!')
-                // res.send({
-                //     path: 'http://localhost:8888/'+picture
-                // })
             });
         }
         let sqlPayload = [
-            [user_id, name, firstname, lastname, email, picture, birthday,]
+            [user_id, name, firstname, lastname, email, picture, birthday, phone, type, 0, 'normal'],
         ]
         console.log('payload', sqlPayload)
         await querySql.createUser(sqlPayload);
+        //let info = await querySql.getUser(user_id)
         console.log('create success')
-        res.send({
-            path: 'http://localhost:8888/'+picture
-        })
+        res.send({data: {
+            "sub": user_id,
+            "name": name,
+            "email": email,
+            "given_name": firstname,
+            "family_name": lastname,
+            "picture": 'http://localhost:8888/' + picture,
+            'type': type,
+            'role': 'normal',
+            'phone_number': phone,
+            'merit': 0,
+            'birthday': birthday
+        }})
 
     } catch (err) {
         console.log(err)

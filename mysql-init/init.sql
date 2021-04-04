@@ -22,12 +22,12 @@ CREATE TABLE USER (
     user_name varchar(255),
     firstname varchar(255),
     lastname varchar(255),
-    birthday date,
+    `birthday` date,
     age int(10),
     phone_number char(10),
-    role ENUM('normal', 'admin'),
+    `role` ENUM('normal', 'admin'),
     merit int(10),
-    type ENUM('personnel', 'student'),
+    `type` ENUM('personnel', 'student'),
     email varchar(255),
     picture text
 );

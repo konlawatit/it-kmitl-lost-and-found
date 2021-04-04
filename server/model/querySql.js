@@ -36,7 +36,7 @@ class QuerySql {
             }
         } catch (err) {
             await conn.rollback();
-            console.log(`rolback`)
+            console.log(`rolback exists`)
             throw new Error(err)
         } finally {
             console.log('finally exists')
@@ -48,15 +48,18 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `insert into USER(user_id, user_name, firstname, lastname, email, picture, birthday) values ?;`
+            console.log('payload2', payload)
+            let sql = "INSERT INTO USER (user_id, user_name, firstname, lastname, email, picture, birthday, phone_number, `type`, merit, `role`) VALUES ?"
             let result = await conn.query(sql, [payload])
+            //let result = await conn.query(`INSERT INTO USER (user_id) VALUES (${payload[0]})`)
+            //console.log(result)
             conn.commit();
             return {
                 result
             }
         } catch (err) {
             await conn.rollback();
-            console.log(`create user rolback`)
+            console.log(`create user rolback`, err)
             throw new Error(err)
         } finally {
             console.log('finally create user')
@@ -68,17 +71,16 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ?, birthday = ?, picture = ? WHERE user_id = ?`
-            console.log('payload', payload)
+            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let result = await conn.query(sql, payload)
             conn.commit();
             return result
         } catch (err) {
             await conn.rollback();
-            console.log(`update profile rolback`)
+            console.log(`update profile rolback`, err)
             throw new Error(err)
         } finally {
-            console.log('finally create user')
+            console.log('finally update user')
             conn.release();
         }
     }
@@ -87,9 +89,11 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT * FROM USER WHERE user_id = ${user};`
+            console.log('user ', user)
+            let sql = `SELECT *, DATE_FORMAT(birthday, '%Y-%m-%d') as birthday FROM USER WHERE user_id = ${user};`
             let result = await conn.query(sql)
             let user_info = result[0][0]
+            console.log('user info',user_info)
             conn.commit();
             return {
                 "sub": user_info.user_id,
@@ -98,11 +102,16 @@ class QuerySql {
                 "email": user_info.email,
                 "given_name": user_info.firstname,
                 "family_name": user_info.lastname,
-                "picture": 'http://localhost:8888/'+user_info.picture
+                "picture": 'http://localhost:8888/'+user_info.picture,
+                'type': user_info.type,
+                'role': user_info.role,
+                'phone_number': user_info.phone_number,
+                'merit': user_info.merit,
+                'birthday': user_info.birthday
             }
         } catch (err) {
             await conn.rollback();
-            console.log(`rolback`)
+            console.log(`rolback get user`, err)
             throw new Error(err)
         } finally {
             console.log('finally get user')

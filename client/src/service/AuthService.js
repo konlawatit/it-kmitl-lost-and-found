@@ -3,20 +3,21 @@ import axios from 'axios';
 const url = 'http://localhost:8888/apis/auth';
 
 class AuthService {
-    static login(payload, state) {
+    static async login(payload, state) {
         try {
-            return axios.post(`${url}/login`, {"idtoken": payload, "state": state}).then((result) => {
-                return result.data
-            })
+            let res = await axios.post(`${url}/login`, {"idtoken": payload, "state": state})
+            console.log(res.data)
+            return res.data
         } catch (err) {
             return err
         }
     }
-    static saveProfile(payload) {
+    static async saveProfile(payload) {
         try {
-            return axios.post(`${url}/login/confirm/${payload.user_id}`, payload.fd).then(result => {
-                return result.data
-            })
+
+            let res = await axios.post(`${url}/login/confirm/${payload.user_id}`, payload.fd)
+            console.log('regois',res.data)
+            return res.data
         } catch (err) {
             return err
         }

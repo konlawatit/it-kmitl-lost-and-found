@@ -31,10 +31,14 @@ Vue.GoogleAuth.then(async auth2 => {
                         email: result.data.email,
                         image: result.data.picture,
                         id: result.data.sub,
-                        role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
+                        role: result.data.role,
+                        type: result.data.type,
+                        phone_number: result.data.phone_number,
+                        birthday: result.data.birthday,
+                        merit: result.data.merit,
                         isSigned: true,
                     });
-                    router.push(`/home`)
+                    if (router.app.$route.fullPath !== '/home') router.push(`/home`)
                 } else {
                     auth2.signOut()
                     router.push(`/`)

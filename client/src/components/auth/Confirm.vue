@@ -23,10 +23,10 @@
       <div class="is-flex is-justify-content-center">
         <v-select
           size="20"
-          v-model="role"
-          :items="itemsRole"
-          :rules="roleRules"
-          label="Role"
+          v-model="type"
+          :items="itemstype"
+          :rules="typeRules"
+          label="type"
         ></v-select>
       </div>
 
@@ -143,9 +143,9 @@ export default {
       show2: false,
       birthday: null,
       menu: false,
-      role: "",
-      roleRules: [(v) => !!v || "Role is required"],
-      itemsRole: ["Student", "Personel"],
+      type: "",
+      typeRules: [(v) => !!v || "type is required"],
+      itemstype: ["student", "personnel"],
       phone: "",
       profileImage: store.getters["auth/getImage"],
       saveImage: store.getters["auth/getImage"],
@@ -160,7 +160,7 @@ export default {
       this.$refs.menu.save(date);
     },
     cancel() {
-      this.onSignOut()
+      this.onSignOut();
     },
     async onSignOut() {
       await this.$swal
@@ -197,7 +197,6 @@ export default {
         this.saveImage = file;
         let reader = new FileReader();
         reader.onload = (e) => {
-          //console.log({'e':e.target.result});
           this.profileImage = e.target.result;
         };
         reader.readAsDataURL(file);
@@ -209,27 +208,27 @@ export default {
     async onSave() {
       const fd = new FormData();
       console.log(this.saveImage);
-      if (this.profileImage.substring(0,4) === 'data') {
+      if (this.profileImage.substring(0, 4) === "data") {
         fd.append("file", this.saveImage, this.saveImage.name);
       } else {
-        console.log(1111111111111)
-        fd.append("file", null)
-        fd.append('linkImage', this.profileImage)
+        console.log(1111111111111);
+        fd.append("file", null);
+        fd.append("linkImage", this.profileImage);
       }
       fd.append("name", this.name);
       fd.append("firstname", this.firstname);
       fd.append("lastname", this.lastname);
       fd.append("phone", this.phone);
       fd.append("birthday", this.birthday);
-      fd.append("role", this.role);
-      fd.append("user_id", store.getters['auth/getId']);
-      fd.append("email", store.getters['auth/getEmail']);
-      if (!this.role) {
+      fd.append("type", this.type);
+      fd.append("user_id", store.getters["auth/getId"]);
+      fd.append("email", store.getters["auth/getEmail"]);
+      if (!this.type) {
         console.log(this.name);
         this.$swal.fire({
           icon: "error",
           title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล Role",
+          text: "กรุณากรอกข้อมูล type",
         });
       } else if (!this.name) {
         console.log(this.name);
@@ -259,36 +258,65 @@ export default {
           title: "ข้อมูลไม่ครบถ้วน",
           text: "กรุณากรอกข้อมูล Birthdat date",
         });
+      } else if (
+        !this.phone ||
+        this.phone.length < 10
+      ) {
+        this.$swal.fire({
+          icon: "error",
+          title: "ข้อมูลไม่ครบถ้วน",
+          text: "กรุณากรอกข้อมูล เบอร์โทรศัพท์",
+        });
       } else {
         await this.$swal
-        .fire({
-          title: "ยืนยัน",
-          text: "ยืนยัน",
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes",
-        })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              await AuthService.saveProfile({fd, user_id:store.getters['auth/getId']}).then((result) => {
-                //this.profileImage = this.API_URL + "/" + result.path;
-                store.dispatch("auth/setProfile", {
-                    fullname: this.name,
-                    fname: this.firstname,
-                    lname: this.lastname,
-                    image: result.path,
-                    role: this.role
+          .fire({
+            title: "ยืนยัน",
+            text: "ยืนยัน",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+          })
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                await AuthService.saveProfile({
+                  fd,
+                  user_id: store.getters["auth/getId"],
+                }).then((result) => {
+                  //this.profileImage = this.API_URL + "/" + result.path;
+                  console.log("er", result);
+                  store.dispatch("auth/setProfile", {
+                    fullname: result.data.name,
+                    fname: result.data.given_name,
+                    lname: result.data.family_name,
+                    email: result.data.email,
+                    image: result.data.picture,
+                    id: result.data.sub,
+                    role: result.data.role,
+                    type: result.data.type,
+                    phone_number: result.data.phone_number,
+                    birthday: result.data.birthday,
+                    isSigned: true,
                   });
-                this.redirect('home')
-              });
-            } catch (err) {
-              console.log(err);
+                  console.log("redirect");
+                  this.redirect("home");
+                });
+              } catch (err) {
+                console.log(err);
+                store.dispatch("auth/clearProfile");
+                window.gapi.auth2
+                  .getAuthInstance()
+                  .signOut()
+                  .then(() => {
+                    console.log("Disconnected");
+                    this.redirect("");
+                  });
+                console.log(err);
+              }
             }
-          }
-        });
+          });
       }
     },
   },

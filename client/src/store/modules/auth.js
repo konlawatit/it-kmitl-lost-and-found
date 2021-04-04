@@ -7,7 +7,11 @@ const state = {
     image: '',
     id: '',
     role: '',
-    isSigned: false
+    isSigned: false,
+    type: '',
+    phone_number: '',
+    birthday: '',
+    merit: ''
 }
 
 const getters = {
@@ -34,6 +38,18 @@ const getters = {
     },
     getSigned: (state) => {
         return state.isSigned
+    },
+    getType: (state) => {
+        return state.type
+    },
+    getPhone_number: (state) => {
+        return state.phone_number
+    },
+    getBirthday: (state) => {
+        return state.birthday
+    },
+    getMerit: (state) => {
+        return state.merit
     }
 
 }
@@ -47,7 +63,11 @@ const mutations = {
         state.image = payload.image
         state.id = payload.id
         state.role = payload.role
-        state.isSigned = payload.isSigned
+        state.isSigned = payload.isSigned,
+        state.type = payload.type,
+        state.phone_number = payload.phone_number,
+        state.birthday = payload.birthday,
+        state.merit = payload.merit
     },
     clearProfile: (state) => {
         state.fullname = ''
@@ -57,7 +77,19 @@ const mutations = {
         state.image = ''
         state.id = ''
         state.role = ''
-        state.isSigned = false
+        state.isSigned = false,
+        state.type = '',
+        state.phone_number = '',
+        state.birthday = '',
+        state.merit = ''
+    },
+    updateProfile: (state, payload) => {
+        state.fullname = payload.fullname
+        state.fname = payload.fname,
+        state.lname = payload.lname,
+        state.image = payload.image,
+        state.phone_number = payload.phone_number
+        state.birthday = payload.birthday
     }
 
 }
@@ -68,6 +100,9 @@ const actions = {
     },
     clearProfile: (context) => {
         context.commit('clearProfile')
+    },
+    updateProfile: (context, payload) => {
+        context.commit('updateProfile', payload)
     }
 }
 

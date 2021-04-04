@@ -8,6 +8,7 @@ const logger = require('./middleware/logger');
 const mockup = require('./controllers/mockup');
 const auth = require('./controllers/auth');
 const post = require('./controllers/post');
+const profile = require('./controllers/profile')
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(logger);
 app.use('/apis/mockup', mockup);
 app.use('/apis/auth', auth);
 app.use('/apis/post', post);
+app.use('/apis/profile', profile)
 
 
 app.get('/', (reg, res) => {

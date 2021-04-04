@@ -48,12 +48,16 @@
     <div class="columns is-centered mt-4 is-mobile">
       <div class="field">
         <p class="control">
-          <button @click="onSignIn()" class="button is-rounded">เข้าสู่ระบบ</button>
+          <button @click="onSignIn()" class="button is-rounded">
+            เข้าสู่ระบบ
+          </button>
         </p>
       </div>
       <div class="field">
         <p class="control">
-          <button class="button is-rounded ml-6" @click="redirect('register')">สมัครสมาชิก</button>
+          <button class="button is-rounded ml-6" @click="redirect('register')">
+            สมัครสมาชิก
+          </button>
         </p>
       </div>
     </div>
@@ -103,7 +107,7 @@ export default {
       } else {
         await AuthService.login(googleUser.getAuthResponse().id_token).then(
           (result) => {
-            if (result.statusCode == '200' && result.new_user) {
+            if (result.statusCode == "200" && result.new_user) {
               store.dispatch("auth/setProfile", {
                 fullname: result.data.name,
                 fname: result.data.given_name,
@@ -111,46 +115,46 @@ export default {
                 email: result.data.email,
                 image: result.data.picture,
                 id: result.data.sub,
-                role:
-                  result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
                 isSigned: true,
               });
               this.redirect("login/confirm");
-            }
-            else if (result.statusCode == '200') {
+            } else if (result.statusCode == "200") {
               store.dispatch("auth/setProfile", {
-                    fullname: result.data.name,
-                    fname: result.data.given_name,
-                    lname: result.data.family_name,
-                    email: result.data.email,
-                    image: result.data.picture,
-                    id: result.data.sub,
-                    role: result.data.email.split("@")[0][3] === "7" ? "student" : "personnel", //ทำไว้ก่อน เดี๋ยวค่อยคิดอีกทีว่าควรแยกยังไง5555
-                    isSigned: true,
-                });
+                fullname: result.data.name,
+                fname: result.data.given_name,
+                lname: result.data.family_name,
+                email: result.data.email,
+                image: result.data.picture,
+                id: result.data.sub,
+                role: result.data.role,
+                type: result.data.type,
+                phone_number: result.data.phone_number,
+                birthday: result.data.birthday,
+                isSigned: true,
+              });
               this.redirect("home");
-            }
-            else if (result.statusCode == '400') {
+            } else if (result.statusCode == "400") {
               this.$swal.fire({
                 icon: "error",
                 title: "ไม่สามารถเข้าระบบได้",
                 text: "กรุณาลองใหม่อีกครั้ง",
-                });
+              });
               this.onSignOut();
             } else {
               this.$swal.fire({
                 icon: "error",
                 title: "ระบบผิดพลาด",
                 text: "กรุณาลองใหม่อีกครั้ง",
-                });
+              });
             }
           }
         );
       }
     },
     onFailure() {
-    //   alert("Login Fail");
-    //   this.onSignOut();
+      //   alert("Login Fail");
+      //   this.onSignOut();
+      console.log("google alert fail");
     },
     redirect(path) {
       console.log("redirect to : ", path);
@@ -198,7 +202,8 @@ button {
   font-family: "Kanit", sans-serif;
   color: #00878f;
 }
-h1, h2{
+h1,
+h2 {
   text-align: center;
   text-shadow: 1px 1.5px 3px #000000;
 }
