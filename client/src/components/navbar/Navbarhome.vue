@@ -61,7 +61,7 @@
           <v-card>
             <v-list-item-content class="justify-center">
               <div class="mx-auto text-center">
-                <v-avatar color="brown mb-2">
+                <v-avatar color="brown mb-2" @click="redirect('myprofile')">
                   <img :src="store.getters['auth/getImage']" alt="profile" />
                 </v-avatar>
                 <h3>{{ store.getters["auth/getFullName"] }}</h3>
@@ -103,21 +103,21 @@
             }}</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="redirect('home')">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="redirect('mypost')">
             <v-list-item-icon>
               <v-icon>fas fa-edit</v-icon>
             </v-list-item-icon>
             <v-list-item-title>My post</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="redirect('leaderboard')">
             <v-list-item-icon>
               <v-icon>fas fa-list</v-icon>
             </v-list-item-icon>

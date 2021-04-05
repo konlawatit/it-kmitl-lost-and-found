@@ -9,6 +9,7 @@ import Confirm from '../views/auth/Confirm.vue'
 import CreatePost from '../views/CreatePost.vue'
 import MyPost from '../views/MyPost.vue'
 import Leaderboard from '../views/Leaderboard.vue'
+import MyProfile from '../views/MyProfile.vue'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,11 @@ const routes = [
     path: '/leaderboard',
     name: 'Leaderboard',
     component: Leaderboard
+  },
+  {
+    path: '/myprofile',
+    name: 'MyProfile',
+    component: MyProfile
   }
 ]
 
