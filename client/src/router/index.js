@@ -10,6 +10,7 @@ import CreatePost from '../views/CreatePost.vue'
 import MyPost from '../views/MyPost.vue'
 import Leaderboard from '../views/Leaderboard.vue'
 import MyProfile from '../views/MyProfile.vue'
+import ChatRoom from '../views/ChatRoom.vue'
 
 Vue.use(VueRouter)
 
@@ -53,6 +54,11 @@ const routes = [
     path: '/myprofile',
     name: 'MyProfile',
     component: MyProfile
+  },
+  {
+    path: '/chatroom',
+    name: 'ChatRoome',
+    component: ChatRoom
   }
 ]
 

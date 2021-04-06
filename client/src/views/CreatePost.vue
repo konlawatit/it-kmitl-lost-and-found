@@ -8,6 +8,7 @@
       </div>
       <div class="column is-2"></div>
     </div>
+    <IconChat></IconChat>
   </div>
 </template>
 
@@ -15,11 +16,13 @@
 // @ is an alias to /src
 import Navbarcreate from "../components/navbar/Navbarcreate";
 import FormCreatePost from "../components/formCreatePost/FormCreatePost"
+import IconChat from "../components/IconChat"
 export default {
   name: "CreatePost",
   components: {
     Navbarcreate,
-    FormCreatePost
+    FormCreatePost,
+    IconChat
   },
 };
 </script>

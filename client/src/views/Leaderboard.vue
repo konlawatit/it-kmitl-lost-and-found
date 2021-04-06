@@ -16,6 +16,7 @@
       </div>
       <div class="column is-2"></div>
     </div>
+    <IconChat></IconChat>
   </div>
 </template>
 
@@ -23,11 +24,13 @@
 // @ is an alias to /src
 import Navbarhome from "../components/navbar/Navbarhome";
 import Graphs from "../components/graphs/Graphs";
+import IconChat from "../components/IconChat"
 export default {
   name: "CreatePost",
   components: {
     Navbarhome,
     Graphs,
+    IconChat
   },
 };
 </script>

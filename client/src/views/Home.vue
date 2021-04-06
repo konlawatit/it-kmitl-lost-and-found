@@ -18,6 +18,7 @@
         <PreviousPost></PreviousPost>
       </div>
     </div>
+    <IconChat></IconChat>
   </div>
 </template>
 
@@ -28,6 +29,7 @@ import Category from "../components/category/Category"
 import Filterpost from "../components/filterpost/Filterpost"
 import Post from "../components/post/Post"
 import PreviousPost from "../components/post/PreviousPost"
+import IconChat from "../components/IconChat"
 export default {
   name: "Home",
   components: {
@@ -35,7 +37,8 @@ export default {
     Category,
     Filterpost,
     Post,
-    PreviousPost
+    PreviousPost,
+    IconChat
   },
 };
 </script>
