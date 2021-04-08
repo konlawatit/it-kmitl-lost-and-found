@@ -140,6 +140,26 @@ class QuerySql {
             conn.release();
         }
     }
+
+    async createPost() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = "INSERT INTO INFO_POST (user_id) VALUES(?)"
+            let result = await conn.query(sql, [62070096])
+            conn.commit()
+            return {
+                result
+            }
+        } catch (err) {
+            await conn.rollback();
+            console.log(`create post rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally create post')
+            conn.release();
+        }
+    }
 }
 
 module.exports = QuerySql

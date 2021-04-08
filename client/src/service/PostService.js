@@ -12,6 +12,15 @@ class PostService {
             return err
         }
     }
+    static createPost() {
+        try {
+            return axios.post(`${url}/createpost`).then((result) =>{
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default PostService;

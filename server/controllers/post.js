@@ -32,4 +32,28 @@ controller.get('/allposts', async (req, res) => {
     }
 })
 
+controller.post('/createpost', async (req, res) => {
+    try {
+        await querySql.createPost();
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'create posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally createpost')
+    }
+})
+
 module.exports = controller;

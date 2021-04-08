@@ -146,7 +146,7 @@
       <div class="columns mb-4">
         <div class="column is-8"></div>
         <div class="column is-2">
-          <v-btn tile color="success">
+          <v-btn tile color="success" @click="createPost()">
             Create
           </v-btn>
         </div>
@@ -161,6 +161,7 @@
 </template>
 
 <script>
+import PostService from '../../service/PostService.js';
 import store from "../../store/index.js";
 export default {
   name: "formCreatePost",
@@ -179,6 +180,31 @@ export default {
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
+    },
+    async createPost(){
+      await this.$swal
+          .fire({
+            title: "ยืนยัน",
+            text: "ยืนยัน",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+          })
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                await PostService.createPost().then((result) => {
+                  //this.profileImage = this.API_URL + "/" + result.path;
+                  console.log(result)
+                });
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          });
+      this.redirect("home");
     },
   }
 };
