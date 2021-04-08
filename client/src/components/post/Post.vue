@@ -5,7 +5,12 @@
         <h1 class="ml-2 is-size-3">
           <strong>20 มีนาคม 2564</strong>
         </h1>
-        <v-expansion-panels focusable id="post" class="mt-3" style="border-radius: 1rem">
+        <v-expansion-panels
+          focusable
+          id="post"
+          class="mt-3"
+          style="border-radius: 1rem"
+        >
           <v-expansion-panel v-for="(post, i) in posts" :key="i" class="mt-6">
             <i
               class="fas fa-ellipsis-h m-3"
@@ -13,26 +18,49 @@
             ></i>
             <div class="columns mt-6 is-mobile">
               <div class="column is-2">
-                <div class="ml-3 mt-6 is-size-3">12:59
+                <div class="ml-3 mt-6 is-size-3">
+                  12:59
                   <v-chip class="ma-2" color="pink" label text-color="white">
                     Tags
                   </v-chip>
                 </div>
               </div>
               <div class="column is-1 mt-6">
-                <v-avatar color="primary" size="60"><img :src="post.user.picture" alt="profile"></v-avatar>
+                <v-menu bottom min-width="200px" rounded offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon x-large v-on="on">
+                      <v-avatar color="primary" size="60"
+                        ><img :src="post.user.picture" alt="profile"
+                      /></v-avatar>
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-list-item-content class="justify-center">
+                      <div class="mx-auto text-center">
+                        <v-avatar color="brown mb-2">
+                          <img :src="post.user.picture" alt="profile" />
+                        </v-avatar>
+                        <h3 class="mt-1">{{ post.user.name }}</h3>
+                        <h3 class="mt-1">
+                          {{ post.user.given_name }} {{ post.user.family_name }}
+                        </h3>
+                        <p class="caption mt-1">
+                          {{ post.user.email }}
+                        </p>
+                       
+                      </div>
+                    </v-list-item-content>
+                  </v-card>
+                </v-menu>
               </div>
               <div class="column is-6 mt-3 ml-6">
-                {{post.topic}}
+                {{ post.topic }}
                 <v-chip class="ma-2" color="primary">M03</v-chip>
                 <v-chip class="ma-2" color="primary">L207</v-chip><br />
-                <p class="mt-3">{{post.post_desc}}</p>
+                <p class="mt-3">{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
-                <img
-                  :src="post.picture"
-                  alt="John"
-                />
+                <img :src="post.picture" alt="John" />
               </div>
             </div>
             <v-expansion-panel-header> Comments </v-expansion-panel-header>
@@ -87,21 +115,23 @@
 </template>
 
 <script>
-import PostService from "../../service/PostService"
-
+import PostService from "../../service/PostService";
+import store from "../../store/index.js";
 export default {
   name: "Post",
   data() {
     return {
+      store,
       page: 1,
       posts: [],
     };
   },
   created: async function () {
-    await PostService.getAllPosts().then(result => {
-      this.posts = result.data
-    })
-  }
+    await PostService.getAllPosts().then((result) => {
+      console.log(result);
+      this.posts = result.data;
+    });
+  },
 };
 </script>
 
