@@ -99,7 +99,6 @@ export default {
   },
   created: async function () {
     await PostService.getAllPosts().then(result => {
-      console.log(result)
       this.posts = result.data
     })
   }
