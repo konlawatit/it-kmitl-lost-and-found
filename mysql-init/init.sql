@@ -131,7 +131,7 @@ CREATE TABLE CATAGORY_ITEM_INFO_POST (
     REFERENCES INFO_POST (post_id)
 );
 
-INSERT INTO USER (user_id, user_name, firstname, lastname, birthday, email, picture) VALUES('62070077', 'test007', 'Konlawat', 'Hutsaithong', '2000-04-17', '62070007@it.kmitl.ac.th', 'static\\uploads\\profile-62070007.jpg');
+INSERT INTO USER (user_id, user_name, firstname, lastname, birthday, email, picture) VALUES('62070077', 'test007', 'Konlawat', 'Hutsaithong', '2000-04-17', '62070007@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-62070007.jpg');
 
 INSERT INTO INFO_POST(user_id, topic, post_desc, post_time, picture) VALUES('62070077', 'Tam ha nong Eng teon pom!!!', 'Hi!', '2021-03-28 10:10:10', 'https://scontent.fbkk7-2.fna.fbcdn.net/v/t1.15752-9/166327698_776500569906547_6614718348313859894_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeElIe43co5I27xD-vlilj6GJqXI3E_8jPUmpcjcT_yM9fj6xVIaGkaXpsluV2GPMaHz-LFR_bt5zxXMUzdPpENO&_nc_ohc=pj_yFhtqvIUAX-PrYeG&_nc_ht=scontent.fbkk7-2.fna&oh=7b8f83b8d71e07466221b7b3285a553f&oe=6084B37D');
 INSERT INTO INFO_POST(user_id, topic, post_desc, post_time, picture) VALUES('62070077', 'Tam ha nong Eng teon pom!!!', 'Hi! ทดสอบ', '2021-03-28 10:10:10', 'https://scontent.fbkk7-3.fna.fbcdn.net/v/t1.15752-9/165827485_159358352623499_4855381441308277690_n.jpg?_nc_cat=107&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeG5GP9dDHp9F-R8uGmTE3ZlWCQUuLoXpXFYJBS4uhelcfpk-a1vm7ebx6Gw5bLnZSpzj4NBC6pemNtcTacvlmKo&_nc_ohc=KVmzka4Ic28AX9cg_Dl&_nc_ht=scontent.fbkk7-3.fna&oh=3813bc1f40c096bb3a8e01c615410481&oe=6088066E');

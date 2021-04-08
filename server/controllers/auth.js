@@ -13,7 +13,7 @@ const querySql = new querySqlModel()
 
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, './static/uploads') // path to save file
+        callback(null, './static/uploads/profile') // path to save file
     },
     filename: function (req, file, callback) {
         // set file name
@@ -126,10 +126,10 @@ controller.post('/login/confirm/:id', upload.single('file'), async (req, res) =>
             picture = req.file.path
         } else {
             const url = req.body.linkImage
-            picture = `static\\uploads\\profile-${req.params.id}.png`
+            picture = `static\\uploads\\profile\\profile-${req.params.id}.png`
             const response = await fetch(url);
             const buffer = await response.buffer();
-            fs.writeFile(`./static/uploads/profile-${req.params.id}.png`, buffer, async () => {
+            fs.writeFile(`./static/uploads/profile/profile-${req.params.id}.png`, buffer, async () => {
                 console.log('finished downloading!')
             });
         }
