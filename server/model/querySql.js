@@ -160,6 +160,25 @@ class QuerySql {
             conn.release();
         }
     }
+
+    async createComment(payload) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            console.log(payload)
+            let sql = "INSERT INTO INFO_COMMENT(comment_desc, INFO_POST_post_id, USER_user_id, comment_time) VALUES(?)"
+            let result = await conn.query(sql, [payload])
+            conn.commit()
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`create comment rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally create comment')
+            conn.release();
+        }
+    }
 }
 
 module.exports = QuerySql

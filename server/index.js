@@ -9,6 +9,7 @@ const mockup = require('./controllers/mockup');
 const auth = require('./controllers/auth');
 const post = require('./controllers/post');
 const profile = require('./controllers/profile')
+const comment = require('./controllers/comment')
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/apis/mockup', mockup);
 app.use('/apis/auth', auth);
 app.use('/apis/post', post);
 app.use('/apis/profile', profile)
+app.use('/apis/comment', comment)
 
 
 app.get('/', (reg, res) => {

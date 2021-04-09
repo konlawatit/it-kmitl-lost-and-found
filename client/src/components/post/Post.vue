@@ -63,7 +63,7 @@
                 <img :src="post.picture" alt="John" />
               </div>
             </div>
-            <v-expansion-panel-header> Comments </v-expansion-panel-header>
+            <v-expansion-panel-header @click="getComments(post.post_id)"> Comments</v-expansion-panel-header>
             <v-expansion-panel-content class="mt-6">
               <div class="columns">
                 <div class="column is-1">
@@ -91,10 +91,11 @@
                     type="text"
                     placeholder="comments"
                     class="input is-black"
+                    v-model='commentText'
                   />
                 </div>
                 <div class="column is-2">
-                  <button class="button is-info">เพิ่มความคิดเห็น</button>
+                  <button @click="addComment(post.post_id)" class="button is-info">เพิ่มความคิดเห็น</button>
                 </div>
               </div>
             </v-expansion-panel-content>
@@ -116,6 +117,7 @@
 
 <script>
 import PostService from "../../service/PostService";
+import CommentService from "../../service/CommentService"
 import store from "../../store/index.js";
 export default {
   name: "Post",
@@ -124,6 +126,8 @@ export default {
       store,
       page: 1,
       posts: [],
+      commentText: "",
+      comments: []
     };
   },
   created: async function () {
@@ -132,6 +136,18 @@ export default {
       this.posts = result.data;
     });
   },
+  methods: {
+    getComments(postId) {
+      //get all comments on each post
+      console.log(postId)
+      //alert('comment add'+postId)
+    },
+    async addComment(postId) {
+      await CommentService.createComment({postId, commentText: this.commentText, user_id: this.$store.getters['auth/getId']}).then(() => {
+        this.commentText = ""
+      })
+    }
+  }
 };
 </script>
 
