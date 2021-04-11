@@ -19,7 +19,7 @@
             <div class="columns mt-6 is-mobile">
               <div class="column is-2">
                 <div class="ml-3 mt-6 is-size-3">
-                  12:59
+                  {{post.post_time}}
                   <v-chip class="ma-2" color="pink" label text-color="white">
                     Tags
                   </v-chip>
@@ -67,7 +67,6 @@
             <v-expansion-panel-content class="mt-6">
               <div class="columns" v-for="comment in comments" :key="comment.comment_no" :id="comment.comment_no">
                 <div class="column is-1">
-                  <!-- <v-avatar color="primary" size="40">TT</v-avatar> -->
                   <v-menu bottom min-width="200px" rounded offset-y>
                   <template v-slot:activator="{ on }">
                     <v-btn icon x-large v-on="on">
@@ -89,7 +88,6 @@
                         <p class="caption mt-1">
                           {{ comment.email }}
                         </p>
-                       
                       </div>
                     </v-list-item-content>
                   </v-card>

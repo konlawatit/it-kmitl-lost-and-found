@@ -124,7 +124,7 @@ class QuerySql {
         await conn.beginTransaction()
         try {
             //"SELECT *FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
-            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id`
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id`
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
