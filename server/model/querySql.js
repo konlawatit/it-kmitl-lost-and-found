@@ -123,14 +123,17 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT * FROM INFO_POST;`
-            let posts = (await conn.query(sql))[0]
-            let result = posts.map(async data => {
-                data['user'] = await this.getUser(data.user_id)
+            //"SELECT *FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id`
+            let posts = await conn.query(sql)
+            await posts[0].map(data => {
+                //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
                 return data
             })
+            console.log(posts)
             conn.commit();
-            return result
+            return posts[0]
         } catch (err) {
             await conn.rollback();
             console.log(`rolback`)
@@ -185,7 +188,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
-            let sql = "SELECT * FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
+            let sql = "SELECT *, DATE_FORMAT(comment_time, '%d/%m/%Y') as `comment_date`, DATE_FORMAT(comment_time, '%H:%i') as `comment_time` FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
             let result = await conn.query(sql)
             conn.commit();
             result = await result[0].map(data => {

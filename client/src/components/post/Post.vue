@@ -30,7 +30,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn icon x-large v-on="on">
                       <v-avatar color="primary" size="60"
-                        ><img :src="post.user.picture" alt="profile"
+                        ><img :src="post.user_picture" alt="profile"
                       /></v-avatar>
                     </v-btn>
                   </template>
@@ -38,14 +38,14 @@
                     <v-list-item-content class="justify-center">
                       <div class="mx-auto text-center">
                         <v-avatar color="brown mb-2">
-                          <img :src="post.user.picture" alt="profile" />
+                          <img :src="post.user_picture" alt="profile" />
                         </v-avatar>
-                        <h3 class="mt-1">{{ post.user.name }}</h3>
+                        <h3 class="mt-1">{{ post.user_name }}</h3>
                         <h3 class="mt-1">
-                          {{ post.user.given_name }} {{ post.user.family_name }}
+                          {{ post.firstname }} {{ post.lastname }}
                         </h3>
                         <p class="caption mt-1">
-                          {{ post.user.email }}
+                          {{ post.email }}
                         </p>
                        
                       </div>
@@ -60,12 +60,12 @@
                 <p class="mt-3">{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
-                <img :src="post.picture" alt="John" />
+                <img :src="post.post_picture" alt="John" />
               </div>
             </div>
             <v-expansion-panel-header @click="getComments(post.post_id)"> Comments</v-expansion-panel-header>
             <v-expansion-panel-content class="mt-6">
-              <div class="columns" v-for="comment in comments" :key="comment.comment_no">
+              <div class="columns" v-for="comment in comments" :key="comment.comment_no" :id="comment.comment_no">
                 <div class="column is-1">
                   <!-- <v-avatar color="primary" size="40">TT</v-avatar> -->
                   <v-menu bottom min-width="200px" rounded offset-y>
@@ -95,8 +95,8 @@
                   </v-card>
                 </v-menu>
                 </div>
-                <div class="column">
-                  {{comment.user_name}} : {{comment.comment_time}}
+                <div class="column ">
+                  {{comment.user_name}} <span class="has-text-grey">{{comment.comment_date}} เวลา {{comment.comment_time}} น. </span>
                   <br />
                   <p class="mt-2">{{comment.comment_desc}}</p>
                 </div>
@@ -155,6 +155,7 @@ export default {
   methods: {
     async getComments(postId) {
       //get all comments on each post
+      this.commentText = ''
       console.log(postId)
       await CommentService.getComments(postId).then(result => {
         this.comments = result
