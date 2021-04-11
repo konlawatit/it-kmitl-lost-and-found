@@ -16,11 +16,11 @@ controller.post('/:postId', async (req, res) => {
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date + ' ' + time;
-        await querySql.createComment([
+        let result = await querySql.createComment([
             comment, req.params.postId, user_id, dateTime
-        ])
+        ], req.params.postId)
         //console.log('result',posts)
-        res.status(200).send()
+        res.status(200).send(result)
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -31,6 +31,21 @@ controller.post('/:postId', async (req, res) => {
         })
     } finally {
         console.log('finally allpost')
+    }
+})
+
+controller.get('/:postId', async (req, res) => {
+    try {
+        let postId = req.params.postId;
+        res.send(await querySql.getComments(postId))
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
     }
 })
 

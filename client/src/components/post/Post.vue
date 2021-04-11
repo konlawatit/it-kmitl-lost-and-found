@@ -65,24 +65,40 @@
             </div>
             <v-expansion-panel-header @click="getComments(post.post_id)"> Comments</v-expansion-panel-header>
             <v-expansion-panel-content class="mt-6">
-              <div class="columns">
+              <div class="columns" v-for="comment in comments" :key="comment.comment_no">
                 <div class="column is-1">
-                  <v-avatar color="primary" size="40">TT</v-avatar>
+                  <!-- <v-avatar color="primary" size="40">TT</v-avatar> -->
+                  <v-menu bottom min-width="200px" rounded offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon x-large v-on="on">
+                      <v-avatar color="primary" size="50"
+                        ><img :src="comment.picture" alt="profile"
+                      /></v-avatar>
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-list-item-content class="justify-center">
+                      <div class="mx-auto text-center">
+                        <v-avatar color="brown mb-2">
+                          <img :src="comment.picture" alt="profile" />
+                        </v-avatar>
+                        <h3 class="mt-1">{{ comment.user_name }}</h3>
+                        <h3 class="mt-1">
+                          {{ comment.firstname }} {{ comment.lastname }}
+                        </h3>
+                        <p class="caption mt-1">
+                          {{ comment.email }}
+                        </p>
+                       
+                      </div>
+                    </v-list-item-content>
+                  </v-card>
+                </v-menu>
                 </div>
-                <div class="column is-6">
-                  13:24 น.
+                <div class="column">
+                  {{comment.user_name}} : {{comment.comment_time}}
                   <br />
-                  <p class="mt-2">ไม่เจอเลยครับ</p>
-                </div>
-              </div>
-              <div class="columns">
-                <div class="column is-1">
-                  <v-avatar color="red" size="40">AA</v-avatar>
-                </div>
-                <div class="column is-6">
-                  13:30 น.
-                  <br />
-                  <p class="mt-2">เจอค่ะ</p>
+                  <p class="mt-2">{{comment.comment_desc}}</p>
                 </div>
               </div>
               <div class="columns">
@@ -127,7 +143,7 @@ export default {
       page: 1,
       posts: [],
       commentText: "",
-      comments: []
+      comments: {}
     };
   },
   created: async function () {
@@ -137,15 +153,20 @@ export default {
     });
   },
   methods: {
-    getComments(postId) {
+    async getComments(postId) {
       //get all comments on each post
       console.log(postId)
+      await CommentService.getComments(postId).then(result => {
+        this.comments = result
+      })
       //alert('comment add'+postId)
     },
     async addComment(postId) {
-      await CommentService.createComment({postId, commentText: this.commentText, user_id: this.$store.getters['auth/getId']}).then(() => {
+      await CommentService.createComment({postId, commentText: this.commentText, user_id: this.$store.getters['auth/getId']}).then(async (result) => {
         this.commentText = ""
+        this.comments = result
       })
+      
     }
   }
 };

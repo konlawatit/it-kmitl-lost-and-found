@@ -6,7 +6,14 @@ class CommentService {
     static async createComment(payload) {
         try {
             let res =await axios.post(`${url}/${payload.postId}`, {comment: payload.commentText, user_id: payload.user_id})
-            console.log(res.data)
+            return res.data
+        } catch (err) {
+            return err
+        }
+    }
+    static async getComments(postId) {
+        try {
+            let res = await axios.get(`${url}/${postId}`)
             return res.data
         } catch (err) {
             return err

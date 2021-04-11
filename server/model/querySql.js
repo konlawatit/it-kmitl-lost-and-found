@@ -161,21 +161,45 @@ class QuerySql {
         }
     }
 
-    async createComment(payload) {
+    async createComment(payload, postId) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
             console.log(payload)
             let sql = "INSERT INTO INFO_COMMENT(comment_desc, INFO_POST_post_id, USER_user_id, comment_time) VALUES(?)"
-            let result = await conn.query(sql, [payload])
-            conn.commit()
-            return result
+            await conn.query(sql, [payload])
+            await conn.commit()
+            return await this.getComments(postId)
+            
         } catch (err) {
             await conn.rollback();
             console.log(`create comment rolback`, err)
             throw new Error(err)
         } finally {
             console.log('finally create comment')
+            conn.release();
+        }
+    }
+
+    async getComments(postId) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            let sql = "SELECT * FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
+            let result = await conn.query(sql)
+            conn.commit();
+            result = await result[0].map(data => {
+                data['picture'] = 'http://localhost:8888/' + data['picture']
+                return data
+            })
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`get comment rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally get comment')
             conn.release();
         }
     }
