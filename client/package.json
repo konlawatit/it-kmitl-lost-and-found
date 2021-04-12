@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^1.5.1",
+    "@chatscope/chat-ui-kit-styles": "^1.2.0",
     "axios": "^0.21.1",
     "bulma-graphs": "^0.2.1",
     "core-js": "^3.6.5",
