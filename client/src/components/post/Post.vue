@@ -47,6 +47,9 @@
                         <p class="caption mt-1">
                           {{ post.email }}
                         </p>
+                        <v-btn depressed rounded text @click="createChatRoom(post.user_id)"  v-if="post.user_id !== $store.getters['auth/getId']">
+                          Chat
+                        </v-btn>
                        
                       </div>
                     </v-list-item-content>
@@ -88,6 +91,9 @@
                         <p class="caption mt-1">
                           {{ comment.email }}
                         </p>
+                        <v-btn depressed rounded text @click="createChatRoom(comment.user_id)" v-if="comment.user_id !== $store.getters['auth/getId']">
+                          Chat
+                        </v-btn>
                       </div>
                     </v-list-item-content>
                   </v-card>
@@ -132,6 +138,7 @@
 <script>
 import PostService from "../../service/PostService";
 import CommentService from "../../service/CommentService"
+import ChatService from "../../service/ChatService"
 import store from "../../store/index.js";
 export default {
   name: "Post",
@@ -151,6 +158,10 @@ export default {
     });
   },
   methods: {
+    redirect(path) {
+      console.log("redirect to : ", path);
+      this.$router.push(`/${path}`);
+    },
     async getComments(postId) {
       //get all comments on each post
       this.commentText = ''
@@ -166,6 +177,11 @@ export default {
         this.comments = result
       })
       
+    },
+    async createChatRoom(another_id) {
+      await ChatService.createConversation(this.$store.getters['auth/getId'], another_id).thne(() => {
+        this.redirect('chatroom')
+      })
     }
   }
 };

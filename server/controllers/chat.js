@@ -26,8 +26,12 @@ controller.get('/allconversations', async (req, res) => {
         //   });  ใช้ท่านี้นะะะะะะะะะะะะะ
         let {
             user_id
-        } = req.body
+        } = req.query
         let result = (await querySql.getAllConversations(user_id))[0]
+        result = await result.map(data => {
+            data['picture'] = 'http://localhost:8888/'+data['picture']
+            return data
+        })
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
 
         //io.socket.emit('chat message', '3423423423')
@@ -53,13 +57,11 @@ controller.post('/conversation', async (req, res) => {
             another_id
         } = req.body
         let result = await querySql.createConversation([`${user_id}_${another_id}`, user_id, another_id])
-        console.log(result)
         if (result == false) {
             res.send({
                 message: 'already have room',
             })
         } else {
-            console.log(1222222)
             res.status(200).send(result)
         }
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
@@ -86,7 +88,6 @@ controller.get('/messages', async (req, res) => {
             user_id,
             another_id
         } = req.query
-        console.log(req.query);
         let result = (await querySql.getMessages(user_id, another_id))[0]
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
 
@@ -118,8 +119,7 @@ controller.post('/message', async (req, res) => {
         let con_id = (await querySql.getConversation(user_id, another_id)).con_id
         let addMessage = await querySql.addMessage([message, con_id, user_id])
         //let addMessage = con_id
-
-        //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
+        req.io.emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
 
         //io.socket.emit('chat message', '3423423423')
         res.status(200).send(addMessage)

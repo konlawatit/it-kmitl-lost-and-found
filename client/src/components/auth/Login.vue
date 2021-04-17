@@ -95,16 +95,17 @@ export default {
     },
     async onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      let profile = await googleUser.getBasicProfile();
-      let email = profile.getEmail();
-      if (email.split("@")[1] == "gm") { //ค่อยกลับมาแก้
-        this.$swal.fire({
-          icon: "error",
-          title: "ไม่สามารถเข้าระบบได้",
-          text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
-        });
-        this.onSignOut();
-      } else {
+      //let profile = await googleUser.getBasicProfile();
+      //let email = profile.getEmail();
+      // if (email.split("@")[1] == "gm") { //ค่อยกลับมาแก้
+      //   this.$swal.fire({
+      //     icon: "error",
+      //     title: "ไม่สามารถเข้าระบบได้",
+      //     text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
+      //   });
+      //   this.onSignOut();
+      // } 
+      //else {
         await AuthService.login(googleUser.getAuthResponse().id_token).then(
           (result) => {
             if (result.statusCode == "200" && result.new_user) {
@@ -149,7 +150,7 @@ export default {
             }
           }
         );
-      }
+      //}
     },
     onFailure() {
       //   alert("Login Fail");

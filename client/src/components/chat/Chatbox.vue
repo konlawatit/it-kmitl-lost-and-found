@@ -2,29 +2,36 @@
   <div>
     <div class="columns mt-1">
       <div class="column is-12 is-size-6" id="chatname">
-        <div class="m-2">{{getSelectRoom.user_name}}</div>
+        <div class="m-2">{{ getSelectRoom.user_name }}</div>
       </div>
     </div>
     <div class="columns mt-3 ml-2" id="chatbox">
       <div class="column is-12">
-        <div class="columns" v-for="(message, index) in getMessages" :key="index">
-          <div class="column is-1">
-            <v-avatar color="primary" size="70"></v-avatar>
+        <template v-for="(message, index) in getMessages">
+          <div
+            class="columns"
+            v-if="message.message_by != $store.getters['auth/getId']"
+            :key="index"
+          >
+            <!-- <div class="column is-1">
+              <v-avatar color="primary" size="70"><img :src="message.picture"
+          /></v-avatar>
+            </div> -->
+            <div class="column is-4 mt-2" id="mes">
+              <p>
+                {{ message.content }}
+              </p>
+            </div>
           </div>
-          <div class="column is-4 mt-2" id="mes">
-            <p>
-              {{message.content}}
-            </p>
+          <div class="columns mt-3 mr-6" v-else :key="index">
+            <div class="column is-8"></div>
+            <div class="column is-4 mt-2" id="mes2">
+              <p>
+                {{ message.content }}
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="columns mt-3 mr-6">
-          <div class="column is-8"></div>
-          <div class="column is-4 mt-2" id="mes2">
-            <p>
-              ฝั่ง user
-            </p>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
     <div class="columns mr-3">
@@ -42,9 +49,10 @@
 </template>
 
 <script>
+
 import { io } from "socket.io-client";
+import ChatService from "../../service/ChatService";
 const socket = io("http://localhost:8888");
-import axios from "axios";
 import { mapGetters } from "vuex";
 //const socket = io();
 console.log("socket", socket);
@@ -52,32 +60,62 @@ export default {
   name: "Chatbox",
   data() {
     return {
-      msg: ""
+      msg: "",
+      
     };
   },
   methods: {
     async sendMessage() {
-      await axios.post("http://localhost:8888/apis/chat/message/", {
-        message: this.msg,user_id: 62070007, another_id: 62070011
+      // await axios.post("http://localhost:8888/apis/chat/message/", {
+      //   message: this.msg,user_id: 62070007, another_id: 62070011
+      // });
+      let another_id = this.$store.getters["conversation/getSelectRoom"]
+        .user_id;
+      console.log("anot", another_id);
+      let user_id = this.$store.getters["auth/getId"];
+      await ChatService.sendMessages({
+        user_id: user_id,
+        another_id: another_id,
+        message: this.msg,
+      }).then(async () => {
+        await ChatService.getMessages({
+          user_id: user_id,
+          another_id: another_id,
+        }).then((data) => {
+          console.log(data);
+          this.$store.dispatch("conversation/setMessages", data);
+        });
       });
-      console.log("eeee", socket.id);
-      socket.emit("chat message", this.msg);
-      socket.emit("test", this.msg);
+      let myDiv = document.getElementById("chatbox");
+      myDiv.scrollTop = (myDiv.scrollHeight);
+      // console.log("eeee", socket.id);
+      // socket.emit("chat message", this.msg);
+      // socket.emit("test", this.msg);
       this.msg = "";
     },
   },
-    computed: {
-    ...mapGetters("conversation", [
-      "getSelectRoom",
-      "getMessages"
-    ]),
+  computed: {
+    ...mapGetters("conversation", ["getSelectRoom", "getMessages"]),
+    ...mapGetters("auth", ["getId"]),
+    pageHeight () {
+      return document.body.scrollHeight
+    }
   },
-  mounted() {
-    socket.on("connect", () => {
-      console.log("socket id", socket.id);
-    });
-    socket.on("event1", (msg) => {
-      console.log("event1", socket.id+msg);
+  created() {
+    // socket.on("connect", () => {
+    //   console.log("socket id", socket.id);
+    // });
+    socket.on("event1", async (msg) => {
+      console.log("event1", msg);
+      let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
+      let user_id = this.$store.getters["auth/getId"];
+      console.log(socket.id, another_id, user_id);
+      await ChatService.getMessages({
+        user_id: user_id,
+        another_id: another_id,
+      }).then((data) => {
+        this.$store.dispatch("conversation/setMessages", data);
+      });
     });
     // socket.on('chat message', function (msg) {
     //    console.log(msg)
@@ -100,6 +138,7 @@ export default {
 #chatbox {
   height: 60vh;
   overflow-y: scroll;
+  scroll-padding-bottom: 5000px;
 }
 #mes {
   background: #103766;

@@ -216,7 +216,6 @@ class QuerySql {
                      user_id_1 = ${payload[1]} AND user_id_2 = ${payload[2]}) OR (user_id_1 = ${payload[2]} AND user_id_2 = ${payload[1]})) as 'exists'`
             //let checkConversationExists = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${payload[1]} AND user_id_2 = ${payload[2]}) OR (user_id_1 = ${payload[2]} AND user_id_2 = ${payload[1]})`
             let conversationExists = (await conn.query(checkConversationExists))[0][0]['exists']
-            console.log(conversationExists)
             if (conversationExists > 0) {
                 conn.commit();
                 return false
@@ -243,7 +242,7 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})`
-            let sql = `SELECT USER.user_name, USER.picture, con_id, user_id_1, user_id_2 FROM USER INNER JOIN (SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})) AS conversations ON user_id = ${user_id}`
+            let sql = `SELECT USER.user_name, USER.picture, USER.user_id, con_id, user_id_1, user_id_2 FROM USER INNER JOIN (SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})) AS conversations ON (user_id = user_id_2 AND user_id_2 != ${user_id}) or (user_id = user_id_1 AND user_id_1 != ${user_id})`
 
             let result = await conn.query(sql)
 
@@ -267,6 +266,7 @@ class QuerySql {
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
+            //console.log(sql)
             let conversation = (await conn.query(sql))[0][0]
 
             conn.commit();
@@ -287,23 +287,22 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
-            console.log(user_id, another_id)
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
+            console.log('1111111111111111111', sql)
             let conversation = (await conn.query(sql))[0][0]
-            console.log(conversation)
+            conn.commit();
             let result = await conn.query(`SELECT * FROM MESSAGES WHERE con_id = '${conversation.con_id}'`)
 
-            conn.commit();
             //result = msg
             //console.log(result)
             return result
         } catch (err) {
             await conn.rollback();
-            console.log(`get conversation rolback`, err)
+            console.log(`get message rolback`, err)
             throw new Error(err)
         } finally {
-            console.log('finally get conversation')
+            console.log('finally get message')
             conn.release();
         }
     }
@@ -316,8 +315,8 @@ class QuerySql {
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"
-            let result = await conn.query(sql, [payload])
             conn.commit();
+            let result = await conn.query(sql, [payload])
             //console.log(result)
             return result
         } catch (err) {

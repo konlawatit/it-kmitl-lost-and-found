@@ -4,7 +4,8 @@ const state = {
         user_id: '',
         user_name: ''
     },
-    messages: []
+    messages: [],
+    rooms: []
 }
 
 const getters = {
@@ -13,6 +14,9 @@ const getters = {
     },
     getMessages: (state) => {
         return state.messages
+    },
+    getRooms: (state) => {
+        return state.rooms
     }
 
 }
@@ -24,6 +28,9 @@ const mutations = {
     },
     setMessages: (state, payload) => {
         state.messages = payload
+    },
+    setRooms: (state, payload) => {
+        state.rooms = payload
     }
 }
 
@@ -33,6 +40,9 @@ const actions = {
     },
     setMessages: (context, payload) => {
         context.commit('setMessages', payload)
+    },
+    setRooms: (context, payload) => {
+        context.commit('setRooms', payload)
     }
 }
 

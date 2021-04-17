@@ -46,11 +46,11 @@ controller.post('/login', async (req, res) => {
                 //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
             });
             const payload = ticket.getPayload();
-            //const userid = payload['sub'];
+            const userid = (payload['sub']+'').slice(0, 9);
             console.log(payload)
 
-            if ((await querySql.exists('USER', 'user_id', payload.email.split('@')[0])).exists) {
-                let user_info = await querySql.getUser(payload.email.split('@')[0]);
+            if ((await querySql.exists('USER', 'user_id', userid)).exists) {
+                let user_info = await querySql.getUser(userid);
                 res.status(200).send({
                     statusCode: '200',
                     statusText: 'Request Success',
@@ -68,10 +68,10 @@ controller.post('/login', async (req, res) => {
                 });
             } else {
                 let sqlPayload = [
-                    [payload.email.split('@')[0], payload.name, payload.given_name, payload.family_name, payload.email, payload.picture]
+                    [userid, payload.name, payload.given_name, payload.family_name, payload.email, payload.picture]
                 ]
                 //await querySql.createUser(sqlPayload);
-                payload['sub'] = payload.email.split('@')[0]
+                payload['sub'] = userid
                 console.log('weeeeee')
                 res.status(200).send({
                     statusCode: '200',

@@ -5,14 +5,15 @@
       <div class="column is-3">
         <Listname></Listname>
       </div>
-      <div class="column is-9">
-        <Chatbox></Chatbox>
+      <div class="column is-9" >
+        <Chatbox ></Chatbox >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
 // @ is an alias to /src
 import Navbarhome from "../components/navbar/Navbarhome";
 import Listname from "../components/chat/Listname"
@@ -23,7 +24,7 @@ export default {
     Navbarhome,
     Listname,
     Chatbox
-  },
+  }
 };
 </script>
 <style scoped>

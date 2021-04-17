@@ -79,7 +79,7 @@ app.get('/', (reg, res) => {
 
 io.on('connection', (socket) => {
     // คนที่เข้ามาจะมี id ตรงนี้นะครับ
-    socket.join('room1');
+    //socket.join('room1');
     console.log('a user connected ', socket.id)
 
     // user ที่เปิดหรืออก browser

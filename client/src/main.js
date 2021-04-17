@@ -12,6 +12,8 @@ import AuthService from './service/AuthService'
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 
+import ChatService from './service/ChatService'
+
 Vue.use(VueSweetalert2);
 
 Vue.use(LoaderPlugin, {
@@ -21,7 +23,7 @@ Vue.use(LoaderPlugin, {
 Vue.GoogleAuth.then(async auth2 => {
     if (auth2.isSignedIn.get()) {
         await AuthService.login(auth2.currentUser.get().getAuthResponse().id_token, 'reload').then(
-            (result) => {
+            async (result) => {
                 if (!result.error) {
                     console.log('main',result)
                     store.dispatch("auth/setProfile", {
@@ -38,7 +40,13 @@ Vue.GoogleAuth.then(async auth2 => {
                         merit: result.data.merit,
                         isSigned: true,
                     });
-                    if (router.app.$route.fullPath !== '/home') router.push(`/home`)
+                    if (router.app.$route.fullPath == '/') router.push(`/home`)
+                    if (router.app.$route.fullPath == '/chatroom') {
+                        await ChatService.getRooms(result.data.sub).then(data => {
+                            console.log(data)
+                            store.dispatch('conversation/setRooms', data)
+                        })
+                    }
                 } else {
                     auth2.signOut()
                     router.push(`/`)
