@@ -94,9 +94,9 @@ CREATE TABLE INFO_COMMENT_COMMENT_IMAGE (
 );
 
 CREATE TABLE INFO_CHAT (
-    chat_id int(10) primary key,
+    chat_id VARCHAR(255) primary key,
     chat_no int(10) not null unique auto_increment,
-    `message` varchar(255),
+    `message` text,
     chat_time datetime,
     USER_user_id1 int(10),
     USER_user_id2 int(10),
@@ -106,10 +106,25 @@ CREATE TABLE INFO_CHAT (
     REFERENCES USER (`user_id`)
 );
 
+CREATE TABLE CONVERSATIONS (
+    con_id VARCHAR(255) PRIMARY KEY,
+    user_id_1 int(10),
+    user_id_2 int(10)
+);
+
+CREATE TABLE MESSAGES (
+    msg_no int(10) primary key auto_increment,
+    content text,
+    con_id varchar(255),
+    message_by int(10),
+    created_at date,
+    FOREIGN KEY (con_id) REFERENCES CONVERSATIONS(con_id)
+);
+
 CREATE TABLE INFO_CHAT_CHAT_IMAGE (
     chat_image_no int(10) primary key auto_increment,
     chat_image text,
-    INFO_CHAT_chat_no int(10),
+    INFO_CHAT_chat_no VARCHAR(255),
     FOREIGN KEY (INFO_CHAT_chat_no)
     REFERENCES INFO_CHAT (chat_id)
 );

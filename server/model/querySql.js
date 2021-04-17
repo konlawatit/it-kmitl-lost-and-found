@@ -131,7 +131,7 @@ class QuerySql {
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
                 return data
             })
-            console.log(posts)
+            //console.log(posts)
             conn.commit();
             return posts[0]
         } catch (err) {
@@ -206,6 +206,118 @@ class QuerySql {
             conn.release();
         }
     }
+    
+    async createConversation(payload) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            let sql = `INSERT INTO CONVERSATIONS(con_id, user_id_1, user_id_2) VALUES(?);`
+            let result = await conn.query(sql, [payload])
+            conn.commit();
+            //result = msg
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`create conversation rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally create conversation')
+            conn.release();
+        }
+    }
+
+    async getAllConversations(user_id) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            //let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})`
+            let sql = `SELECT USER.user_name, USER.picture, con_id, user_id_1, user_id_2 FROM USER INNER JOIN (SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})) AS conversations ON user_id = ${user_id}`
+
+            let result = await conn.query(sql)
+
+            conn.commit();
+            //result = msg
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`get all conversations rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally get all conversations')
+            conn.release();
+        }
+    }
+
+    async getConversation(user_id, another_id) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
+            let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
+            let conversation = (await conn.query(sql))[0][0]
+
+            conn.commit();
+            //result = msg
+            //console.log(result)
+            return conversation
+        } catch (err) {
+            await conn.rollback();
+            console.log(`get conversation rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally get conversation')
+            conn.release();
+        }
+    }
+
+    async getMessages(user_id, another_id) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
+            let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
+            let conversation = (await conn.query(sql))[0][0]
+            console.log(conversation)
+            let result = await conn.query(`SELECT * FROM MESSAGES WHERE con_id = '${conversation.con_id}'`)
+
+            conn.commit();
+            //result = msg
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`get conversation rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally get conversation')
+            conn.release();
+        }
+    }
+
+    
+    
+    async addMessage(payload) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
+            let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"
+            let result = await conn.query(sql, [payload])
+            conn.commit();
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`add message rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally add message')
+            conn.release();
+        }
+    }
+
 }
 
 module.exports = QuerySql
