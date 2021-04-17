@@ -287,6 +287,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
+            console.log(user_id, another_id)
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
             let conversation = (await conn.query(sql))[0][0]

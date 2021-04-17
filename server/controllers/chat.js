@@ -85,7 +85,8 @@ controller.get('/messages', async (req, res) => {
         let {
             user_id,
             another_id
-        } = req.body
+        } = req.query
+        console.log(req.query);
         let result = (await querySql.getMessages(user_id, another_id))[0]
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
 

@@ -2,60 +2,26 @@
   <div>
     <div class="columns mt-1">
       <div class="column is-12 is-size-6" id="chatname">
-        <div class="m-2">นายธีรภัทร์ บุญช่วยแล้ว</div>
+        <div class="m-2">{{getSelectRoom.user_name}}</div>
       </div>
     </div>
     <div class="columns mt-3 ml-2" id="chatbox">
       <div class="column is-12">
-        <div class="columns">
+        <div class="columns" v-for="(message, index) in getMessages" :key="index">
           <div class="column is-1">
             <v-avatar color="primary" size="70"></v-avatar>
           </div>
           <div class="column is-4 mt-2" id="mes">
             <p>
-              aksdlkasldlaklskdlaskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkasdl;asd;lhjhjhjjmm
+              {{message.content}}
             </p>
           </div>
         </div>
-
-        <div class="columns mt-3">
-          <div class="column is-1">
-            <v-avatar color="primary" size="70"></v-avatar>
-          </div>
-          <div class="column is-4 mt-2" id="mes">
-            <p>
-              aksdlkasldlaklskdlaskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkasdl;asd;lhjhjhjjmm
-            </p>
-          </div>
-        </div>
-
         <div class="columns mt-3 mr-6">
           <div class="column is-8"></div>
           <div class="column is-4 mt-2" id="mes2">
             <p>
-              aksdlkasldlaklskdlaskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkasdl;asd;lhjhjhjjmm
-            </p>
-          </div>
-        </div>
-
-        <div class="columns mt-3">
-          <div class="column is-1">
-            <v-avatar color="primary" size="70"></v-avatar>
-          </div>
-          <div class="column is-4 mt-2" id="mes">
-            <p>
-              aksdlkasldlaklskdlaskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkasdl;asd;lhjhjhjjmm
-            </p>
-          </div>
-        </div>
-
-        <div class="columns mt-3">
-          <div class="column is-1">
-            <v-avatar color="primary" size="70"></v-avatar>
-          </div>
-          <div class="column is-4 mt-2" id="mes">
-            <p>
-              aksdlkasldlaklskdlaskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkasdl;asd;lhjhjhjjmm
+              ฝั่ง user
             </p>
           </div>
         </div>
@@ -79,13 +45,14 @@
 import { io } from "socket.io-client";
 const socket = io("http://localhost:8888");
 import axios from "axios";
+import { mapGetters } from "vuex";
 //const socket = io();
 console.log("socket", socket);
 export default {
-  name: "Listname",
+  name: "Chatbox",
   data() {
     return {
-      msg: "",
+      msg: ""
     };
   },
   methods: {
@@ -98,6 +65,12 @@ export default {
       socket.emit("test", this.msg);
       this.msg = "";
     },
+  },
+    computed: {
+    ...mapGetters("conversation", [
+      "getSelectRoom",
+      "getMessages"
+    ]),
   },
   mounted() {
     socket.on("connect", () => {
