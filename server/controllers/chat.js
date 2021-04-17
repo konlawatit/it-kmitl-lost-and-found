@@ -24,10 +24,12 @@ controller.get('/allconversations', async (req, res) => {
         //       socket.to(anotherSocketId).emit("private message", socket.id, msg);
         //     });
         //   });  ใช้ท่านี้นะะะะะะะะะะะะะ
-        let {user_id} = req.body
+        let {
+            user_id
+        } = req.body
         let result = (await querySql.getAllConversations(user_id))[0]
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
-        
+
         //io.socket.emit('chat message', '3423423423')
         res.status(200).send(result)
     } catch (err) {
@@ -43,14 +45,26 @@ controller.get('/allconversations', async (req, res) => {
     }
 })
 
+//สร้าง conversation
 controller.post('/conversation', async (req, res) => {
     try {
-        let {user_id, another_id} = req.body
-        let result = (await querySql.getAllConversations(user_id))[0]
+        let {
+            user_id,
+            another_id
+        } = req.body
+        let result = await querySql.createConversation([`${user_id}_${another_id}`, user_id, another_id])
+        console.log(result)
+        if (result == false) {
+            res.send({
+                message: 'already have room',
+            })
+        } else {
+            console.log(1222222)
+            res.status(200).send(result)
+        }
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
-        
+
         //io.socket.emit('chat message', '3423423423')
-        res.status(200).send(result)
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -64,14 +78,17 @@ controller.post('/conversation', async (req, res) => {
     }
 })
 
-//แสดง conversation เฉพาะคน
+//แสดง ดึง message และข้อมูลอื่นๆออกมา
 controller.get('/messages', async (req, res) => {
     try {
 
-        let {user_id, another_id} = req.body
+        let {
+            user_id,
+            another_id
+        } = req.body
         let result = (await querySql.getMessages(user_id, another_id))[0]
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
-        
+
         //io.socket.emit('chat message', '3423423423')
         res.status(200).send(result)
     } catch (err) {
@@ -91,14 +108,18 @@ controller.get('/messages', async (req, res) => {
 //ส่งข้อความ
 controller.post('/message', async (req, res) => {
     try {
-        
-        let {user_id, another_id, message} = req.body
+
+        let {
+            user_id,
+            another_id,
+            message
+        } = req.body
         let con_id = (await querySql.getConversation(user_id, another_id)).con_id
         let addMessage = await querySql.addMessage([message, con_id, user_id])
         //let addMessage = con_id
-        
+
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
-        
+
         //io.socket.emit('chat message', '3423423423')
         res.status(200).send(addMessage)
     } catch (err) {

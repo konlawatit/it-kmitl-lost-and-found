@@ -93,7 +93,7 @@ class QuerySql {
             let sql = `SELECT *, DATE_FORMAT(birthday, '%Y-%m-%d') as birthday FROM USER WHERE user_id = ${user};`
             let result = await conn.query(sql)
             let user_info = result[0][0]
-            console.log('user info',user_info)
+            console.log('user info', user_info)
             conn.commit();
             return {
                 "sub": user_info.user_id,
@@ -102,7 +102,7 @@ class QuerySql {
                 "email": user_info.email,
                 "given_name": user_info.firstname,
                 "family_name": user_info.lastname,
-                "picture": 'http://localhost:8888/'+user_info.picture,
+                "picture": 'http://localhost:8888/' + user_info.picture,
                 'type': user_info.type,
                 'role': user_info.role,
                 'phone_number': user_info.phone_number,
@@ -147,7 +147,7 @@ class QuerySql {
     async createPost() {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = "INSERT INTO INFO_POST (user_id) VALUES(?)"
             let result = await conn.query(sql, [62070096])
             conn.commit()
@@ -173,7 +173,7 @@ class QuerySql {
             await conn.query(sql, [payload])
             await conn.commit()
             return await this.getComments(postId)
-            
+
         } catch (err) {
             await conn.rollback();
             console.log(`create comment rolback`, err)
@@ -188,7 +188,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
-            let sql = "SELECT *, DATE_FORMAT(comment_time, '%d/%m/%Y') as `comment_date`, DATE_FORMAT(comment_time, '%H:%i') as `comment_time` FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
+            let sql = "SELECT *, DATE_FORMAT(comment_time, '%d/%m/%Y') as `comment_date`, DATE_FORMAT(comment_time, '%H:%i') as `comment_time` FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id=" + postId + ") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
             let result = await conn.query(sql)
             conn.commit();
             result = await result[0].map(data => {
@@ -206,17 +206,28 @@ class QuerySql {
             conn.release();
         }
     }
-    
+
     async createConversation(payload) {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
-            let sql = `INSERT INTO CONVERSATIONS(con_id, user_id_1, user_id_2) VALUES(?);`
-            let result = await conn.query(sql, [payload])
-            conn.commit();
+            let checkConversationExists = `SELECT EXISTS(
+                 SELECT * FROM CONVERSATIONS WHERE (
+                     user_id_1 = ${payload[1]} AND user_id_2 = ${payload[2]}) OR (user_id_1 = ${payload[2]} AND user_id_2 = ${payload[1]})) as 'exists'`
+            //let checkConversationExists = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${payload[1]} AND user_id_2 = ${payload[2]}) OR (user_id_1 = ${payload[2]} AND user_id_2 = ${payload[1]})`
+            let conversationExists = (await conn.query(checkConversationExists))[0][0]['exists']
+            console.log(conversationExists)
+            if (conversationExists > 0) {
+                conn.commit();
+                return false
+            } else {
+                let sql = `INSERT INTO CONVERSATIONS(con_id, user_id_1, user_id_2) VALUES(?);`
+                let result = await conn.query(sql, [payload])
+                conn.commit();
+                return result
+            }
             //result = msg
             //console.log(result)
-            return result
         } catch (err) {
             await conn.rollback();
             console.log(`create conversation rolback`, err)
@@ -296,8 +307,8 @@ class QuerySql {
         }
     }
 
-    
-    
+
+
     async addMessage(payload) {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
