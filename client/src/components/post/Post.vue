@@ -47,7 +47,7 @@
                         <p class="caption mt-1">
                           {{ post.email }}
                         </p>
-                        <v-btn depressed rounded text @click="createChatRoom(post.user_id)"  v-if="post.user_id !== $store.getters['auth/getId']">
+                        <v-btn depressed rounded text @click="createChatRoom(post.user_id, post.user_name)"  v-if="post.user_id !== $store.getters['auth/getId']">
                           Chat
                         </v-btn>
                        
@@ -91,7 +91,7 @@
                         <p class="caption mt-1">
                           {{ comment.email }}
                         </p>
-                        <v-btn depressed rounded text @click="createChatRoom(comment.user_id)" v-if="comment.user_id !== $store.getters['auth/getId']">
+                        <v-btn depressed rounded text @click="createChatRoom(comment.user_id, comment.user_name)" v-if="comment.user_id !== $store.getters['auth/getId']">
                           Chat
                         </v-btn>
                       </div>
@@ -140,6 +140,7 @@ import PostService from "../../service/PostService";
 import CommentService from "../../service/CommentService"
 import ChatService from "../../service/ChatService"
 import store from "../../store/index.js";
+import {mapGetters} from "vuex"
 export default {
   name: "Post",
   data() {
@@ -178,12 +179,29 @@ export default {
       })
       
     },
-    async createChatRoom(another_id) {
-      await ChatService.createConversation(this.$store.getters['auth/getId'], another_id).thne(() => {
-        this.redirect('chatroom')
-      })
+    async createChatRoom(another_id, another_name) {
+      await ChatService.createConversation(this.$store.getters['auth/getId'], another_id)
+      //console.log(this.getRooms.filter(data => data.user_id == another_id)[0]);
+      //let another_user = this.getRooms.filter(data => data.user_id == another_id)[0];
+      this.$store.dispatch("conversation/setSelectRoom", {
+        user_id: another_id,
+        user_name: another_name,
+      });
+      
+      // await ChatService.getMessages({
+      //   user_id: this.$store.getters["auth/getId"],
+      //   another_id: another_user.user_id,
+      // }).then((data) => {
+      //   this.$store.dispatch("conversation/setMessages", data);
+      // });
+      this.redirect('chatroom')
+    
     }
-  }
+  },
+  computed: {
+    ...mapGetters("conversation", ["getRooms"]),
+    ...mapGetters("auth", ["getId"]),
+  },
 };
 </script>
 

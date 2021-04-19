@@ -51,6 +51,7 @@ class ChatService {
                 user_id: user_id,
                 another_id: another_id
             })
+            console.log(res.data)
             return res.data
         } catch (err) {
             return err

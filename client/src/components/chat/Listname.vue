@@ -1,7 +1,7 @@
 <template>
   <div class="list">
     <div
-      class="namediv"
+      class="namediv " :class="{'has-background-link-light has-text-black' : room.user_id == getSelectRoom.user_id}"
       v-for="(room, index) in getRooms"
       :key="room.con_id"
       @click="selectRoom(index)"
@@ -47,8 +47,6 @@ export default {
   },
   methods: {
     async selectRoom(index) {
-      
-      console.log(window.document.getElementById('chatbox'))
       //let user_id = this.getRooms[index].user_id_1 == this.getId ? this.getRooms[index].user_id_2 : this.getRooms[index].user_id_1
       let user_id = this.getRooms[index].user_id;
       this.$store.dispatch("conversation/setSelectRoom", {
@@ -56,18 +54,19 @@ export default {
         user_name: this.getRooms[index].user_name,
       });
       console.log(this.$store.getters["conversation/getSelectRoom"].user_name);
+
       await ChatService.getMessages({
         user_id: this.$store.getters["auth/getId"],
         another_id: this.getRooms[index].user_id,
       }).then((data) => {
         this.$store.dispatch("conversation/setMessages", data);
       });
-      let myDiv = window.document.getElementById('chatbox');
+      let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
       myDiv.scrollTop = (myDiv.scrollHeight);
     },
   },
   computed: {
-    ...mapGetters("conversation", ["getRooms"]),
+    ...mapGetters("conversation", ["getRooms", "getSelectRoom"]),
     ...mapGetters("auth", ["getId"]),
   },
   async created() {
@@ -75,7 +74,6 @@ export default {
       await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
         (data) => {
           this.$store.dispatch("conversation/setRooms", data);
-          console.log("333333333", data);
         }
       );
     }

@@ -60,9 +60,13 @@ controller.post('/conversation', async (req, res) => {
         if (result == false) {
             res.send({
                 message: 'already have room',
+                state: false
             })
         } else {
-            res.status(200).send(result)
+            res.status(200).send({
+                message: 'created successful',
+                state: true
+            })
         }
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
 

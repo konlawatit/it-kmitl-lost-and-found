@@ -105,11 +105,12 @@ export default {
     // socket.on("connect", () => {
     //   console.log("socket id", socket.id);
     // });
+    
     socket.on("event1", async (msg) => {
       console.log("event1", msg);
       let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
       let user_id = this.$store.getters["auth/getId"];
-      console.log(socket.id, another_id, user_id);
+      
       await ChatService.getMessages({
         user_id: user_id,
         another_id: another_id,
@@ -125,6 +126,19 @@ export default {
     //   console.log('event2', msg)
     // })
   },
+  async mounted() {
+    let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
+      let user_id = this.$store.getters["auth/getId"];
+      
+      await ChatService.getMessages({
+        user_id: user_id,
+        another_id: another_id,
+      }).then((data) => {
+        this.$store.dispatch("conversation/setMessages", data);
+      });
+    let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+      myDiv.scrollTop = (myDiv.scrollHeight);
+  }
 };
 </script>
 
