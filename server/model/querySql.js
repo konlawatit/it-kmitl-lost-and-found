@@ -144,12 +144,12 @@ class QuerySql {
         }
     }
 
-    async createPost() {
+    async createPost(data) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = "INSERT INTO INFO_POST (user_id) VALUES(?)"
-            let result = await conn.query(sql, [62070096])
+            let sql = "INSERT INTO INFO_POST (user_id, topic, category_post, post_desc, post_time) VALUES(?, ?, ?, ?, ?)"
+            let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time])
             conn.commit()
             return {
                 result

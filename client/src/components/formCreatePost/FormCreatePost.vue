@@ -3,7 +3,9 @@
     <div class="column is-12" id="bodyblackground">
       <div class="columns">
         <div class="column is-1 ml-6">
-          <v-avatar color="primary" size="90" class="mt-3"><img :src="store.getters['auth/getImage']" alt="profile" /></v-avatar>
+          <v-avatar color="primary" size="90" class="mt-3"
+            ><img :src="store.getters['auth/getImage']" alt="profile"
+          /></v-avatar>
         </div>
         <div class="column is-10">
           <div class="columns">
@@ -11,12 +13,19 @@
               <p class="is-size-4 ml-6 mt-2 has-text-centered">หัวข้อ :</p>
             </div>
             <div class="column is-9">
-              <input type="text" class="input mt-2" placeholder="Title" />
+              <input
+                type="text"
+                class="input mt-2"
+                placeholder="Title"
+                v-model="title"
+              />
             </div>
           </div>
           <div class="columns">
             <div class="column is-12">
-              <p class="is-size-5 ml-6">{{ store.getters["auth/getFullName"] }}</p>
+              <p class="is-size-5 ml-6">
+                {{ store.getters["auth/getFullName"] }}
+              </p>
             </div>
           </div>
         </div>
@@ -29,8 +38,11 @@
             </div>
             <div class="column is-8">
               <v-chip-group mandatory active-class="primary">
-                <v-chip v-for="tag in tagsPost" :key="tag" class="is-size-5">
-                  {{ tag }}
+                <v-chip class="is-size-5" @click="changTag('lost')">
+                  ตามหาของหาย
+                </v-chip>
+                <v-chip class="is-size-5" @click="changTag('found')">
+                  ตามหาเจ้าของ
                 </v-chip>
               </v-chip-group>
             </div>
@@ -55,12 +67,8 @@
             <div class="column is-2 has-text-centered mt-2 is-size-5">
               เวลา :
             </div>
-            <div class="column is-8">
-              <v-chip-group mandatory active-class="primary">
-                <v-chip v-for="tag in tagsTime" :key="tag" class="is-size-5">
-                  {{ tag }}
-                </v-chip>
-              </v-chip-group>
+            <div class="column is-3">
+              <input type="time" class="input" />
             </div>
           </div>
         </div>
@@ -137,6 +145,7 @@
                   clearable
                   label="รายละเอียด"
                   clear-icon="mdi-close-circle"
+                  v-model="postDesc"
                 ></v-textarea>
               </v-container>
             </div>
@@ -146,14 +155,10 @@
       <div class="columns mb-4">
         <div class="column is-8"></div>
         <div class="column is-2">
-          <v-btn tile color="success" @click="createPost()">
-            Create
-          </v-btn>
+          <v-btn tile color="success" @click="createPost()"> Create </v-btn>
         </div>
         <div class="column is-2">
-          <v-btn tile color="error" @click="redirect('home')">
-            Cancel
-          </v-btn>
+          <v-btn tile color="error" @click="redirect('home')"> Cancel </v-btn>
         </div>
       </div>
     </div>
@@ -161,52 +166,97 @@
 </template>
 
 <script>
-import PostService from '../../service/PostService.js';
+import PostService from "../../service/PostService.js";
 import store from "../../store/index.js";
 export default {
   name: "formCreatePost",
   data() {
     return {
       store,
-      tagsPost: ["ตามหาเจ้าของ", "ตามหาของหาย"],
-      tagsTime: ["เช้า", "กลางวัน", "เย็น", "กลางคืน"],
       items: ["กระเป๋า", "เสื้อ", "แว่นตา", "Electronic"],
       valueItem: "",
       locations: ["M04", "M03", "L207"],
       valueLocation: "",
+      title: "",
+      tagPost: "lost",
+      postDesc: "",
+      time: "",
     };
   },
-  methods:{
+  methods: {
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
     },
-    async createPost(){
-      await this.$swal
-          .fire({
-            title: "ยืนยัน",
-            text: "ยืนยัน",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes",
-          })
-          .then(async (result) => {
-            if (result.isConfirmed) {
-              try {
-                await PostService.createPost().then((result) => {
-                  //this.profileImage = this.API_URL + "/" + result.path;
-                  console.log(result)
-                });
-              } catch (err) {
-                console.log(err);
-              }
-            }
-          });
-      this.redirect("home");
+    changTag(tag) {
+      this.tagPost = tag;
     },
-  }
+    async createPost() {
+      let d = new Date();
+      let month = d.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      let day = d.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      let hour = d.getHours();
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      let minute = d.getMinutes();
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      let sec = d.getSeconds();
+      if (sec < 10) {
+        sec = "0" + sec;
+      }
+      this.time =
+        d.getFullYear() +
+        "-" +
+        month +
+        "-" +
+        day +
+        " " +
+        hour +
+        ":" +
+        minute +
+        ":" +
+        sec;
+      await this.$swal
+        .fire({
+          title: "ยืนยัน",
+          text: "ยืนยัน",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            let payload = {
+              userid: store.getters["auth/getId"],
+              topic: this.title,
+              categoryPost: this.tagPost,
+              postDesc: this.postDesc,
+              post_time: this.time,
+            };
+            this.redirect("home");
+            try {
+              await PostService.createPost(payload).then((result) => {
+                //this.profileImage = this.API_URL + "/" + result.path;
+                console.log(result);
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        });
+    },
+  },
 };
 </script>
 

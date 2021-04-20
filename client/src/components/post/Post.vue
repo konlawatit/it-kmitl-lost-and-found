@@ -21,7 +21,7 @@
                 <div class="ml-3 mt-6 is-size-3">
                   {{post.post_time}}
                   <v-chip class="ma-2" color="pink" label text-color="white">
-                    Tags
+                    {{post.category_post}}
                   </v-chip>
                 </div>
               </div>

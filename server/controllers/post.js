@@ -33,8 +33,14 @@ controller.get('/allposts', async (req, res) => {
 })
 
 controller.post('/createpost', async (req, res) => {
+    userid = req.body.userid
+    topic = req.body.topic
+    categoryPost = req.body.categoryPost
+    postDesc = req.body.postDesc
+    post_time = req.body.post_time
+    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, postDesc:postDesc, post_time:post_time}
     try {
-        await querySql.createPost();
+        await querySql.createPost(payload);
         //console.log('result',posts)
         res.status(200).send({
             statusCode: '200',
