@@ -1,22 +1,68 @@
 <template>
   <div>
     <div id="mybutton">
+    <v-badge avatar overlap :value="notifications">
+      <template v-slot:badge >
+              <v-avatar class="has-background-danger">
+                {{notifications}}
+              </v-avatar>
+      </template>
       <button class="feedback" @click="redirect('chatroom')"><i class="fas fa-comments"></i></button>
+    </v-badge>
     </div>
   </div>
 </template>
 
 <script>
+import { io } from "socket.io-client";
+const socket = io("http://localhost:8888");
+import { mapGetters } from "vuex";
+//import ChatService from "../service/ChatService"
 export default {
-  name: "Navbar",
+  name: "IconChat",
   data() {
-    return {};
+    return {
+    };
   },
   methods:{
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
     },
+  },
+  computed: {
+    ...mapGetters("conversation", ["getRooms"]),
+    ...mapGetters("auth", ["getId"]),
+    notifications() {
+      return this.getRooms.reduce((total, currentValue) => {
+      return total + currentValue.notification
+    }, 0)
+    }
+  },
+  async mounted() {
+    // let room = await ChatService.getRooms(this.$store.getters['auth/getId'])
+    // console.log('fethc room', room)
+    // this.notifications = this.getRooms.reduce((total, currentValue) => {
+    //   return total + currentValue.notification
+    // }, 0)
+    // //this.notifications = room.reduce
+    
+      socket.on("noti_chat", async (sender_id, con_id, receiver_id) => {
+        if (this.getId == receiver_id) {
+          if (this.$router.app.$route.fullPath == '/home') {
+          //if (this.getSelectRoom.user_id != sender_id) {
+            this.getRooms.map(room => {
+              if (room.con_id == con_id) {
+                room['notification'] += 1
+              }
+              return room
+            })
+          }
+             //this.$store.dispatch("conversation/seteRooms", setRoom)
+         }
+      })
+    
+
   }
 };
 </script>

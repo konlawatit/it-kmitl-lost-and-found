@@ -122,11 +122,38 @@ controller.post('/message', async (req, res) => {
         } = req.body
         let con_id = (await querySql.getConversation(user_id, another_id)).con_id
         let addMessage = await querySql.addMessage([message, con_id, user_id])
+        querySql.addNotiChat(another_id, con_id);
         //let addMessage = con_id
-        req.io.emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
-
+        req.io.emit('chat', `${message}`, another_id) //ได้ละโว้ยยยยยยยยยยยยยย
+        req.io.emit('noti_chat', user_id, con_id, another_id);
         //io.socket.emit('chat message', '3423423423')
+
         res.status(200).send(addMessage)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
+controller.put('/clearnoti', async (req, res) => {
+    try {
+
+        let {
+            user_id,
+            con_id,
+        } = req.body
+        querySql.clearNotiChat(user_id, con_id);
+        //let addMessage = con_id
+        //io.socket.emit('chat message', '3423423423')
+
+        res.status(200).send()
     } catch (err) {
         console.log(err)
         res.status(500).send({

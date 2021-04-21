@@ -220,7 +220,7 @@ class QuerySql {
                 conn.commit();
                 return false
             } else {
-                let sql = `INSERT INTO CONVERSATIONS(con_id, user_id_1, user_id_2) VALUES(?);`
+                let sql = `INSERT INTO CONVERSATIONS(con_id, user_id_1, user_id_2, noti_user_id_1, noti_user_id_2) VALUES(?, 0, 0);`
                 let result = await conn.query(sql, [payload])
                 conn.commit();
                 return result
@@ -242,7 +242,10 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})`
-            let sql = `SELECT USER.user_name, USER.picture, USER.user_id, con_id, user_id_1, user_id_2 FROM USER INNER JOIN (SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})) AS conversations ON (user_id = user_id_2 AND user_id_2 != ${user_id}) or (user_id = user_id_1 AND user_id_1 != ${user_id})`
+            let sql = `SELECT USER.user_name, USER.picture, USER.user_id, con_id, user_id_1, user_id_2, noti_user_id_2,
+            CASE WHEN user_id_1 = ${user_id} THEN noti_user_id_1 
+            ELSE noti_user_id_2 
+            END AS notification FROM USER INNER JOIN (SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})) AS conversations ON (user_id = user_id_2 AND user_id_2 != ${user_id}) or (user_id = user_id_1 AND user_id_1 != ${user_id})`
 
             let result = await conn.query(sql)
 
@@ -272,6 +275,7 @@ class QuerySql {
             conn.commit();
             //result = msg
             //console.log(result)
+            console.log(conversation)
             return conversation
         } catch (err) {
             await conn.rollback();
@@ -307,8 +311,6 @@ class QuerySql {
         }
     }
 
-
-
     async addMessage(payload) {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
@@ -325,6 +327,64 @@ class QuerySql {
             throw new Error(err)
         } finally {
             console.log('finally add message')
+            conn.release();
+        }
+    }
+
+    async addNotiChat(target_id, con_id) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
+            //let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"\
+            let sql = `UPDATE CONVERSATIONS SET noti_user_id_1 = CASE 
+            WHEN user_id_1 = ${target_id} THEN noti_user_id_1 + 1
+            ELSE noti_user_id_1
+            END, 
+            noti_user_id_2 = CASE 
+            WHEN user_id_2 = ${target_id} THEN noti_user_id_2 + 1 
+            ELSE noti_user_id_2
+            END 
+            WHERE con_id = '${con_id}'`
+            conn.commit();
+            let result = await conn.query(sql)
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`add noti chat rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally add noti chat')
+            conn.release();
+        }
+    }
+
+    async clearNotiChat(target_id, con_id) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction();
+        try {
+            //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
+            //let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"\
+            let sql = `UPDATE CONVERSATIONS SET noti_user_id_1 = CASE 
+            WHEN user_id_1 = ${target_id} THEN 0
+            ELSE noti_user_id_1
+            END, 
+            noti_user_id_2 = CASE 
+            WHEN user_id_2 = ${target_id} THEN 0
+            ELSE noti_user_id_2
+            END 
+            WHERE con_id = '${con_id}'`
+            conn.commit();
+            let result = await conn.query(sql)
+            //console.log(result)
+            return result
+        } catch (err) {
+            await conn.rollback();
+            console.log(`add noti chat rolback`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally add noti chat')
             conn.release();
         }
     }

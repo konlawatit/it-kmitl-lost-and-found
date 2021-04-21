@@ -34,7 +34,7 @@
         </template>
       </div>
     </div>
-    <div class="columns mr-3">
+    <div class="columns mr-3" v-if="getSelectRoom.user_id">
       <div class="column is-1" id="media">
         <button class="button is-info"><i class="fas fa-image"></i></button>
       </div>
@@ -54,21 +54,16 @@ import { io } from "socket.io-client";
 import ChatService from "../../service/ChatService";
 const socket = io("http://localhost:8888");
 import { mapGetters } from "vuex";
-//const socket = io();
 console.log("socket", socket);
 export default {
   name: "Chatbox",
   data() {
     return {
       msg: "",
-      
     };
   },
   methods: {
     async sendMessage() {
-      // await axios.post("http://localhost:8888/apis/chat/message/", {
-      //   message: this.msg,user_id: 62070007, another_id: 62070011
-      // });
       let another_id = this.$store.getters["conversation/getSelectRoom"]
         .user_id;
       console.log("anot", another_id);
@@ -88,9 +83,6 @@ export default {
       });
       let myDiv = document.getElementById("chatbox");
       myDiv.scrollTop = (myDiv.scrollHeight);
-      // console.log("eeee", socket.id);
-      // socket.emit("chat message", this.msg);
-      // socket.emit("test", this.msg);
       this.msg = "";
     },
   },
@@ -102,42 +94,37 @@ export default {
     }
   },
   created() {
-    // socket.on("connect", () => {
-    //   console.log("socket id", socket.id);
-    // });
-    
-    socket.on("event1", async (msg) => {
-      console.log("event1", msg);
-      let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
-      let user_id = this.$store.getters["auth/getId"];
-      
-      await ChatService.getMessages({
-        user_id: user_id,
-        another_id: another_id,
-      }).then((data) => {
-        this.$store.dispatch("conversation/setMessages", data);
-      });
+    //ช่อง socket ในการส่งข้อความ
+    socket.on("chat", async (msg, another_id) => {
+      //เช็คว่าได้เลือกห้องหรือ ข้อความที่คนอื่นส่งมาตรงกับ user_id เราหรือไม่
+      if (this.getSelectRoom.user_id && another_id == this.getId) {
+        console.log("event 11111111111111111", another_id)
+        let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
+        let user_id = this.$store.getters["auth/getId"];
+        
+        await ChatService.getMessages({
+          user_id: user_id,
+          another_id: another_id,
+        }).then((data) => {
+          this.$store.dispatch("conversation/setMessages", data);
+        });
+          let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+          myDiv.scrollTop = (myDiv.scrollHeight);
+      }
     });
-    // socket.on('chat message', function (msg) {
-    //    console.log(msg)
-    //  })
-
-    // socket.on('chat message', (msg) => {
-    //   console.log('event2', msg)
-    // })
   },
   async mounted() {
-    let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
-      let user_id = this.$store.getters["auth/getId"];
-      
+    //กรณีมาจาก chat ตรงๆ
+    if (this.getSelectRoom.user_id) {
       await ChatService.getMessages({
-        user_id: user_id,
-        another_id: another_id,
+        user_id: this.getId,
+        another_id: this.getSelectRoom.user_id,
       }).then((data) => {
-        this.$store.dispatch("conversation/setMessages", data);
-      });
-    let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+          this.$store.dispatch("conversation/setMessages", data);
+        });
+      let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
       myDiv.scrollTop = (myDiv.scrollHeight);
+    }
   }
 };
 </script>

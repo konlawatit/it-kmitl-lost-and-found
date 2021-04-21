@@ -109,7 +109,9 @@ CREATE TABLE INFO_CHAT (
 CREATE TABLE CONVERSATIONS (
     con_id VARCHAR(255) PRIMARY KEY,
     user_id_1 int(10),
-    user_id_2 int(10)
+    user_id_2 int(10),
+    noti_user_id_1 int(10),
+    noti_user_id_2 int(10)
 );
 
 CREATE TABLE MESSAGES (

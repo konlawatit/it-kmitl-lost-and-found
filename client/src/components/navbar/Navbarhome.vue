@@ -270,6 +270,7 @@ export default {
         .then((result) => {
           if (result.isConfirmed) {
             store.dispatch("auth/clearProfile");
+            store.dispatch("conversation/clearState")
             window.gapi.auth2
               .getAuthInstance()
               .signOut()

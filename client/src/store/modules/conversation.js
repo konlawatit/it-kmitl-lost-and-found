@@ -31,6 +31,18 @@ const mutations = {
     },
     setRooms: (state, payload) => {
         state.rooms = payload
+    },
+    clearSelectRoom: (state) => {
+        state.selectRoom = {
+            user_id: '',
+            user_name: ''
+        }
+    },
+    clearMessage: (state) => {
+        state.messages = []
+    },
+    clearRooms: (state) => {
+        state.rooms = []
     }
 }
 
@@ -43,6 +55,15 @@ const actions = {
     },
     setRooms: (context, payload) => {
         context.commit('setRooms', payload)
+    },
+    clearState: (context) => {
+        context.commit('clearSelectRoom')
+        context.commit('clearMessage')
+        context.commit('clearRooms')
+    },
+    clearSelectRoom: (context) => {
+        context.commit('clearMessage')
+        context.commit('clearSelectRoom')
     }
 }
 

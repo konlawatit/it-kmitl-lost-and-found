@@ -57,6 +57,19 @@ class ChatService {
             return err
         }
     }
+
+    static async clearNoti(user_id, con_id) {
+        try {
+            let res = await axios.put(`${url}/clearnoti`, {
+                user_id: user_id,
+                con_id: con_id
+            })
+            console.log(res.data)
+            return res.data
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default ChatService;

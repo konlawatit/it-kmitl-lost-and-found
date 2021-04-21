@@ -1,17 +1,29 @@
 <template>
   <div class="list">
     <div
-      class="namediv " :class="{'has-background-link-light has-text-black' : room.user_id == getSelectRoom.user_id}"
+      class="namediv"
+      :class="{
+        'has-background-link-light has-text-black':
+          room.user_id == getSelectRoom.user_id,
+      }"
       v-for="(room, index) in getRooms"
       :key="room.con_id"
       @click="selectRoom(index)"
     >
       <div class="columns p-3">
         <div class="column is-3">
-          <v-avatar color="primary" size="56"
-            ><img :src="room.picture"
-          /></v-avatar>
+          <v-badge avatar bordered overlap :value="room.notification">
+            <template v-slot:badge >
+              <v-avatar class="has-background-danger">
+                {{room.notification}}
+              </v-avatar>
+            </template>
+            <v-avatar  color="primary" size="56">
+              <img :src="room.picture" />
+            </v-avatar>
+          </v-badge>
         </div>
+        
         <div class="column is-9">
           <div class="mt-4 is-size-6">
             {{ room.user_name }}
@@ -23,6 +35,8 @@
 </template>
 
 <script>
+import { io } from "socket.io-client";
+const socket = io("http://localhost:8888");
 import ChatService from "../../service/ChatService";
 import { mapGetters } from "vuex";
 export default {
@@ -61,22 +75,47 @@ export default {
       }).then((data) => {
         this.$store.dispatch("conversation/setMessages", data);
       });
-      let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
-      myDiv.scrollTop = (myDiv.scrollHeight);
+
+      await ChatService.clearNoti(this.getId, this.getRooms[index]['con_id']).then(() => {
+        this.getRooms[index]['notification'] = 0 //reset noti ให้เป็ร 0 เมื่อกด
+      })
+
+
+      let myDiv = window.document.getElementById("chatbox"); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+      myDiv.scrollTop = myDiv.scrollHeight;
     },
   },
+  async mounted() {
+    this.$store.dispatch('conversation/clearSelectRoom')
+  }
+  ,
+    async created() {
+      socket.on("noti_chat", async (sender_id, con_id) => {
+        if (this.getId != sender_id) {
+          if (this.getSelectRoom.user_id != sender_id) {
+            console.log('11111111111111111111111122222222222221')
+            this.getRooms.map(room => {
+              if (room.con_id == con_id) {
+                room['notification'] += 1
+              }
+              return room
+            })
+            //this.$store.dispatch("conversation/seteRooms", setRoom)
+          console.log("noto_chat", sender_id);
+          }
+        }
+      });
+      //if (this.getId) {
+        // await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
+        //   async (rooms) => {
+        //     this.$store.dispatch("conversation/setRooms", rooms);
+        //   }
+        // );
+      //}
+    },
   computed: {
     ...mapGetters("conversation", ["getRooms", "getSelectRoom"]),
     ...mapGetters("auth", ["getId"]),
-  },
-  async created() {
-    if (this.getId) {
-      await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
-        (data) => {
-          this.$store.dispatch("conversation/setRooms", data);
-        }
-      );
-    }
   },
 };
 </script>
