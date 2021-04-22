@@ -13,12 +13,14 @@
               <p class="is-size-4 ml-6 mt-2 has-text-centered">หัวข้อ :</p>
             </div>
             <div class="column is-9">
-              <input
-                type="text"
-                class="input mt-2"
-                placeholder="Title"
-                v-model="title"
-              />
+              <div>
+                <v-text-field
+                  label="Topic"
+                  :rules="rules"
+                  hide-details="auto"
+                  v-model="title"
+                ></v-text-field>
+              </div>
             </div>
           </div>
           <div class="columns">
@@ -53,40 +55,15 @@
         <div class="column is-12">
           <div class="columns">
             <div class="column is-2 has-text-centered mt-2 is-size-5">
-              วันที่ :
-            </div>
-            <div class="column is-3">
-              <input type="date" class="input" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns ml-1">
-        <div class="column is-12">
-          <div class="columns">
-            <div class="column is-2 has-text-centered mt-2 is-size-5">
-              เวลา :
-            </div>
-            <div class="column is-3">
-              <input type="time" class="input" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns ml-1">
-        <div class="column is-12">
-          <div class="columns">
-            <div class="column is-2 has-text-centered mt-2 is-size-5">
               สิ่งของ :
             </div>
             <div class="column is-5">
               <v-select
-                v-model="valueItem"
                 :items="items"
-                chips
-                label="Items"
-                multiple
-                solo
+                filled
+                label="Filled style"
+                dense
+                outlined
               ></v-select>
             </div>
           </div>
@@ -99,19 +76,16 @@
               สถานที่ :
             </div>
             <div class="column is-5">
-              <v-select
-                v-model="valueLocation"
-                :items="locations"
-                chips
-                label="Locations"
-                multiple
-                solo
-              ></v-select>
+              <v-text-field
+                  label="Place"
+                  hide-details="auto"
+                  v-model="locations"
+                ></v-text-field>
             </div>
           </div>
         </div>
       </div>
-      <div class="columns ml-1">
+      <div class="columns ml-1 mt-6">
         <div class="column is-12">
           <div class="columns">
             <div class="column is-2 has-text-centered mt-2 is-size-5">
@@ -175,12 +149,16 @@ export default {
       store,
       items: ["กระเป๋า", "เสื้อ", "แว่นตา", "Electronic"],
       valueItem: "",
-      locations: ["M04", "M03", "L207"],
+      locations: "",
       valueLocation: "",
       title: "",
       tagPost: "lost",
       postDesc: "",
       time: "",
+      rules: [
+        (value) => !!value || "Required.",
+        (value) => (value && value.length >= 3) || "Min 3 characters",
+      ],
     };
   },
   methods: {
@@ -243,6 +221,7 @@ export default {
               categoryPost: this.tagPost,
               postDesc: this.postDesc,
               post_time: this.time,
+              place: this.locations
             };
             this.redirect("home");
             try {

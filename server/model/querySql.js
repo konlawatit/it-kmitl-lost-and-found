@@ -144,12 +144,34 @@ class QuerySql {
         }
     }
 
+    async myPosts(){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = 101561095`
+            let myposts = await conn.query(sql)
+            await myposts[0].map(data => {
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            conn.commit();
+            return myposts[0]
+        } catch(err){
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all my post')
+            conn.release();
+        }
+    }
+
     async createPost(data) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = "INSERT INTO INFO_POST (user_id, topic, category_post, post_desc, post_time) VALUES(?, ?, ?, ?, ?)"
-            let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time])
+            let sql = "INSERT INTO INFO_POST (user_id, topic, category_post, post_desc, post_time, place) VALUES(?, ?, ?, ?, ?, ?)"
+            let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time, data.place])
             conn.commit()
             return {
                 result

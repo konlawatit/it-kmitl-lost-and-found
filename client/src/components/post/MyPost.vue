@@ -152,7 +152,7 @@ export default {
     };
   },
   created: async function () {
-    await PostService.getAllPosts().then((result) => {
+    await PostService.getMyPosts().then((result) => {
       console.log(result);
       this.posts = result.data;
     });

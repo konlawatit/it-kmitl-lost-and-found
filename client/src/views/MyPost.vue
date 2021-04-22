@@ -12,7 +12,7 @@
     <div class="columns">
       <div class="column is-1"></div>
       <div class="column is-7">
-        <Post></Post>
+        <MyPost></MyPost>
       </div>
       <div class="column is-4 is-mobile is-tablet is-desktop">
         <PreviousPost></PreviousPost>
@@ -27,7 +27,7 @@
 import Navbarhome from "../components/navbar/Navbarhome";
 import Category from "../components/category/Category"
 import Filterpost from "../components/filterpost/Filterpost"
-import Post from "../components/post/Post"
+import MyPost from "../components/post/MyPost"
 import PreviousPost from "../components/post/PreviousPost"
 import IconChat from "../components/IconChat"
 export default {
@@ -36,7 +36,7 @@ export default {
     Navbarhome,
     Category,
     Filterpost,
-    Post,
+    MyPost,
     PreviousPost,
     IconChat
   },

@@ -32,13 +32,41 @@ controller.get('/allposts', async (req, res) => {
     }
 })
 
+controller.get('/allmyposts', async (req, res) =>{
+    try{
+        let myposts = await querySql.myPosts ();
+        let result = []
+        for (post of myposts){
+            result.push(await post)
+        }
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all my posts',
+            data: result
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log("finally all my post")
+    }
+})
+
 controller.post('/createpost', async (req, res) => {
     userid = req.body.userid
     topic = req.body.topic
     categoryPost = req.body.categoryPost
     postDesc = req.body.postDesc
     post_time = req.body.post_time
-    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, postDesc:postDesc, post_time:post_time}
+    place = req.body.place
+    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, postDesc:postDesc, post_time:post_time, place:place}
     try {
         await querySql.createPost(payload);
         //console.log('result',posts)
