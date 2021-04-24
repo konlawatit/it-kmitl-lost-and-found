@@ -9,6 +9,7 @@
                 depressed
                 color="light-blue darken-4"
                 class="button mt-6 white--text"
+                @click="addCategory()"
                 >เพิ่มประเภทสิ่งของ</v-btn
               >
               <v-btn
@@ -37,7 +38,7 @@
         </div>
       </div>
       <div class="column is-8">
-        <v-card max-width="600" class="mx-auto">
+        <v-card max-width="600" class="mx-auto" v-show="listbox == true">
           <v-toolbar color="light-blue darken-4" dark>
             <v-toolbar-title>{{ titlelist }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -75,6 +76,30 @@
             </v-list-item>
           </v-list>
         </v-card>
+        <div v-show="add == true" class="columns mt-6">
+          <div class="column is-2"></div>
+          <div class="column is-8">
+            <v-text-field
+              label="Category"
+              :rules="rules"
+              hide-details="auto"
+            ></v-text-field>
+            <v-file-input
+              :rules="img"
+              accept="image/png, image/jpeg, image/bmp"
+              prepend-icon="mdi-camera"
+              label="Image"
+              class="mt-6"
+            ></v-file-input>
+            <div class="columns mt-2">
+              <div class="column is-8"></div>
+              <div class="column is-4">
+                <button class="button is primary white--text has-text-centered">Add</button>
+              </div>
+            </div>
+          </div>
+          <div class="column is-2"></div>
+        </div>
       </div>
     </div>
     <div class="modal" :class="{ 'is-active': edituser }">
@@ -114,6 +139,15 @@ export default {
   name: "listitem",
   data() {
     return {
+      rules: [
+        (value) => !!value || "Required.",
+        (value) => (value && value.length >= 3) || "Min 3 characters",
+      ],
+      img: [
+        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!',
+      ],
+      add: true,
+      listbox: false,
       edituser: false,
       titlelist: "",
       list: [],
@@ -154,20 +188,30 @@ export default {
     },
     changelisttolistnameban() {
       this.list = this.listnameban;
-      this.titlelist = "Banned ( " + this.list.length +" )"
+      this.titlelist = "Banned ( " + this.list.length + " )";
+      this.listbox = true;
+      this.add = false;
     },
     changelisttolistname() {
       this.list = this.listname;
-      this.titlelist = "User ( " + this.list.length +" )"
+      this.titlelist = "User ( " + this.list.length + " )";
+      this.listbox = true;
+      this.add = false;
     },
     changelisttolistposts() {
       this.list = this.listposts;
-      this.titlelist = "Post ( " + this.list.length +" )"
+      this.titlelist = "Post ( " + this.list.length + " )";
+      this.listbox = true;
+      this.add = false;
+    },
+    addCategory() {
+      this.listbox = false;
+      this.add = true;
     },
   },
   created() {
     this.list = this.listname;
-    this.titlelist = "User ( " + this.list.length +" )"
+    this.titlelist = "User ( " + this.list.length + " )";
   },
 };
 </script>
