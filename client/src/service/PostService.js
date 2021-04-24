@@ -31,6 +31,25 @@ class PostService {
             return err
         }
     }
+    static countuser(){
+        try{
+            return axios.get(`${url}/countuser`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static countpost(){
+        try{
+            return axios.get(`${url}/countpost`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
 }
 
 export default PostService;

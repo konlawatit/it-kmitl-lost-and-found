@@ -91,4 +91,50 @@ controller.post('/createpost', async (req, res) => {
     }
 })
 
+controller.get('/countuser', async (req, res) => {
+    try {
+        let result = await querySql.countUser();
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get count user111',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error!!!'
+        })
+    } finally {
+        console.log('finally count user')
+    }
+})
+
+controller.get('/countpost', async (req, res) => {
+    try {
+        let result = await querySql.countPost();
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get count user111',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error!!!'
+        })
+    } finally {
+        console.log('finally count user')
+    }
+})
+
 module.exports = controller;

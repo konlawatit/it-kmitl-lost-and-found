@@ -144,6 +144,44 @@ class QuerySql {
         }
     }
 
+    async countUser() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT count(user_id) as countuser FROM USER`
+            let result = await conn.query(sql)
+            console.log(result)
+            conn.commit();
+            return result[0][0].countuser
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            console.log(`rolback11`)
+        } finally {
+            console.log('finally count user')
+            conn.release();
+        }
+    }
+
+    async countPost() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT count(post_id) as countuser FROM INFO_POST`
+            let result = await conn.query(sql)
+            console.log(result)
+            conn.commit();
+            return result[0][0].countuser
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            console.log(`rolback11`)
+        } finally {
+            console.log('finally count user')
+            conn.release();
+        }
+    }
+
     async myPosts(id){
         const conn = await pool.getConnection();
         await conn.beginTransaction()

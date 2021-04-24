@@ -23,7 +23,6 @@
 // @ is an alias to /src
 import Navbarhome from "../components/navbar/Navbarhome";
 import CountPostandUser from "../components/admin/Count";
-// import Item from "../components/admin/Item";
 import ListItem from "../components/admin/Listitem"
 import IconChat from "../components/IconChat";
 export default {
