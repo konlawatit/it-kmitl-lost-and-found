@@ -12,9 +12,10 @@ class PostService {
             return err
         }
     }
-    static getMyPosts(){
+    static getMyPosts(payload){
+        const id = payload
         try{
-            return axios.get(`${url}/allmyposts`).then((result) => {
+            return axios.get(`${url}/allmyposts/${id}`,).then((result) => {
                 return result.data
             })
         } catch (err){

@@ -32,9 +32,10 @@ controller.get('/allposts', async (req, res) => {
     }
 })
 
-controller.get('/allmyposts', async (req, res) =>{
+controller.get('/allmyposts/:id', async (req, res) =>{
+    userid = req.params.id
     try{
-        let myposts = await querySql.myPosts ();
+        let myposts = await querySql.myPosts(userid);
         let result = []
         for (post of myposts){
             result.push(await post)

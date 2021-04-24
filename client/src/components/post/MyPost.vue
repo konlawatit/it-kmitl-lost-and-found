@@ -2,14 +2,10 @@
   <div>
     <div class="columns" id="body">
       <div class="column is-12">
-        <h1 class="ml-2 is-size-3">
-          <strong>20 มีนาคม 2564</strong>
-        </h1>
         <v-expansion-panels
           focusable
           id="post"
           class="mt-3"
-          style="border-radius: 1rem"
         >
           <v-expansion-panel v-for="(post, i) in posts" :key="i" class="mt-6">
             <i
@@ -152,7 +148,7 @@ export default {
     };
   },
   created: async function () {
-    await PostService.getMyPosts().then((result) => {
+    await PostService.getMyPosts(store.getters["auth/getId"]).then((result) => {
       console.log(result);
       this.posts = result.data;
     });

@@ -144,12 +144,12 @@ class QuerySql {
         }
     }
 
-    async myPosts(){
+    async myPosts(id){
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try{
-            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = 101561095`
-            let myposts = await conn.query(sql)
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ?`
+            let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
                 return data

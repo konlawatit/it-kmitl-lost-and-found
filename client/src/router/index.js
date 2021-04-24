@@ -8,7 +8,7 @@ import login from '../views/auth/Login.vue'
 import Confirm from '../views/auth/Confirm.vue'
 import CreatePost from '../views/CreatePost.vue'
 import MyPost from '../views/MyPost.vue'
-import Leaderboard from '../views/Leaderboard.vue'
+import Admin from '../views/Admin.vue'
 import MyProfile from '../views/MyProfile.vue'
 import ChatRoom from '../views/ChatRoom.vue'
 
@@ -46,9 +46,9 @@ const routes = [
     component: MyPost
   },
   {
-    path: '/leaderboard',
-    name: 'Leaderboard',
-    component: Leaderboard
+    path: '/admin',
+    name: 'Admin',
+    component: Admin
   },
   {
     path: '/myprofile',

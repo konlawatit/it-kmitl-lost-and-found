@@ -24,9 +24,9 @@
             <div
               class="column is-7"
               id="tabs3"
-              @click="redirect('leaderboard')"
+              @click="redirect('admin')"
             >
-              <p>Leaderboard</p>
+              <p>Admin dashboard</p>
             </div>
           </div>
         </v-tabs>
@@ -117,11 +117,11 @@
             <v-list-item-title>My post</v-list-item-title>
           </v-list-item>
 
-          <v-list-item @click="redirect('leaderboard')">
+          <v-list-item @click="redirect('admin')">
             <v-list-item-icon>
               <v-icon>fas fa-list</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Leaderboard</v-list-item-title>
+            <v-list-item-title>Admin dashboard</v-list-item-title>
           </v-list-item>
 
           <v-list-item @click="onSignOut()">
