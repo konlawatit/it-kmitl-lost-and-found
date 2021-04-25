@@ -124,7 +124,7 @@ class QuerySql {
         await conn.beginTransaction()
         try {
             //"SELECT *FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
-            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id`
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id order by INFO_POST.post_time desc`
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
@@ -186,7 +186,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try{
-            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ?`
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ? order by INFO_POST.post_time desc`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
@@ -200,6 +200,98 @@ class QuerySql {
             throw new Error(err)
         } finally {
             console.log('finally all my post')
+            conn.release();
+        }
+    }
+
+    async myLostPosts(id){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ? and INFO_POST.category_post = 'lost' order by INFO_POST.post_time desc`
+            let myposts = await conn.query(sql, [id])
+            await myposts[0].map(data => {
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            conn.commit();
+            return myposts[0]
+        } catch(err){
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all my post')
+            conn.release();
+        }
+    }
+
+    async myFoundPosts(id){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ? and INFO_POST.category_post = 'found' order by INFO_POST.post_time desc`
+            let myposts = await conn.query(sql, [id])
+            await myposts[0].map(data => {
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            conn.commit();
+            return myposts[0]
+        } catch(err){
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all my post')
+            conn.release();
+        }
+    }
+
+    async lostPosts() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id WHERE INFO_POST.category_post = 'lost' order by INFO_POST.post_time desc`
+            let posts = await conn.query(sql)
+            await posts[0].map(data => {
+                //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            //console.log(posts)
+            conn.commit();
+            return posts[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+    }
+
+    async foundPosts() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id WHERE INFO_POST.category_post = 'found' order by INFO_POST.post_time desc`
+            let posts = await conn.query(sql)
+            await posts[0].map(data => {
+                //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            //console.log(posts)
+            conn.commit();
+            return posts[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
             conn.release();
         }
     }

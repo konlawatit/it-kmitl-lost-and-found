@@ -1,5 +1,20 @@
 <template>
   <div>
+    <div class="columns is-mobile is-tablet">
+      <div class="column is-8">
+        <v-btn-toggle tile color="blue darken-4" group>
+          <v-btn id="buttonfilter" value="all" @click="allmyPosts()">
+            ทั้งหมด
+          </v-btn>
+
+          <v-btn id="buttonfilter" value="find" @click="filterLost()"> ตามหาของ </v-btn>
+
+          <v-btn id="buttonfilter" value="owner" @click="filterFound()"> ตามหาเจ้าของ </v-btn>
+
+          <input type="date" class="input mt-2" v-model="date" />
+        </v-btn-toggle>
+      </div>
+    </div>
     <div class="columns" id="body">
       <div class="column is-12">
         <v-expansion-panels
@@ -144,7 +159,8 @@ export default {
       page: 1,
       posts: [],
       commentText: "",
-      comments: {}
+      comments: {},
+      date: new Date().toISOString().slice(0, 10),
     };
   },
   created: async function () {
@@ -154,6 +170,23 @@ export default {
     });
   },
   methods: {
+    async filterLost(){
+      console.log("test lost")
+      await PostService.getmyPostsLost(store.getters["auth/getId"]).then((result) => {
+        this.posts = result.data
+      })
+    },
+    async filterFound(){
+      console.log("test found")
+      await PostService.getmyPostsFound(store.getters["auth/getId"]).then((result) => {
+        this.posts = result.data
+      })
+    },
+    async allmyPosts(){
+      await PostService.getMyPosts(store.getters["auth/getId"]).then((result) => {
+      this.posts = result.data;
+    });
+    },
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
@@ -210,5 +243,9 @@ img {
 }
 #body {
   font-family: "Kanit", sans-serif;
+}
+#buttonfilter {
+  font-family: "Kanit", sans-serif;
+  border-radius: 20rem;
 }
 </style>

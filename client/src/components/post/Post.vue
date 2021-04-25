@@ -1,16 +1,26 @@
 <template>
   <div>
+    <div class="columns is-mobile is-tablet">
+      <div class="column is-8">
+        <v-btn-toggle tile color="blue darken-4" group>
+          <v-btn id="buttonfilter" value="all" @click="allposts()">
+            ทั้งหมด
+          </v-btn>
+
+          <v-btn id="buttonfilter" value="find" @click="filterLost()"> ตามหาของ </v-btn>
+
+          <v-btn id="buttonfilter" value="owner" @click="filterFound()"> ตามหาเจ้าของ </v-btn>
+
+          <input type="date" class="input mt-2" v-model="date" />
+        </v-btn-toggle>
+      </div>
+    </div>
     <div class="columns" id="body">
       <div class="column is-12">
         <h1 class="ml-2 is-size-3">
           <strong>20 มีนาคม 2564</strong>
         </h1>
-        <v-expansion-panels
-          focusable
-          id="post"
-          class="mt-3"
-          style="border-radius: 1rem"
-        >
+        <v-expansion-panels focusable id="post" class="mt-3">
           <v-expansion-panel v-for="(post, i) in posts" :key="i" class="mt-6">
             <i
               class="fas fa-ellipsis-h m-3"
@@ -19,9 +29,9 @@
             <div class="columns mt-6 is-mobile">
               <div class="column is-2">
                 <div class="ml-3 mt-6 is-size-3">
-                  {{post.post_time}}
+                  {{ post.post_time }}
                   <v-chip class="ma-2" color="pink" label text-color="white">
-                    {{post.category_post}}
+                    {{ post.category_post }}
                   </v-chip>
                 </div>
               </div>
@@ -47,10 +57,15 @@
                         <p class="caption mt-1">
                           {{ post.email }}
                         </p>
-                        <v-btn depressed rounded text @click="createChatRoom(post.user_id, post.user_name)"  v-if="post.user_id !== $store.getters['auth/getId']">
+                        <v-btn
+                          depressed
+                          rounded
+                          text
+                          @click="createChatRoom(post.user_id, post.user_name)"
+                          v-if="post.user_id !== $store.getters['auth/getId']"
+                        >
                           Chat
                         </v-btn>
-                       
                       </div>
                     </v-list-item-content>
                   </v-card>
@@ -58,50 +73,71 @@
               </div>
               <div class="column is-6 mt-3 ml-6">
                 {{ post.topic }}
-                <p class="mt-3">{{post.place}}</p>
+                <p class="mt-3">{{ post.place }}</p>
                 <p class="mt-3">{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
                 <img :src="post.post_picture" alt="John" />
               </div>
             </div>
-            <v-expansion-panel-header @click="getComments(post.post_id)"> Comments</v-expansion-panel-header>
+            <v-expansion-panel-header @click="getComments(post.post_id)">
+              Comments</v-expansion-panel-header
+            >
             <v-expansion-panel-content class="mt-6">
-              <div class="columns" v-for="comment in comments" :key="comment.comment_no" :id="comment.comment_no">
+              <div
+                class="columns"
+                v-for="comment in comments"
+                :key="comment.comment_no"
+                :id="comment.comment_no"
+              >
                 <div class="column is-1">
                   <v-menu bottom min-width="200px" rounded offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-btn icon x-large v-on="on">
-                      <v-avatar color="primary" size="50"
-                        ><img :src="comment.picture" alt="profile"
-                      /></v-avatar>
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-list-item-content class="justify-center">
-                      <div class="mx-auto text-center">
-                        <v-avatar color="brown mb-2">
-                          <img :src="comment.picture" alt="profile" />
-                        </v-avatar>
-                        <h3 class="mt-1">{{ comment.user_name }}</h3>
-                        <h3 class="mt-1">
-                          {{ comment.firstname }} {{ comment.lastname }}
-                        </h3>
-                        <p class="caption mt-1">
-                          {{ comment.email }}
-                        </p>
-                        <v-btn depressed rounded text @click="createChatRoom(comment.user_id, comment.user_name)" v-if="comment.user_id !== $store.getters['auth/getId']">
-                          Chat
-                        </v-btn>
-                      </div>
-                    </v-list-item-content>
-                  </v-card>
-                </v-menu>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon x-large v-on="on">
+                        <v-avatar color="primary" size="50"
+                          ><img :src="comment.picture" alt="profile"
+                        /></v-avatar>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-list-item-content class="justify-center">
+                        <div class="mx-auto text-center">
+                          <v-avatar color="brown mb-2">
+                            <img :src="comment.picture" alt="profile" />
+                          </v-avatar>
+                          <h3 class="mt-1">{{ comment.user_name }}</h3>
+                          <h3 class="mt-1">
+                            {{ comment.firstname }} {{ comment.lastname }}
+                          </h3>
+                          <p class="caption mt-1">
+                            {{ comment.email }}
+                          </p>
+                          <v-btn
+                            depressed
+                            rounded
+                            text
+                            @click="
+                              createChatRoom(comment.user_id, comment.user_name)
+                            "
+                            v-if="
+                              comment.user_id !== $store.getters['auth/getId']
+                            "
+                          >
+                            Chat
+                          </v-btn>
+                        </div>
+                      </v-list-item-content>
+                    </v-card>
+                  </v-menu>
                 </div>
-                <div class="column ">
-                  {{comment.user_name}} <span class="has-text-grey">{{comment.comment_date}} เวลา {{comment.comment_time}} น. </span>
+                <div class="column">
+                  {{ comment.user_name }}
+                  <span class="has-text-grey"
+                    >{{ comment.comment_date }} เวลา
+                    {{ comment.comment_time }} น.
+                  </span>
                   <br />
-                  <p class="mt-2">{{comment.comment_desc}}</p>
+                  <p class="mt-2">{{ comment.comment_desc }}</p>
                 </div>
               </div>
               <div class="columns">
@@ -110,11 +146,16 @@
                     type="text"
                     placeholder="comments"
                     class="input is-black"
-                    v-model='commentText'
+                    v-model="commentText"
                   />
                 </div>
                 <div class="column is-2">
-                  <button @click="addComment(post.post_id)" class="button is-info">เพิ่มความคิดเห็น</button>
+                  <button
+                    @click="addComment(post.post_id)"
+                    class="button is-info"
+                  >
+                    เพิ่มความคิดเห็น
+                  </button>
                 </div>
               </div>
             </v-expansion-panel-content>
@@ -136,10 +177,10 @@
 
 <script>
 import PostService from "../../service/PostService";
-import CommentService from "../../service/CommentService"
-import ChatService from "../../service/ChatService"
+import CommentService from "../../service/CommentService";
+import ChatService from "../../service/ChatService";
 import store from "../../store/index.js";
-import {mapGetters} from "vuex"
+import { mapGetters } from "vuex";
 export default {
   name: "Post",
   data() {
@@ -148,7 +189,8 @@ export default {
       page: 1,
       posts: [],
       commentText: "",
-      comments: {}
+      comments: {},
+      date: new Date().toISOString().slice(0, 10),
     };
   },
   created: async function () {
@@ -158,44 +200,64 @@ export default {
     });
   },
   methods: {
+    async filterLost(){
+      await PostService.getPostsLost().then((result) => {
+        this.posts = result.data
+      })
+    },
+    async filterFound(){
+      await PostService.getPostsFound().then((result) => {
+        this.posts = result.data
+      })
+    },
+    async allposts(){
+      await PostService.getAllPosts().then((result) =>{
+        this.posts = result.data
+      })
+    },
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
     },
     async getComments(postId) {
       //get all comments on each post
-      this.commentText = ''
-      console.log(postId)
-      await CommentService.getComments(postId).then(result => {
-        this.comments = result
-      })
+      this.commentText = "";
+      console.log(postId);
+      await CommentService.getComments(postId).then((result) => {
+        this.comments = result;
+      });
       //alert('comment add'+postId)
     },
     async addComment(postId) {
-      await CommentService.createComment({postId, commentText: this.commentText, user_id: this.$store.getters['auth/getId']}).then(async (result) => {
-        this.commentText = ""
-        this.comments = result
-      })
-      
+      await CommentService.createComment({
+        postId,
+        commentText: this.commentText,
+        user_id: this.$store.getters["auth/getId"],
+      }).then(async (result) => {
+        this.commentText = "";
+        this.comments = result;
+      });
     },
     async createChatRoom(another_id, another_name) {
-      await ChatService.createConversation(this.$store.getters['auth/getId'], another_id)
+      await ChatService.createConversation(
+        this.$store.getters["auth/getId"],
+        another_id
+      );
       //console.log(this.getRooms.filter(data => data.user_id == another_id)[0]);
       //let another_user = this.getRooms.filter(data => data.user_id == another_id)[0];
       this.$store.dispatch("conversation/setSelectRoom", {
         user_id: another_id,
         user_name: another_name,
       });
-      
+
       // await ChatService.getMessages({
       //   user_id: this.$store.getters["auth/getId"],
       //   another_id: another_user.user_id,
       // }).then((data) => {
       //   this.$store.dispatch("conversation/setMessages", data);
       // });
-      this.redirect('chatroom')
-    
-    }
+      this.redirect("chatroom");
+    },
   },
   computed: {
     ...mapGetters("conversation", ["getRooms"]),
@@ -214,5 +276,9 @@ img {
 }
 #body {
   font-family: "Kanit", sans-serif;
+}
+#buttonfilter {
+  font-family: "Kanit", sans-serif;
+  border-radius: 20rem;
 }
 </style>

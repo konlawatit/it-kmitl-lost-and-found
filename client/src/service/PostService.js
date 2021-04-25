@@ -50,6 +50,49 @@ class PostService {
             return err
         }
     }
+
+    static getPostsLost(){
+        try{
+            return axios.get(`${url}/lostpost`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static getPostsFound(){
+        try{
+            return axios.get(`${url}/foundpost`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static getmyPostsLost(payload){
+        const id = payload
+        try{
+            return axios.get(`${url}/mylostpost/${id}`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            console.log(err)
+            return err
+        }
+    }
+
+    static getmyPostsFound(payload){
+        const id = payload
+        try{
+            return axios.get(`${url}/myfoundpost/${id}`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
 }
 
 export default PostService;

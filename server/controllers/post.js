@@ -60,6 +60,120 @@ controller.get('/allmyposts/:id', async (req, res) =>{
     }
 })
 
+controller.get('/lostpost', async (req, res) => {
+    try {
+        let posts = await querySql.lostPosts();
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally lost post')
+    }
+})
+
+controller.get('/foundpost', async (req, res) => {
+    try {
+        let posts = await querySql.foundPosts();
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally found post')
+    }
+})
+
+controller.get('/mylostpost/:id', async (req, res) => {
+    userid = req.params.id
+    try {
+        let posts = await querySql.myLostPosts(userid);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally lost post')
+    }
+})
+
+controller.get('/myfoundpost/:id', async (req, res) => {
+    userid = req.params.id
+    try {
+        let posts = await querySql.myFoundPosts(userid);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally found post')
+    }
+})
+
 controller.post('/createpost', async (req, res) => {
     userid = req.body.userid
     topic = req.body.topic
