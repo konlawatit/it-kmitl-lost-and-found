@@ -7,9 +7,13 @@
             ทั้งหมด
           </v-btn>
 
-          <v-btn id="buttonfilter" value="find" @click="filterLost()"> ตามหาของ </v-btn>
+          <v-btn id="buttonfilter" value="find" @click="filterLost()">
+            ตามหาของ
+          </v-btn>
 
-          <v-btn id="buttonfilter" value="owner" @click="filterFound()"> ตามหาเจ้าของ </v-btn>
+          <v-btn id="buttonfilter" value="owner" @click="filterFound()">
+            ตามหาเจ้าของ
+          </v-btn>
 
           <input type="date" class="input mt-2" v-model="date" />
         </v-btn-toggle>
@@ -22,9 +26,16 @@
         </h1>
         <v-expansion-panels focusable id="post" class="mt-3">
           <v-expansion-panel v-for="(post, i) in posts" :key="i" class="mt-6">
-            <i
+            <button
               class="fas fa-ellipsis-h m-3"
               style="float: right; font-size: 1.3rem"
+              v-if="post.user_id == store.getters['auth/getId']"
+              @click="modalEditPost(post.post_id)"
+            ></button>
+            <i
+              v-else
+              class="fas fa-ellipsis-h m-3"
+              style="float: right; font-size: 1.3rem; color: white"
             ></i>
             <div class="columns mt-6 is-mobile">
               <div class="column is-2">
@@ -172,6 +183,57 @@
         ></v-pagination>
       </div>
     </div>
+    <div class="modal" :class="{ 'is-active': editPost }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered">Edit post</p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="editPost = false"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns">
+            <div class="column is-2"></div>
+            <div class="column is-8">
+              <v-text-field
+                label="Topic"
+                hide-details="auto"
+                value=""
+                v-model="postEdit.topic"
+              ></v-text-field>
+              <v-select
+                :items="items"
+                label="Category post"
+                class="mt-6"
+                v-model="postEdit.type"
+              ></v-select>
+              <v-text-field
+                label="Place"
+                hide-details="auto"
+                value=""
+                v-model="postEdit.place"
+                class="mt-6"
+              ></v-text-field>
+              <v-textarea
+                label="Description"
+                hide-details="auto"
+                value=""
+                v-model="postEdit.post_desc"
+                class="mt-6"
+              ></v-textarea>
+            </div>
+            <div class="column is-2"></div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Save changes</button>
+          <button class="button" @click="editPost = false">Cancel</button>
+        </footer>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -191,6 +253,9 @@ export default {
       commentText: "",
       comments: {},
       date: new Date().toISOString().slice(0, 10),
+      editPost: false,
+      postEdit: { topic: "", place: "", post_desc: "", type: "aaa" },
+      items: ["lost", "found"]
     };
   },
   created: async function () {
@@ -200,20 +265,35 @@ export default {
     });
   },
   methods: {
-    async filterLost(){
+    modalEditPost(id) {
+      this.editPost = true;
+      for (var post in this.posts) {
+        console.log("test");
+        console.log(this.posts[post]);
+        if (id == this.posts[post].post_id) {
+          console.log("pass");
+          this.postEdit.topic = this.posts[post].topic;
+          this.postEdit.place = this.posts[post].place;
+          this.postEdit.post_desc = this.posts[post].post_desc;
+        } else {
+          console.log("not pass");
+        }
+      }
+    },
+    async filterLost() {
       await PostService.getPostsLost().then((result) => {
-        this.posts = result.data
-      })
+        this.posts = result.data;
+      });
     },
-    async filterFound(){
+    async filterFound() {
       await PostService.getPostsFound().then((result) => {
-        this.posts = result.data
-      })
+        this.posts = result.data;
+      });
     },
-    async allposts(){
-      await PostService.getAllPosts().then((result) =>{
-        this.posts = result.data
-      })
+    async allposts() {
+      await PostService.getAllPosts().then((result) => {
+        this.posts = result.data;
+      });
     },
     redirect(path) {
       console.log("redirect to : ", path);
