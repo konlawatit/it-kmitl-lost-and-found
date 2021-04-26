@@ -220,7 +220,7 @@
               <v-textarea
                 label="Description"
                 hide-details="auto"
-                value=""
+                item-value="lost"
                 v-model="postEdit.post_desc"
                 class="mt-6"
               ></v-textarea>
@@ -229,7 +229,8 @@
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
+          <button class="button is-success" @click="confrimEditPost(postEdit.id)">Save changes</button>
+          <button class="button is-danger">Delete post</button>
           <button class="button" @click="editPost = false">Cancel</button>
         </footer>
       </div>
@@ -254,8 +255,8 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { topic: "", place: "", post_desc: "", type: "aaa" },
-      items: ["lost", "found"]
+      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" },
+      items: ["lost", "found"],
     };
   },
   created: async function () {
@@ -265,16 +266,24 @@ export default {
     });
   },
   methods: {
+    async confrimEditPost(id){
+      console.log(id)
+      await PostService.editPost(this.postEdit).then((result) =>{
+        console.log(result)
+        this.editPost = false
+        location.reload();
+      })
+    },
     modalEditPost(id) {
       this.editPost = true;
       for (var post in this.posts) {
-        console.log("test");
-        console.log(this.posts[post]);
         if (id == this.posts[post].post_id) {
           console.log("pass");
+          this.postEdit.id = id
           this.postEdit.topic = this.posts[post].topic;
           this.postEdit.place = this.posts[post].place;
           this.postEdit.post_desc = this.posts[post].post_desc;
+          this.postEdit.type = this.posts[post].category_post;
         } else {
           console.log("not pass");
         }

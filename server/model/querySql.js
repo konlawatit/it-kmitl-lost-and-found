@@ -316,6 +316,27 @@ class QuerySql {
         }
     }
 
+    async editPost(data){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = "UPDATE INFO_POST SET topic = ?, category_post = ?, post_desc = ?, place = ? where post_id = ?"
+            let result = await conn.query(sql, [data.topic, data.type, data.post_desc, data.place, data.id])
+            conn.commit()
+            return{
+                result
+            }
+        }catch(err){
+            console.log(err)
+            console.log("err คิวรี่")
+            await conn.rollback();
+            throw new Error(err)
+        } finally{
+            console.log("finally edit post")
+            conn.release();
+        }
+    }
+
     async createComment(payload, postId) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()

@@ -93,6 +93,17 @@ class PostService {
             return err
         }
     }
+
+    static editPost(payload){
+        try{
+            return axios.post(`${url}/editpost`, {id: payload.id, topic:payload.topic, place: payload.place, post_desc: payload.post_desc,
+            type: payload.type}).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
 }
 
 export default PostService;

@@ -205,6 +205,34 @@ controller.post('/createpost', async (req, res) => {
     }
 })
 
+controller.post('/editpost', async (req, res)=>{
+    id = req.body.id
+    topic = req.body.topic
+    place = req.body.place
+    post_desc = req.body.post_desc
+    type = req.body.type
+    let payload = {id:id, topic:topic, place:place, post_desc:post_desc, type:type}
+    try{
+        await querySql.editPost(payload)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'edit post',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally edit post')
+    }
+})
+
 controller.get('/countuser', async (req, res) => {
     try {
         let result = await querySql.countUser();
