@@ -1,24 +1,5 @@
 <template>
   <div>
-    <div class="columns is-mobile is-tablet">
-      <div class="column is-8">
-        <v-btn-toggle tile color="blue darken-4" group>
-          <v-btn id="buttonfilter" value="all" @click="allposts()">
-            ทั้งหมด
-          </v-btn>
-
-          <v-btn id="buttonfilter" value="find" @click="filterLost()">
-            ตามหาของ
-          </v-btn>
-
-          <v-btn id="buttonfilter" value="owner" @click="filterFound()">
-            ตามหาเจ้าของ
-          </v-btn>
-
-          <input type="date" class="input mt-2" v-model="date" />
-        </v-btn-toggle>
-      </div>
-    </div>
     <div class="columns" id="body">
       <div class="column is-12">
         <v-expansion-panels focusable id="post" class="mt-3">
@@ -91,23 +72,87 @@
                 <img :src="post.post_picture" alt="John" />
               </div>
             </div>
-            <div class="columns mb-6 mr-4">
-              <div class="column is-10"></div>
-              <div class="column is-2">
-                <button class="button is-info" @click="redirect('detail/'+post.post_id)">More detail</button>
+            <v-expansion-panel-header @click="getComments(post.post_id)">
+              Comments</v-expansion-panel-header
+            >
+            <v-expansion-panel-content class="mt-6">
+              <div
+                class="columns"
+                v-for="comment in comments"
+                :key="comment.comment_no"
+                :id="comment.comment_no"
+              >
+                <div class="column is-1">
+                  <v-menu bottom min-width="200px" rounded offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon x-large v-on="on">
+                        <v-avatar color="primary" size="50"
+                          ><img :src="comment.picture" alt="profile"
+                        /></v-avatar>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-list-item-content class="justify-center">
+                        <div class="mx-auto text-center">
+                          <v-avatar color="brown mb-2">
+                            <img :src="comment.picture" alt="profile" />
+                          </v-avatar>
+                          <h3 class="mt-1">{{ comment.user_name }}</h3>
+                          <h3 class="mt-1">
+                            {{ comment.firstname }} {{ comment.lastname }}
+                          </h3>
+                          <p class="caption mt-1">
+                            {{ comment.email }}
+                          </p>
+                          <v-btn
+                            depressed
+                            rounded
+                            text
+                            @click="
+                              createChatRoom(comment.user_id, comment.user_name)
+                            "
+                            v-if="
+                              comment.user_id !== $store.getters['auth/getId']
+                            "
+                          >
+                            Chat
+                          </v-btn>
+                        </div>
+                      </v-list-item-content>
+                    </v-card>
+                  </v-menu>
+                </div>
+                <div class="column">
+                  {{ comment.user_name }}
+                  <span class="has-text-grey"
+                    >{{ comment.comment_date }} เวลา
+                    {{ comment.comment_time }} น.
+                  </span>
+                  <br />
+                  <p class="mt-2">{{ comment.comment_desc }}</p>
+                </div>
               </div>
-            </div>
+              <div class="columns">
+                <div class="column is-10">
+                  <input
+                    type="text"
+                    placeholder="comments"
+                    class="input is-black"
+                    v-model="commentText"
+                  />
+                </div>
+                <div class="column is-2">
+                  <button
+                    @click="addComment(post.post_id)"
+                    class="button is-info"
+                  >
+                    เพิ่มความคิดเห็น
+                  </button>
+                </div>
+              </div>
+            </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-12">
-        <v-pagination
-          v-model="page"
-          :length="15"
-          :total-visible="7"
-        ></v-pagination>
       </div>
     </div>
     <div class="modal" :class="{ 'is-active': editPost }">
@@ -176,7 +221,6 @@ export default {
   data() {
     return {
       store,
-      page: 1,
       posts: [],
       commentText: "",
       comments: {},
@@ -187,7 +231,7 @@ export default {
     };
   },
   created: async function () {
-    await PostService.getAllPosts().then((result) => {
+    await PostService.getonePosts(this.$route.params.id).then((result) => {
       console.log(result);
       this.posts = result.data;
     });
@@ -215,21 +259,6 @@ export default {
           console.log("not pass");
         }
       }
-    },
-    async filterLost() {
-      await PostService.getPostsLost().then((result) => {
-        this.posts = result.data;
-      });
-    },
-    async filterFound() {
-      await PostService.getPostsFound().then((result) => {
-        this.posts = result.data;
-      });
-    },
-    async allposts() {
-      await PostService.getAllPosts().then((result) => {
-        this.posts = result.data;
-      });
     },
     redirect(path) {
       console.log("redirect to : ", path);

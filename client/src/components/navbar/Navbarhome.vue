@@ -14,11 +14,11 @@
       ></v-app-bar-nav-icon>
       <template v-slot:extension>
         <v-tabs align-with-title v-show="window.width >= 768">
-          <div class="columns ml-1">
+          <div class="columns ml-1" v-if="store.getters['auth/getRole'] == 'admin'"> <!-- only admin role -->
             <div class="column is-6" id="tabs1" @click="redirect('home')">
               <p>Home</p>
             </div>
-            <div class="column is-6" id="tabs2" @click="redirect('mypost')">
+            <div class="column is-6" id="tabs2" @click="redirect('mypost/'+store.getters['auth/getId'])">
               <p>My post</p>
             </div>
             <div
@@ -27,6 +27,17 @@
               @click="redirect('admin')"
             >
               <p>Admin dashboard</p>
+            </div>
+          </div>
+
+          <div class="columns ml-1" v-else> <!-- normal role -->
+            <div class="column is-1"></div>
+            <div class="column is-7" id="tabs1" @click="redirect('home')">
+              <p>Home</p>
+            </div>
+             <div class="column is-1"></div>
+            <div class="column is-7" id="tabs2" @click="redirect('mypost/'+store.getters['auth/getId'])">
+              <p>My post</p>
             </div>
           </div>
         </v-tabs>
@@ -110,14 +121,14 @@
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
 
-          <v-list-item @click="redirect('mypost')">
+          <v-list-item @click="redirect('mypost/'+store.getters['auth/getId'])">
             <v-list-item-icon>
               <v-icon>fas fa-edit</v-icon>
             </v-list-item-icon>
             <v-list-item-title>My post</v-list-item-title>
           </v-list-item>
 
-          <v-list-item @click="redirect('admin')">
+          <v-list-item @click="redirect('admin')" v-if="store.getters['auth/getRole'] == 'admin'">
             <v-list-item-icon>
               <v-icon>fas fa-list</v-icon>
             </v-list-item-icon>

@@ -204,6 +204,28 @@ class QuerySql {
         }
     }
 
+    async onePosts(id){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE INFO_POST.post_id = ?`
+            let myposts = await conn.query(sql, [id])
+            await myposts[0].map(data => {
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            conn.commit();
+            return myposts[0]
+        } catch(err){
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all my post')
+            conn.release();
+        }
+    }
+
     async myLostPosts(id){
         const conn = await pool.getConnection();
         await conn.beginTransaction()

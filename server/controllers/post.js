@@ -60,6 +60,34 @@ controller.get('/allmyposts/:id', async (req, res) =>{
     }
 })
 
+controller.get('/oneposts/:id', async (req, res) =>{
+    post_id = req.params.id
+    try{
+        let myposts = await querySql.onePosts(post_id);
+        let result = []
+        for (post of myposts){
+            result.push(await post)
+        }
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get posts',
+            data: result
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log("finally post")
+    }
+})
+
 controller.get('/lostpost', async (req, res) => {
     try {
         let posts = await querySql.lostPosts();
@@ -173,6 +201,7 @@ controller.get('/myfoundpost/:id', async (req, res) => {
         console.log('finally found post')
     }
 })
+
 
 controller.post('/createpost', async (req, res) => {
     userid = req.body.userid

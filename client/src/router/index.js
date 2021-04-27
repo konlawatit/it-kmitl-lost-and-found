@@ -11,6 +11,7 @@ import MyPost from '../views/MyPost.vue'
 import Admin from '../views/Admin.vue'
 import MyProfile from '../views/MyProfile.vue'
 import ChatRoom from '../views/ChatRoom.vue'
+import Detail from '../views/Detail.vue'
 
 Vue.use(VueRouter)
 
@@ -41,9 +42,14 @@ const routes = [
     component: CreatePost
   },
   {
-    path: '/mypost',
+    path: '/mypost/:id',
     name: 'MyPost',
     component: MyPost
+  },
+  {
+    path: '/detail/:id',
+    name: 'detail',
+    component: Detail
   },
   {
     path: '/admin',
