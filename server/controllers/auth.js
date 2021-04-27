@@ -159,5 +159,32 @@ controller.post('/login/confirm/:id', upload.single('file'), async (req, res) =>
         res.send(err)
     }
 })
+controller.get('/alluser', async (req, res) => {
+    try {
+        let users = await querySql.allUser();
+        let result = []
+        for (user of users) {
+            result.push(await user)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all user',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error!',
+        })
+    } finally {
+        console.log('finally alluser')
+    }
+})
 
 module.exports = controller;

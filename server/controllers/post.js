@@ -262,6 +262,30 @@ controller.post('/editpost', async (req, res)=>{
     }
 })
 
+controller.delete('/deletepost/:id', async (req, res) => {
+    id = req.params.id
+    try {
+        await querySql.deletePost(id);
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'delete posts',
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก' + id,
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally delete post')
+    }
+})
+
 controller.get('/countuser', async (req, res) => {
     try {
         let result = await querySql.countUser();

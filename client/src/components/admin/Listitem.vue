@@ -56,11 +56,11 @@
           <v-list subheader two-line>
             <v-list-item v-for="list in list" :key="list.name">
               <v-list-item-avatar>
-                <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+                <img :src="list.picture" alt="profile" />
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title v-text="list.name"></v-list-item-title>
+                <v-list-item-title v-text="list.user_name"></v-list-item-title>
 
                 <v-list-item-subtitle
                   v-text="list.role"
@@ -68,8 +68,43 @@
                 ></v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-list-item-action>
+              <v-list-item-action v-if="store.getters['auth/getId'] != list.user_id">
                 <v-btn icon @click="editUserModal">
+                  <v-icon color="grey lighten-1">mdi-information</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card>
+        <v-card max-width="600" class="mx-auto" v-show="showlistpost == true">
+          <v-toolbar color="light-blue darken-4" dark>
+            <v-toolbar-title>{{titlePost}}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <input
+              type="text"
+              class="input mr-1"
+              style="width: 50%"
+              placeholder="Search"
+            />
+            <v-btn icon>
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </v-toolbar>
+
+          <v-list subheader two-line>
+            <v-list-item v-for="list in listposts" :key="list.name">
+
+              <v-list-item-content>
+                <v-list-item-title v-text="list.topic"></v-list-item-title>
+
+                <v-list-item-subtitle
+                  v-text="list.post_time"
+                  class="mt-1"
+                ></v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-action>
+                <v-btn icon>
                   <v-icon color="grey lighten-1">mdi-information</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -135,10 +170,14 @@
 </template>
 
 <script>
+import PostService from "../../service/PostService";
+import AuthService from "../../service/AuthService";
+import store from "../../store/index.js";
 export default {
   name: "listitem",
   data() {
     return {
+      store,
       rules: [
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
@@ -150,35 +189,11 @@ export default {
       listbox: false,
       edituser: false,
       titlelist: "",
+      titlePost: "",
+      showlistpost: false,
       list: [],
-      listname: [
-        {
-          role: "Admin",
-          name: "นายธีรภัทร์ บุญช่วยแล้ว",
-        },
-        {
-          role: "User",
-          name: "นายธีรภัทร์ บุญช่วยแล้ว",
-        },
-        {
-          role: "User",
-          name: "นายธีรภัทร์ บุญช่วยแล้ว",
-        },
-        {
-          role: "User",
-          name: "นายธีรภัทร์ บุญช่วยแล้ว",
-        },
-      ],
-      listnameban: [
-        {
-          role: "Banned",
-          name: "นายธีรภัทร์ บุญช่วยแล้ว",
-        },
-        {
-          role: "Banned",
-          name: "นายธีรภัทร์ บุญช่วยแล้ว",
-        },
-      ],
+      listname: [],
+      listnameban: [],
       listposts: [],
     };
   },
@@ -191,27 +206,36 @@ export default {
       this.titlelist = "Banned ( " + this.list.length + " )";
       this.listbox = true;
       this.add = false;
+      this.showlistpost = false;
     },
     changelisttolistname() {
       this.list = this.listname;
-      this.titlelist = "User ( " + this.list.length + " )";
+      this.titlelist = "Users ( " + this.list.length + " )";
       this.listbox = true;
       this.add = false;
+      this.showlistpost = false;
     },
     changelisttolistposts() {
-      this.list = this.listposts;
-      this.titlelist = "Post ( " + this.list.length + " )";
-      this.listbox = true;
+      this.listbox = false;
       this.add = false;
+      this.showlistpost = true;
     },
     addCategory() {
       this.listbox = false;
       this.add = true;
+      this.showlistpost = false
     },
   },
-  created() {
-    this.list = this.listname;
-    this.titlelist = "User ( " + this.list.length + " )";
+  created: async function() {
+    await PostService.getAllPosts().then((result) => {
+      console.log(result);
+      this.listposts = result.data;
+      this.titlePost = "Posts ( " + this.listposts.length + " )";
+    });
+    await AuthService.getAllUser().then((result) =>{
+      this.listname = result.data;
+      this.titlelist = "Users ( " + this.list.length + " )";
+    })
   },
 };
 </script>

@@ -116,6 +116,17 @@ class PostService {
             return err
         }
     }
+
+    static deletePost(payload){
+        const id = payload
+        try{
+            return axios.delete(`${url}/deletepost/${id}`,).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
 }
 
 export default PostService;

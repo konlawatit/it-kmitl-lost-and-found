@@ -119,6 +119,29 @@ class QuerySql {
         }
     }
 
+    async allUser() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT * FROM USER`
+            let users = await conn.query(sql)
+            await users[0].map(data =>{
+                data['picture'] = 'http://localhost:8888/' + data['picture']
+                return data
+            })
+            conn.commit();
+            return users[0]
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all user')
+            conn.release();
+        }
+    }
+
     async allPosts() {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
@@ -359,6 +382,24 @@ class QuerySql {
         }
     }
 
+    async deletePost(id){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = "DELETE FROM INFO_COMMENT WHERE INFO_POST_post_id = ?;"
+            await conn.query(sql, [id])
+            let sql2 = "DELETE FROM INFO_POST WHERE post_id = ?"
+            await conn.query(sql2, [id])
+            conn.commit()
+            return result
+        } catch(err){
+            console.log(err)
+            await conn.rollback();
+        } finally{
+            console.log("finally delete post")
+            conn.release()
+        }
+    }
     async createComment(payload, postId) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()

@@ -22,6 +22,15 @@ class AuthService {
             return err
         }
     }
+    static getAllUser() {
+        try {
+            return axios.get(`${url}/alluser`).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default AuthService;

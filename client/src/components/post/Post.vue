@@ -157,7 +157,7 @@
         </section>
         <footer class="modal-card-foot">
           <button class="button is-success" @click="confrimEditPost(postEdit.id)">Save changes</button>
-          <button class="button is-danger">Delete post</button>
+          <button class="button is-danger" @click="deletePost(postEdit.id)">Delete post</button>
           <button class="button" @click="editPost = false">Cancel</button>
         </footer>
       </div>
@@ -193,6 +193,30 @@ export default {
     });
   },
   methods: {
+    async deletePost(id){
+      console.log(id)
+      await this.$swal.fire({
+          title: "ยืนยัน",
+          text: "ต้องการลบโพสต์หรือไม่",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        }).then(async (result) =>{
+          if(result.isConfirmed){
+            location.reload()
+            this.editPost = false
+            try {
+              await PostService.deletePost(id).then((result) => {
+                console.log(result);
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        })
+    },
     async confrimEditPost(id){
       console.log(id)
       await PostService.editPost(this.postEdit).then((result) =>{
