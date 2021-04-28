@@ -31,6 +31,46 @@ class AuthService {
             return err
         }
     }
+
+    static normaltoAdmin(id) {
+        try {
+            return axios.post(`${url}/normaltoadmin`, {id:id}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
+    static admintoNormal(id) {
+        try {
+            return axios.post(`${url}/admintonormal`, {id:id}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
+    static banUser(id) {
+        try {
+            return axios.post(`${url}/banuser`, {id:id}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
+    static searchUser(text) {
+        try {
+            return axios.post(`${url}/searchuser`, {text:text}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default AuthService;

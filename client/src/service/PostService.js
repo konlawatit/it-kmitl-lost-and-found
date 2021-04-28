@@ -127,6 +127,16 @@ class PostService {
             return err
         }
     }
+
+    static searchPosts(text) {
+        try {
+            return axios.post(`${url}/searchposts`, {text:text}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default PostService;

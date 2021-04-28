@@ -47,14 +47,15 @@
               class="input mr-1"
               style="width: 50%"
               placeholder="Search"
+              v-model="searchuser"
             />
-            <v-btn icon>
+            <v-btn icon @click="searchUser()">
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </v-toolbar>
 
           <v-list subheader two-line>
-            <v-list-item v-for="list in list" :key="list.name">
+            <v-list-item v-for="list in list" :key="list.user_id">
               <v-list-item-avatar>
                 <img :src="list.picture" alt="profile" />
               </v-list-item-avatar>
@@ -68,8 +69,10 @@
                 ></v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-list-item-action v-if="store.getters['auth/getId'] != list.user_id">
-                <v-btn icon @click="editUserModal">
+              <v-list-item-action
+                v-if="store.getters['auth/getId'] != list.user_id"
+              >
+                <v-btn icon @click="editUserModal(list.user_id, list.role)">
                   <v-icon color="grey lighten-1">mdi-information</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -78,22 +81,22 @@
         </v-card>
         <v-card max-width="600" class="mx-auto" v-show="showlistpost == true">
           <v-toolbar color="light-blue darken-4" dark>
-            <v-toolbar-title>{{titlePost}}</v-toolbar-title>
+            <v-toolbar-title>{{ titlePost }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <input
               type="text"
               class="input mr-1"
               style="width: 50%"
               placeholder="Search"
+              v-model="searchposts"
             />
-            <v-btn icon>
+            <v-btn icon @click="searchPosts()">
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </v-toolbar>
 
           <v-list subheader two-line>
-            <v-list-item v-for="list in listposts" :key="list.name">
-
+            <v-list-item v-for="list in listposts" :key="list.post_id">
               <v-list-item-content>
                 <v-list-item-title v-text="list.topic"></v-list-item-title>
 
@@ -104,7 +107,7 @@
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-btn icon>
+                <v-btn icon @click="editpostModal(list.post_id)">
                   <v-icon color="grey lighten-1">mdi-information</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -129,7 +132,9 @@
             <div class="columns mt-2">
               <div class="column is-8"></div>
               <div class="column is-4">
-                <button class="button is primary white--text has-text-centered">Add</button>
+                <button class="button is primary white--text has-text-centered">
+                  Add
+                </button>
               </div>
             </div>
           </div>
@@ -151,16 +156,59 @@
           ></button>
         </header>
         <section class="modal-card-body">
-          <div class="columns" id="listedit">
-            <div class="column is-12 is-size-2 has-text-centered">
-              User to Admin
+          <div class="columns" id="listedit" v-if="userrole != 'admin'">
+            <div
+              class="column is-12 is-size-2 has-text-centered"
+              @click="normaltoadmin(userid)"
+            >
+              Normal user to Admin
+            </div>
+          </div>
+          <div class="columns" id="listedit" v-else>
+            <div
+              class="column is-12 is-size-2 has-text-centered"
+              @click="admintonormal(userid)"
+            >
+              Admin to Normal user
             </div>
           </div>
           <div class="columns" id="listedit">
             <div
               class="column is-12 is-size-2 has-text-centered has-text-danger"
+              @click="banuser(userid)"
             >
               Banned users
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="modal" :class="{ 'is-active': editpost }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered is-size-3 mt-4">Post</p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="editpost = false"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns" id="listedit">
+            <div
+              class="column is-12 is-size-2 has-text-centered"
+              @click="redirect('detail/' + postid)"
+            >
+              More detail
+            </div>
+          </div>
+          <div class="columns" id="listedit">
+            <div
+              class="column is-12 is-size-2 has-text-centered has-text-danger"
+              @click="deletePost(postid)"
+            >
+              Delete post
             </div>
           </div>
         </section>
@@ -183,11 +231,18 @@ export default {
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
       img: [
-        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!',
+        (value) =>
+          !value ||
+          value.size < 2000000 ||
+          "Avatar size should be less than 2 MB!",
       ],
       add: true,
       listbox: false,
       edituser: false,
+      userid: "",
+      userrole: "",
+      editpost: false,
+      postid: "",
       titlelist: "",
       titlePost: "",
       showlistpost: false,
@@ -195,11 +250,113 @@ export default {
       listname: [],
       listnameban: [],
       listposts: [],
+      searchuser: "",
+      searchposts: "",
     };
   },
   methods: {
-    editUserModal() {
+    async searchPosts() {
+      if (this.searchposts != "") {
+        await PostService.searchPosts(this.searchposts).then((result) => {
+          this.listposts = result.data;
+          this.titlePost = "Posts ( " + this.listposts.length + " )";
+        });
+      } else {
+        await PostService.getAllPosts().then((result) => {
+          console.log(result);
+          this.listposts = result.data;
+          this.titlePost = "Posts ( " + this.listposts.length + " )";
+        });
+      }
+    },
+    async searchUser() {
+      console.log(this.searchuser);
+      if (this.searchuser != "") {
+        await AuthService.searchUser(this.searchuser).then((result) => {
+          this.list = result.data;
+          this.titlelist = "Users ( " + this.list.length + " )";
+        });
+      } else {
+        this.list = this.listname;
+        this.titlelist = "Users ( " + this.listname.length + " )";
+      }
+    },
+    async banuser(id) {
+      console.log(id);
+      await AuthService.banUser(id).then((result) => {
+        console.log(result);
+        this.edituser = false;
+        location.reload();
+      });
+    },
+    async admintonormal(id) {
+      console.log(id);
+      await AuthService.admintoNormal(id).then((result) => {
+        console.log(result);
+        this.edituser = false;
+      });
+      await AuthService.searchUser(this.searchuser).then((result) => {
+        this.list = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+      await AuthService.getAllUser().then((result) => {
+        this.listname = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+    },
+    async normaltoadmin(id) {
+      console.log(id);
+      await AuthService.normaltoAdmin(id).then((result) => {
+        console.log(result);
+        this.edituser = false;
+      });
+      await AuthService.searchUser(this.searchuser).then((result) => {
+        this.list = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+      await AuthService.getAllUser().then((result) => {
+        this.listname = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+    },
+    async deletePost(id) {
+      console.log(id);
+      await this.$swal
+        .fire({
+          title: "ยืนยัน",
+          text: "ต้องการลบโพสต์หรือไม่",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            location.reload();
+            this.editPost = false;
+            try {
+              await PostService.deletePost(id).then((result) => {
+                console.log(result);
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        });
+    },
+    redirect(path) {
+      console.log("redirect to : ", path);
+      this.$router.push(`/${path}`);
+    },
+    editpostModal(id) {
+      this.editpost = true;
+      this.postid = id;
+    },
+    editUserModal(id, role) {
       this.edituser = true;
+      this.userid = id;
+      this.userrole = role;
     },
     changelisttolistnameban() {
       this.list = this.listnameban;
@@ -223,19 +380,19 @@ export default {
     addCategory() {
       this.listbox = false;
       this.add = true;
-      this.showlistpost = false
+      this.showlistpost = false;
     },
   },
-  created: async function() {
+  created: async function () {
     await PostService.getAllPosts().then((result) => {
       console.log(result);
       this.listposts = result.data;
       this.titlePost = "Posts ( " + this.listposts.length + " )";
     });
-    await AuthService.getAllUser().then((result) =>{
+    await AuthService.getAllUser().then((result) => {
       this.listname = result.data;
       this.titlelist = "Users ( " + this.list.length + " )";
-    })
+    });
   },
 };
 </script>

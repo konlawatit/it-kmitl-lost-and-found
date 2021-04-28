@@ -187,4 +187,97 @@ controller.get('/alluser', async (req, res) => {
     }
 })
 
+controller.post('/normaltoadmin', async (req, res)=>{
+    id = req.body.id
+    try{
+        await querySql.normaltoAdmin(id)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'change role to admin',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally change role to admin')
+    }
+})
+
+controller.post('/admintonormal', async (req, res)=>{
+    id = req.body.id
+    try{
+        await querySql.admintoNormal(id)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'change role to normal',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally change role to normal')
+    }
+})
+
+controller.post('/banuser', async (req, res)=>{
+    id = req.body.id
+    try{
+        await querySql.banUser(id)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'banned user',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally banned user 111')
+    }
+})
+
+controller.post('/searchuser', async (req, res)=>{
+    textsearch = req.body.text
+    try{
+        let result = await querySql.searchUser(textsearch)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'banned user',
+            data: result
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally search' + textsearch)
+    }
+})
+
 module.exports = controller;

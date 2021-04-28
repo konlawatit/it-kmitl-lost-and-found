@@ -125,7 +125,7 @@ class QuerySql {
         try {
             let sql = `SELECT * FROM USER`
             let users = await conn.query(sql)
-            await users[0].map(data =>{
+            await users[0].map(data => {
                 data['picture'] = 'http://localhost:8888/' + data['picture']
                 return data
             })
@@ -139,6 +139,98 @@ class QuerySql {
         } finally {
             console.log('finally all user')
             conn.release();
+        }
+    }
+
+    async normaltoAdmin(id) {
+        const conn = await pool.getConnection();
+        try {
+            let sql = `UPDATE USER SET role = 'admin' WHERE user_id = ?`
+            let user = await conn.query(sql, [id])
+            conn.commit()
+            return {
+                user
+            }
+        } catch (err) {
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally edit role")
+            conn.release();
+        }
+    }
+
+    async admintoNormal(id) {
+        const conn = await pool.getConnection();
+        try {
+            let sql = `UPDATE USER SET role = 'normal' WHERE user_id = ?`
+            let user = await conn.query(sql, [id])
+            conn.commit()
+            return {
+                user
+            }
+        } catch (err) {
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally edit role")
+            conn.release();
+        }
+    }
+
+    async banUser(id) {
+        const conn = await pool.getConnection();
+        try {
+            let sql = `UPDATE USER SET role = 'banned' WHERE user_id = ?`
+            let user = await conn.query(sql, [id])
+            conn.commit()
+            return {
+                user
+            }
+        } catch (err) {
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally edit role")
+            conn.release();
+        }
+    }
+
+    async searchUser(data) {
+        const conn = await pool.getConnection()
+        await conn.beginTransaction();
+        try {
+            let str = await conn.query("SELECT * FROM USER WHERE user_name like ?", ['%' + data + '%'])
+            await str[0].map(data => {
+                data['picture'] = 'http://localhost:8888/' + data['picture']
+                return data
+            })
+            conn.commit()
+            return str[0]
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            return next(err)
+        }
+        finally {
+            conn.release()
+        }
+    }
+
+    async searchPosts(data) {
+        const conn = await pool.getConnection()
+        await conn.beginTransaction();
+        try {
+            let str = await conn.query("SELECT *, DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST WHERE topic like ?", ['%' + data + '%'])
+            conn.commit()
+            return str[0]
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            return next(err)
+        }
+        finally {
+            conn.release()
         }
     }
 
@@ -205,10 +297,10 @@ class QuerySql {
         }
     }
 
-    async myPosts(id){
+    async myPosts(id) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ? order by INFO_POST.post_time desc`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
@@ -217,7 +309,7 @@ class QuerySql {
             })
             conn.commit();
             return myposts[0]
-        } catch(err){
+        } catch (err) {
             await conn.rollback();
             console.log(`rolback`)
             throw new Error(err)
@@ -227,10 +319,10 @@ class QuerySql {
         }
     }
 
-    async onePosts(id){
+    async onePosts(id) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE INFO_POST.post_id = ?`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
@@ -239,7 +331,7 @@ class QuerySql {
             })
             conn.commit();
             return myposts[0]
-        } catch(err){
+        } catch (err) {
             await conn.rollback();
             console.log(`rolback`)
             throw new Error(err)
@@ -249,10 +341,10 @@ class QuerySql {
         }
     }
 
-    async myLostPosts(id){
+    async myLostPosts(id) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ? and INFO_POST.category_post = 'lost' order by INFO_POST.post_time desc`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
@@ -261,7 +353,7 @@ class QuerySql {
             })
             conn.commit();
             return myposts[0]
-        } catch(err){
+        } catch (err) {
             await conn.rollback();
             console.log(`rolback`)
             throw new Error(err)
@@ -271,10 +363,10 @@ class QuerySql {
         }
     }
 
-    async myFoundPosts(id){
+    async myFoundPosts(id) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = `SELECT *, INFO_POST.picture as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id wHERE USER.user_id = ? and INFO_POST.category_post = 'found' order by INFO_POST.post_time desc`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
@@ -283,7 +375,7 @@ class QuerySql {
             })
             conn.commit();
             return myposts[0]
-        } catch(err){
+        } catch (err) {
             await conn.rollback();
             console.log(`rolback`)
             throw new Error(err)
@@ -361,41 +453,41 @@ class QuerySql {
         }
     }
 
-    async editPost(data){
+    async editPost(data) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = "UPDATE INFO_POST SET topic = ?, category_post = ?, post_desc = ?, place = ? where post_id = ?"
             let result = await conn.query(sql, [data.topic, data.type, data.post_desc, data.place, data.id])
             conn.commit()
-            return{
+            return {
                 result
             }
-        }catch(err){
+        } catch (err) {
             console.log(err)
             console.log("err คิวรี่")
             await conn.rollback();
             throw new Error(err)
-        } finally{
+        } finally {
             console.log("finally edit post")
             conn.release();
         }
     }
 
-    async deletePost(id){
+    async deletePost(id) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
-        try{
+        try {
             let sql = "DELETE FROM INFO_COMMENT WHERE INFO_POST_post_id = ?;"
             await conn.query(sql, [id])
             let sql2 = "DELETE FROM INFO_POST WHERE post_id = ?"
             await conn.query(sql2, [id])
             conn.commit()
             return result
-        } catch(err){
+        } catch (err) {
             console.log(err)
             await conn.rollback();
-        } finally{
+        } finally {
             console.log("finally delete post")
             conn.release()
         }

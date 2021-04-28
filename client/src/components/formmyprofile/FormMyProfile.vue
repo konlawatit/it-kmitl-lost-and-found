@@ -28,8 +28,8 @@
         <strong id="text2">{{ store.getters["auth/getPhone_number"] }}</strong>
       </h2>
       <h2 class="is-size-3 mb-4">
-        <strong id="text1">แต้มบุญ : </strong>
-        <strong id="text2">{{ store.getters["auth/getMerit"] }}</strong>
+        <strong id="text1">ตำแหน่ง : </strong>
+        <strong id="text2">{{ store.getters["auth/getRole"] }}</strong>
       </h2>
     </div>
   </div>
