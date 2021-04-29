@@ -29,13 +29,84 @@
           label="type"
         ></v-select>
       </div>
+      
+      <div class="columns" v-if="type == 'student'">
+        <div class="column">
+          <v-text-field
+            :counter="255"
+            label="Student ID"
+            v-model="student_id"
+            maxlength="255"
+            required
+          >
+          </v-text-field>
+        </div>
+        <div class="column">
+          <v-select
+          size="20"
+          v-model="degree"
+          :items="itemsDegree"
+          :rules="typeRules"
+          label="Degree"
+        ></v-select>
+        </div>
+        <div class="column" v-if="degree == itemsDegree[1]">
+          <v-select
+          size="20"
+          v-model="branch"
+          :items="itemsBranch2"
+          :rules="typeRules"
+          label="Branch"
+        ></v-select>
+        </div>
+        <div class="column" v-else-if="degree == itemsDegree[2]">
+          <v-select
+          size="20"
+          v-model="branch"
+          :items="itemsBranch3"
+          :rules="typeRules"
+          label="Branch"
+        ></v-select>
+        </div>
+        <div class="column" v-else>
+          <v-select
+          size="20"
+          v-model="branch"
+          :items="itemsBranch"
+          :rules="typeRules"
+          label="Branch"
+        ></v-select>
+        </div>
+        
+        <div class="column" v-if="degree == itemsDegree[0]">
+          <v-select
+          size="20"
+          v-model="year"
+          :items="itemsYear"
+          :rules="typeRules"
+          label="Year"
+        ></v-select>
+        </div>
+      </div>
+      <div class="columns" v-else-if="type == 'personnel'">
+        <div class="column">
+          <v-text-field
+            :counter="255"
+            label="Position"
+            v-model="position"
+            maxlength="255"
+            required
+          >
+          </v-text-field>
+        </div>
+      </div>
 
       <div class="columns">
         <!-- <input type="file" ref="file" @change="selectImage" /> -->
         <div class="column">
           <v-text-field
             :counter="255"
-            label="Name"
+            label="User Name"
             v-model="name"
             maxlength="255"
             required
@@ -143,9 +214,21 @@ export default {
       show2: false,
       birthday: null,
       menu: false,
+      branch: "",
+      year: "",
+      student_id: "",
+      degree: "",
       type: "",
+      position: "",
       typeRules: [(v) => !!v || "type is required"],
       itemstype: ["student", "personnel"],
+      itemsDegree: ["ปริญญาตรี", "ปริญญาโท", "ปริญญาเอก"],
+      itemsBranch: ["สาขาวิชาเทคโนโลยีสารสนเทศ", "สาขาวิชาวิทยาการข้อมูลและการวิเคราะห์เชิงธุรกิจ", "สาขาเทคโนโลยีสารสนเทศทางธุรกิจ (หลักสูตรนานาชาติ)", 
+      ],
+      itemsBranch2: ["สาขาวิชาเทคโนโลยีสารสนเทศ", "สาขาปัญญาประดิษฐ์ และการเรียนรู้เชิงลึก", 
+      ],
+      itemsBranch3: ["สาขาวิชาเทคโนโลยีสารสนเทศ"],
+      itemsYear: ["1", "2", "3", "4", "จบการศึกษา"],
       phone: "",
       profileImage: store.getters["auth/getImage"],
       saveImage: store.getters["auth/getImage"],
