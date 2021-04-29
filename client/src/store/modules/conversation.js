@@ -2,7 +2,8 @@
 const state = {
     selectRoom: {
         user_id: '',
-        user_name: ''
+        user_name: '',
+        con_id: ''
     },
     messages: [],
     rooms: []
@@ -24,7 +25,8 @@ const getters = {
 const mutations = {
     setSelectRoom: (state, payload) => {
         state.selectRoom.user_id = payload.user_id,
-        state.selectRoom.user_name = payload.user_name
+        state.selectRoom.user_name = payload.user_name,
+        state.selectRoom.con_id = payload.con_id
     },
     setMessages: (state, payload) => {
         state.messages = payload

@@ -119,7 +119,8 @@ CREATE TABLE MESSAGES (
     content text,
     con_id varchar(255),
     message_by int(10),
-    created_at date,
+    created_at datetime,
+    `is_image` boolean,
     FOREIGN KEY (con_id) REFERENCES CONVERSATIONS(con_id)
 );
 

@@ -63,9 +63,11 @@ export default {
     async selectRoom(index) {
       //let user_id = this.getRooms[index].user_id_1 == this.getId ? this.getRooms[index].user_id_2 : this.getRooms[index].user_id_1
       let user_id = this.getRooms[index].user_id;
+      let con_id = this.getRooms[index].con_id
       this.$store.dispatch("conversation/setSelectRoom", {
         user_id: user_id,
         user_name: this.getRooms[index].user_name,
+        con_id: con_id
       });
       console.log(this.$store.getters["conversation/getSelectRoom"].user_name);
 
@@ -105,13 +107,13 @@ export default {
           }
         }
       });
-      //if (this.getId) {
-        // await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
-        //   async (rooms) => {
-        //     this.$store.dispatch("conversation/setRooms", rooms);
-        //   }
-        // );
-      //}
+      if (this.getId) { //ให้แสดงผลเมื่อกดมาจากปุ่ม chat
+        await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
+          async (rooms) => {
+            this.$store.dispatch("conversation/setRooms", rooms);
+          }
+        );
+      }
     },
   computed: {
     ...mapGetters("conversation", ["getRooms", "getSelectRoom"]),

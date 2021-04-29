@@ -644,9 +644,9 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
-            let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"
+            let sql = "INSERT INTO MESSAGES(content, con_id, message_by, is_image, created_at) VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)"
             conn.commit();
-            let result = await conn.query(sql, [payload])
+            let result = await conn.query(sql, [payload[0], payload[1], payload[2], payload[3]])
             //console.log(result)
             return result
         } catch (err) {

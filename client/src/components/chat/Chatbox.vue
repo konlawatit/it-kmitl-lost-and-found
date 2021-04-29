@@ -17,7 +17,10 @@
               <v-avatar color="primary" size="70"><img :src="message.picture"
           /></v-avatar>
             </div> -->
-            <div class="column is-4 mt-2" id="mes">
+            <div class="column is-4 mt-2" id="mes" v-if='message.is_image'>
+              <img :src="'http://localhost:8888/'+message.content" alt="">
+            </div>
+            <div class="column is-4 mt-2" id="mes" v-else>
               <p>
                 {{ message.content }}
               </p>
@@ -25,7 +28,10 @@
           </div>
           <div class="columns mt-3 mr-6" v-else :key="index">
             <div class="column is-8"></div>
-            <div class="column is-4 mt-2" id="mes2">
+            <div class="column is-4 mt-2" id="mes2" v-if='message.is_image'>
+              <img :src="'http://localhost:8888/'+message.content" alt="">
+            </div>
+            <div class="column is-4 mt-2" id="mes2" v-else>
               <p>
                 {{ message.content }}
               </p>
@@ -35,43 +41,66 @@
       </div>
     </div>
     <div class="columns mr-3" v-if="getSelectRoom.user_id">
-      <div class="column is-1" id="media">
-        <button class="button is-info"><i class="fas fa-image"></i></button>
-      </div>
-      <div class="column is-10">
-        <input v-model="msg" type="text" class="input" placeholder="Message" />
-      </div>
-      <div class="column is-1">
-        <button @click="sendMessage" class="button is-info">sent</button>
-      </div>
+      <template v-if="inputImage">
+        <div class="column">
+          <v-file-input
+            label="File input"
+            filled
+            prepend-icon="mdi-camera"
+            @change="selectImages"
+          ></v-file-input>
+        </div>
+        <div class="column is-2">
+          <button @click="sendMessage" class="button is-info m-2">sent</button>
+          <button @click="cancelImage" class="button is-danger m-2">
+            Cancel
+          </button>
+        </div>
+      </template>
+      <template v-else>
+        <div class="column is-10">
+          <input
+            v-model="msg"
+            type="text"
+            class="input"
+            placeholder="Message"
+          />
+        </div>
+          <button class="button is-info m-2" @click="inputImage = !inputImage">
+            <i class="fas fa-image"></i>
+          </button>
+        <button @click="sendMessage" class="button is-info m-2">sent</button>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-
 import { io } from "socket.io-client";
 import ChatService from "../../service/ChatService";
 const socket = io("http://localhost:8888");
 import { mapGetters } from "vuex";
-console.log("socket", socket);
 export default {
   name: "Chatbox",
   data() {
     return {
       msg: "",
+      imagesFile: "",
+      inputImage: false,
     };
   },
   methods: {
     async sendMessage() {
-      let another_id = this.$store.getters["conversation/getSelectRoom"]
-        .user_id;
-      console.log("anot", another_id);
+      let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
       let user_id = this.$store.getters["auth/getId"];
+      const formData = new FormData();
+      formData.append('image', this.imagesFile ? this.imagesFile : null)
+      formData.append('user_id', user_id)
+      formData.append('another_id', another_id)
+      formData.append('message', this.msg)
       await ChatService.sendMessages({
-        user_id: user_id,
-        another_id: another_id,
-        message: this.msg,
+        formData,
+        con_id: this.getSelectRoom.con_id
       }).then(async () => {
         await ChatService.getMessages({
           user_id: user_id,
@@ -82,50 +111,84 @@ export default {
         });
       });
       let myDiv = document.getElementById("chatbox");
-      myDiv.scrollTop = (myDiv.scrollHeight);
+      myDiv.scrollTop = myDiv.scrollHeight;
       this.msg = "";
+      this.cancelImage()
     },
+    selectImages(event) {
+      if (event) {
+        console.log(event)
+        this.imagesFile = event;
+      } else {
+        this.imagesFile = ""
+      }
+    },
+    cancelImage() {
+      this.inputImage = false
+      this.imagesFile = null
+    }
+
   },
   computed: {
     ...mapGetters("conversation", ["getSelectRoom", "getMessages"]),
     ...mapGetters("auth", ["getId"]),
-    pageHeight () {
-      return document.body.scrollHeight
-    }
+    pageHeight() {
+      return document.body.scrollHeight;
+    },
   },
   created() {
     //ช่อง socket ในการส่งข้อความ
+    // socket.on("chat", async (msg, another_id) => {
+    //   console.log('11111')
+    //   //เช็คว่าได้เลือกห้องหรือ ข้อความที่คนอื่นส่งมาตรงกับ user_id เราหรือไม่
+    //   console.log(another_id, another_id,this.getId)
+    //   if (this.getSelectRoom.user_id && another_id == this.getId) {
+    //     let another_id = this.$store.getters["conversation/getSelectRoom"]
+    //       .user_id;
+    //     let user_id = this.$store.getters["auth/getId"];
+    //     await ChatService.getMessages({
+    //       user_id: user_id,
+    //       another_id: another_id,
+    //     }).then((data) => {
+    //       this.$store.dispatch("conversation/setMessages", data);
+    //     });
+    //     let myDiv = window.document.getElementById("chatbox"); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+    //     myDiv.scrollTop = myDiv.scrollHeight;
+    //   }
+    // });
+  },
+  async mounted() {
+    //กรณีมาจาก chat ตรงๆ
     socket.on("chat", async (msg, another_id) => {
+      console.log('11111')
       //เช็คว่าได้เลือกห้องหรือ ข้อความที่คนอื่นส่งมาตรงกับ user_id เราหรือไม่
+      console.log(another_id, another_id,this.getId)
       if (this.getSelectRoom.user_id && another_id == this.getId) {
-        console.log("event 11111111111111111", another_id)
-        let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
+        let another_id = this.$store.getters["conversation/getSelectRoom"]
+          .user_id;
         let user_id = this.$store.getters["auth/getId"];
-        
         await ChatService.getMessages({
           user_id: user_id,
           another_id: another_id,
         }).then((data) => {
           this.$store.dispatch("conversation/setMessages", data);
         });
-          let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
-          myDiv.scrollTop = (myDiv.scrollHeight);
+        let myDiv = window.document.getElementById("chatbox"); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+        myDiv.scrollTop = myDiv.scrollHeight;
       }
     });
-  },
-  async mounted() {
-    //กรณีมาจาก chat ตรงๆ
+
     if (this.getSelectRoom.user_id) {
       await ChatService.getMessages({
         user_id: this.getId,
         another_id: this.getSelectRoom.user_id,
       }).then((data) => {
-          this.$store.dispatch("conversation/setMessages", data);
-        });
-      let myDiv = window.document.getElementById('chatbox'); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
-      myDiv.scrollTop = (myDiv.scrollHeight);
+        this.$store.dispatch("conversation/setMessages", data);
+      });
+      let myDiv = window.document.getElementById("chatbox"); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
+      myDiv.scrollTop = myDiv.scrollHeight;
     }
-  }
+  },
 };
 </script>
 

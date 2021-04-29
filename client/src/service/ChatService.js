@@ -20,12 +20,10 @@ class ChatService {
 
     static async sendMessages(payload) {
         try {
-            console.log(payload.user_id)
-            let res = await axios.post(`${url}/message`, {
-                message: payload.message,
-                user_id: payload.user_id,
-                another_id: payload.another_id
-            })
+            console.log(payload)
+            let res = await axios.post(`${url}/message/${payload.con_id}`, 
+                payload.formData
+            )
             return res.data
         } catch (err) {
             return err
