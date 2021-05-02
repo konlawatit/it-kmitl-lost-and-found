@@ -38,7 +38,7 @@ app.use(express.urlencoded({
 }))
 
 //Custom middleware
-//app.use(logger);
+app.use(logger);
 app.use(function (req, res, next){
     req.io = io
     next();

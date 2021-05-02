@@ -371,12 +371,12 @@ export default {
                   //this.profileImage = this.API_URL + "/" + result.path;
                   console.log("er", result);
                   store.dispatch("auth/setProfile", {
-                    fullname: result.data.name,
-                    fname: result.data.given_name,
-                    lname: result.data.family_name,
+                    fullname: result.data.user_name,
+                    fname: result.data.fname,
+                    lname: result.data.lname,
                     email: result.data.email,
-                    image: result.data.picture,
-                    id: result.data.sub,
+                    image: result.data.image,
+                    id: result.data.user_id,
                     role: result.data.role,
                     type: result.data.type,
                     phone_number: result.data.phone_number,

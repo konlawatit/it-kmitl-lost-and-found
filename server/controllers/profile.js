@@ -9,7 +9,7 @@ var storage = multer.diskStorage({
     filename: function (req, file, callback) {
         // set file name
         console.log(req.params)
-        callback(null, 'profile' + '-' + req.params.id + '.png')
+        callback(null, 'profile' + '-' + req.params.email + '.png')
     }
 })
 
@@ -22,8 +22,7 @@ const querySql = new querySqlModel()
 
 controller.get('/user', async (req, res) => {
     try {
-        let user_id = req.body.user_id
-        let profile = await querySql.getUser(user_id)
+        let profile = await querySql.getUser(req.body.email)
         res.send({
             data: profile
         })
@@ -33,21 +32,19 @@ controller.get('/user', async (req, res) => {
     }
 })
 
-controller.put('/update/:id', upload.single('file'), async (req, res) => {
+controller.put('/update/:email', upload.single('file'), async (req, res) => {
     try {
-        let {name,firstname, lastname, phone_number, birthday} = req.body;
-        console.log('body ', req.body)
-        let user_id = req.params.id
-        console.log(phone_number)
+        let {user_name,fname, lname, phone_number, birthday, user_id} = req.body;
 
         if (req.file) {
-            picture = req.file.path
+            image = req.file.path
         } else {
-            picture = (req.body.linkImage).split('http://localhost:8888/')[1]
+            image = (req.body.linkImage).split('http://localhost:8888/')[1]
         }
         let sqlPayload = [
-            name, firstname, lastname, picture, birthday, phone_number, user_id
+            user_name, fname, lname, image, birthday, phone_number, user_id
         ]
+        
         await querySql.updateProfile(sqlPayload);
         console.log('pass')
         res.send('passs')

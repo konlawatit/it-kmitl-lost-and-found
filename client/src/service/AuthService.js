@@ -15,7 +15,7 @@ class AuthService {
     static async saveProfile(payload) {
         try {
 
-            let res = await axios.post(`${url}/login/confirm/${payload.user_id}`, payload.fd)
+            let res = await axios.post(`${url}/login/confirm/${payload.email}`, payload.fd)
             console.log('regois',res.data)
             return res.data
         } catch (err) {

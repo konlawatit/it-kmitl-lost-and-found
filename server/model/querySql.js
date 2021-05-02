@@ -28,15 +28,17 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
-            let sql = `SELECT EXISTS(SELECT ${column} FROM ${table} WHERE ${column} = ${target})`
+            let sql = `SELECT EXISTS(select ${column} from ${table} where ${column} = '${target}') isExists`
+            console.log(sql)
             let isExists = await conn.query(sql)
             conn.commit();
+            console.log(isExists[0])
             return {
-                'exists': isExists[0][0][sql.slice(7)]
+                'exists': isExists[0][0]['isExists']
             }
         } catch (err) {
             await conn.rollback();
-            console.log(`rolback exists`)
+            console.log(`rolback exists`, err)
             throw new Error(err)
         } finally {
             console.log('finally exists')
@@ -49,7 +51,7 @@ class QuerySql {
         await conn.beginTransaction()
         try {
             console.log('payload2', payload)
-            let sql = "INSERT INTO USER (user_id, user_name, firstname, lastname, email, picture, birthday, phone_number, `type`, merit, `role`) VALUES ?"
+            let sql = "INSERT INTO USER ( user_name, firstname, lastname, email, image, birthday, phone_number, `type`, `role`) VALUES ?"
             let result = await conn.query(sql, [payload])
             //let result = await conn.query(`INSERT INTO USER (user_id) VALUES (${payload[0]})`)
             //console.log(result)
@@ -71,7 +73,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
+            let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,image=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let result = await conn.query(sql, payload)
             conn.commit();
             return result
@@ -90,23 +92,21 @@ class QuerySql {
         await conn.beginTransaction()
         try {
             console.log('user ', user)
-            let sql = `SELECT *, DATE_FORMAT(birthday, '%Y-%m-%d') as birthday FROM USER WHERE user_id = ${user};`
+            let sql = `SELECT *, DATE_FORMAT(birthday, '%Y-%m-%d') as birthday FROM USER WHERE email = '${user}';`
             let result = await conn.query(sql)
             let user_info = result[0][0]
             console.log('user info', user_info)
             conn.commit();
             return {
-                "sub": user_info.user_id,
-                "name": user_info.user_name,
-                "sub": user_info.user_id,
+                "user_id": user_info.user_id,
+                "user_name": user_info.user_name,
                 "email": user_info.email,
-                "given_name": user_info.firstname,
-                "family_name": user_info.lastname,
-                "picture": 'http://localhost:8888/' + user_info.picture,
+                "fname": user_info.firstname,
+                "lname": user_info.lastname,
+                "image": 'http://localhost:8888/' + user_info.image,
                 'type': user_info.type,
                 'role': user_info.role,
                 'phone_number': user_info.phone_number,
-                'merit': user_info.merit,
                 'birthday': user_info.birthday
             }
         } catch (err) {
@@ -126,7 +126,7 @@ class QuerySql {
             let sql = `SELECT * FROM USER`
             let users = await conn.query(sql)
             await users[0].map(data => {
-                data['picture'] = 'http://localhost:8888/' + data['picture']
+                data['image'] = 'http://localhost:8888/' + data['image']
                 return data
             })
             conn.commit();

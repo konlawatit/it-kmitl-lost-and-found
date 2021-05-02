@@ -109,24 +109,25 @@ export default {
         await AuthService.login(googleUser.getAuthResponse().id_token).then(
           (result) => {
             if (result.statusCode == "200" && result.new_user) {
+              console.log('new user')
               store.dispatch("auth/setProfile", {
-                fullname: result.data.name,
-                fname: result.data.given_name,
-                lname: result.data.family_name,
+                fullname: result.data.user_name,
+                fname: result.data.fname,
+                lname: result.data.lname,
                 email: result.data.email,
-                image: result.data.picture,
-                id: result.data.sub,
+                image: result.data.image,
+                id: "",
                 isSigned: true,
               });
               this.redirect("login/confirm");
             } else if (result.statusCode == "200") {
               store.dispatch("auth/setProfile", {
-                fullname: result.data.name,
-                fname: result.data.given_name,
-                lname: result.data.family_name,
+                fullname: result.data.user_name,
+                fname: result.data.fname,
+                lname: result.data.lname,
                 email: result.data.email,
-                image: result.data.picture,
-                id: result.data.sub,
+                image: result.data.image,
+                id: result.data.user_id,
                 role: result.data.role,
                 type: result.data.type,
                 phone_number: result.data.phone_number,

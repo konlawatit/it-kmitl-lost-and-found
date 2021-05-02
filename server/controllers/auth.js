@@ -18,7 +18,7 @@ var storage = multer.diskStorage({
     filename: function (req, file, callback) {
         // set file name
         console.log(req.params)
-        callback(null, 'profile' + '-' + req.params.id + '.png')
+        callback(null, 'profile' + '-' + (req.params.email).split('@')[0] + '.png')
     }
 })
 
@@ -46,11 +46,9 @@ controller.post('/login', async (req, res) => {
                 //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
             });
             const payload = ticket.getPayload();
-            const userid = (payload['sub']+'').slice(0, 9);
-            console.log(payload)
-
-            if ((await querySql.exists('USER', 'user_id', userid)).exists) {
-                let user_info = await querySql.getUser(userid);
+            if ((await querySql.exists('USER', 'email', payload.email)).exists) {
+                let user_info = await querySql.getUser(payload.email);
+                console.log(user_info)
                 res.status(200).send({
                     statusCode: '200',
                     statusText: 'Request Success',
@@ -67,18 +65,18 @@ controller.post('/login', async (req, res) => {
                     messge: 'user not pass',
                 });
             } else {
-                let sqlPayload = [
-                    [userid, payload.name, payload.given_name, payload.family_name, payload.email, payload.picture]
-                ]
-                //await querySql.createUser(sqlPayload);
-                payload['sub'] = userid
-                console.log('weeeeee')
                 res.status(200).send({
                     statusCode: '200',
                     statusText: 'Request Success',
                     error: false,
                     messge: 'New user, login successful',
-                    data: payload,
+                    data: {
+                        user_name: payload.name,
+                        fname: payload.given_name,
+                        lname: payload.family_name,
+                        email: payload.email,
+                        image: payload.picture,
+                    },
                     new_user: true
                 });
             }
@@ -108,7 +106,8 @@ controller.post('/login', async (req, res) => {
 })
 
 
-controller.post('/login/confirm/:id', upload.single('file'), async (req, res) => {
+
+controller.post('/login/confirm/:email', upload.single('file'), async (req, res) => {
     try {
         let {
             name,
@@ -119,40 +118,28 @@ controller.post('/login/confirm/:id', upload.single('file'), async (req, res) =>
             type,
             email
         } = req.body
-        let user_id = req.params.id
-        console.log(user_id)
-        let picture = ''
+        
+        let image = ''
         if (req.file) {
-            picture = req.file.path
+            image = req.file.path
         } else {
             const url = req.body.linkImage
-            picture = `static\\uploads\\profile\\profile-${req.params.id}.png`
+            image = `static\\uploads\\profile\\profile-${email.split('@')[0]}.png`
             const response = await fetch(url);
             const buffer = await response.buffer();
-            fs.writeFile(`./static/uploads/profile/profile-${req.params.id}.png`, buffer, async () => {
+            fs.writeFile(`./static/uploads/profile/profile-${email.split('@')[0]}.png`, buffer, async () => {
                 console.log('finished downloading!')
             });
         }
         let sqlPayload = [
-            [user_id, name, firstname, lastname, email, picture, birthday, phone, type, 0, 'normal'],
+            [name, firstname, lastname, email, image, birthday, phone, type, 'normal'],
         ]
         console.log('payload', sqlPayload)
         await querySql.createUser(sqlPayload);
+        let user_info = await querySql.getUser(email)
         //let info = await querySql.getUser(user_id)
         console.log('create success')
-        res.send({data: {
-            "sub": user_id,
-            "name": name,
-            "email": email,
-            "given_name": firstname,
-            "family_name": lastname,
-            "picture": 'http://localhost:8888/' + picture,
-            'type': type,
-            'role': 'normal',
-            'phone_number': phone,
-            'merit': 0,
-            'birthday': birthday
-        }})
+        res.send({data: user_info})
 
     } catch (err) {
         console.log(err)

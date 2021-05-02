@@ -348,9 +348,10 @@ export default {
         fd.append("linkImage", this.profile.image);
         console.log(fd);
       }
-      fd.append("name", this.profile.name);
-      fd.append("firstname", this.profile.fname);
-      fd.append("lastname", this.profile.lname);
+      fd.append("user_id", this.getId)
+      fd.append("user_name", this.profile.name);
+      fd.append("fname", this.profile.fname);
+      fd.append("lname", this.profile.lname);
       fd.append("phone_number", this.profile.phone_number);
       fd.append("birthday", this.profile.birthday);
 
@@ -405,7 +406,7 @@ export default {
                 console.log("user", this.getId);
                 await ProfileSerice.updateProfile({
                   fd,
-                  user_id: store.getters["auth/getId"],
+                  email: (this.getEmail).split('@')[0],
                 }).then(() => {
                   store.dispatch("auth/updateProfile", {
                     fullname: this.profile.name,

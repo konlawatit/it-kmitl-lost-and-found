@@ -7,7 +7,7 @@ class AuthService {
     static async updateProfile(payload) {
         try {
 
-            let res = await axios.put(`${url}/update/${payload.user_id}`, payload.fd)
+            let res = await axios.put(`${url}/update/${payload.email}`, payload.fd)
             console.log('regois',res.data)
             return res.data
         } catch (err) {

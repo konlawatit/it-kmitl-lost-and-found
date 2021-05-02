@@ -27,22 +27,21 @@ Vue.GoogleAuth.then(async auth2 => {
                 if (!result.error) {
                     console.log('main',result)
                     store.dispatch("auth/setProfile", {
-                        fullname: result.data.name,
-                        fname: result.data.given_name,
-                        lname: result.data.family_name,
+                        fullname: result.data.user_name,
+                        fname: result.data.fname,
+                        lname: result.data.lname,
                         email: result.data.email,
-                        image: result.data.picture,
-                        id: result.data.sub,
+                        image: result.data.image,
+                        id: result.data.user_id,
                         role: result.data.role,
                         type: result.data.type,
                         phone_number: result.data.phone_number,
                         birthday: result.data.birthday,
-                        merit: result.data.merit,
                         isSigned: true,
                     });
                     if (router.app.$route.fullPath == '/') router.push(`/home`)
                     if (router.app.$route.fullPath == '/chatroom' || router.app.$route.fullPath == '/home') {
-                        await ChatService.getRooms(result.data.sub).then(data => {
+                        await ChatService.getRooms(result.data.user_id).then(data => {
                             console.log('getroom',data)
                             store.dispatch('conversation/setRooms', data)
                         })
