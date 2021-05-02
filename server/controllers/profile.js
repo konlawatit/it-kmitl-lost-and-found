@@ -22,9 +22,9 @@ const querySql = new querySqlModel()
 
 controller.get('/user', async (req, res) => {
     try {
-        let profile = await querySql.getUser(req.body.email)
+        let profile = await querySql.getUser(req.query.email)
         res.send({
-            data: profile
+            profile
         })
         
     } catch (err) {

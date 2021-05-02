@@ -19,7 +19,7 @@ Vue.use(VueSweetalert2);
 Vue.use(LoaderPlugin, {
     client_id: "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com"
 });
-
+Vue.prototype.SIGNED = true
 Vue.GoogleAuth.then(async auth2 => {
     if (auth2.isSignedIn.get()) {
         await AuthService.login(auth2.currentUser.get().getAuthResponse().id_token, 'reload').then(
@@ -39,21 +39,20 @@ Vue.GoogleAuth.then(async auth2 => {
                         birthday: result.data.birthday,
                         isSigned: true,
                     });
-                    if (router.app.$route.fullPath == '/') router.push(`/home`)
+                    // if (router.app.$route.fullPath == '/') router.push(`/home`)
                     if (router.app.$route.fullPath == '/chatroom' || router.app.$route.fullPath == '/home') {
                         await ChatService.getRooms(result.data.user_id).then(data => {
                             console.log('getroom',data)
                             store.dispatch('conversation/setRooms', data)
                         })
                     }
-                } else {
+                } 
+                else {
                     auth2.signOut()
                     router.push(`/`)
                 }
             }
         );
-    } else {
-        router.push(`/`)
     }
     console.log(auth2.isSignedIn.get());
     console.log(auth2.currentUser.get());
@@ -64,8 +63,8 @@ Vue.config.productionTip = false
 Vue.prototype.API_URL = "http://localhost:8888"
 
 new Vue({
-    router,
     store,
+    router,
     vuetify,
     render: h => h(App)
 }).$mount('#app')

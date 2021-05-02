@@ -12,18 +12,62 @@ import Admin from '../views/Admin.vue'
 import MyProfile from '../views/MyProfile.vue'
 import ChatRoom from '../views/ChatRoom.vue'
 import Detail from '../views/Detail.vue'
+import axios from 'axios'
+
+
+// import {
+//   LoaderPlugin
+// } from 'vue-google-login';
+
+// Vue.use(LoaderPlugin, {
+//   client_id: "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com"
+// });
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'login',
-    component: login
+    meta: {
+      login: true
+    },
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        const isSigned = auth2.isSignedIn.get()
+        if (isSigned && to.meta.login) next({
+          path: '/home'
+        })
+        else next();
+      })
+    },
+    component: login,
   },
   {
     path: '/login/confirm',
     name: 'Confirm',
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        if (auth2.isSignedIn.get()) {
+          let email = await auth2.currentUser.get().getBasicProfile().getEmail()
+          axios.get('http://localhost:8888/apis/auth/checkuser', {
+            params: {
+              email
+            }
+          }).then(result => {
+            if (result.data.exists) next({
+              path: '/home'
+            })
+            else next()
+          }).catch(() => {
+            next()
+          })
+        } else {
+          next({
+            path: '/'
+          })
+        }
+      })
+    },
     component: Confirm
   },
   {
@@ -34,12 +78,47 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        if (auth2.isSignedIn.get()) {
+          let email = await auth2.currentUser.get().getBasicProfile().getEmail()
+          axios.get('http://localhost:8888/apis/auth/checkuser', {
+            params: {
+              email
+            }
+          }).then(result => {
+            if (result.data.exists) next({
+              path: '/home'
+            })
+            else next()
+          }).catch(() => {
+            next()
+          })
+        } else {
+          next({
+            path: '/'
+          })
+        }
+      })
+    },
     component: Register
   },
   {
     path: '/createpost',
     name: 'CreatePost',
-    component: CreatePost
+    meta: {
+      guess: true
+    },
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        const isSigned = auth2.isSignedIn.get()
+        if (!isSigned) next({
+          path: '/'
+        })
+        else next();
+      })
+    },
+    component: CreatePost,
   },
   {
     path: '/mypost/:id',
@@ -49,21 +128,75 @@ const routes = [
   {
     path: '/detail/:id',
     name: 'detail',
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        const isSigned = auth2.isSignedIn.get()
+        if (!isSigned) next({
+          path: '/'
+        })
+        else next();
+      })
+    },
     component: Detail
   },
   {
     path: '/admin',
     name: 'Admin',
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        if (auth2.isSignedIn.get()) {
+          //const isSigned = auth2.isSignedIn.get()
+          let email = await auth2.currentUser.get().getBasicProfile().getEmail()
+          axios.get('http://localhost:8888/apis/profile/user', {
+            params: {
+              email
+            }
+          }).then(result => {
+            let role = result.data.profile.role
+            if (role == 'admin') next()
+            else next({
+              path: '/'
+            })
+          }).catch(() => {
+            next({
+              path: '/home'
+            })
+          })
+        } else {
+          next({
+            path: '/'
+          })
+        }
+      })
+    },
     component: Admin
   },
   {
     path: '/myprofile',
     name: 'MyProfile',
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        const isSigned = auth2.isSignedIn.get()
+        if (!isSigned) next({
+          path: '/'
+        })
+        else next();
+      })
+    },
     component: MyProfile
   },
   {
     path: '/chatroom',
     name: 'ChatRoome',
+    beforeEnter: (to, from, next) => {
+      Vue.GoogleAuth.then(async auth2 => {
+        const isSigned = auth2.isSignedIn.get()
+        if (!isSigned) next({
+          path: '/'
+        })
+        else next();
+      })
+    },
     component: ChatRoom
   }
 ]
@@ -73,5 +206,7 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+
 
 export default router

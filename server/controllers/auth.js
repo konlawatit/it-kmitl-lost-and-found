@@ -267,4 +267,23 @@ controller.post('/searchuser', async (req, res)=>{
     }
 })
 
+controller.get('/checkuser', async (req, res) => {
+    try {
+        let email = req.query.email
+        console.log(req)
+        let result = await querySql.exists('USER', 'email', email)
+        res.send(result)
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally search')
+    }
+})
+
 module.exports = controller;
