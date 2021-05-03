@@ -35,10 +35,20 @@ const routes = [{
       Vue.GoogleAuth.then(async auth2 => {
         const isSigned = auth2.isSignedIn.get()
         if (isSigned) {
-          alertModal('error', 'คุณเข้าสู่ระบบแล้ว')
-          next({
-            path: '/home'
+          let email = await auth2.currentUser.get().getBasicProfile().getEmail()
+          axios.get('http://localhost:8888/apis/auth/checkuser', {
+            params: {
+              email
+            }
+          }).then(result => {
+            if (result.data.exists) {
+              alertModal('error', 'คุณเข้าสู่ระบบแล้ว')
+              next({path:'/home'});
+            } else next();
           })
+          // next({
+          //   path: '/home'
+          // })
         } else next();
       })
     },

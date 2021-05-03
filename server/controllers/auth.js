@@ -138,7 +138,7 @@ controller.post('/login/confirm/:email', upload.single('file'), async (req, res)
         await querySql.createUser(sqlPayload);
         let user_info = await querySql.getUser(email)
         //let info = await querySql.getUser(user_id)
-        console.log('create success')
+        console.log('create success', user_info)
         res.send({data: user_info})
 
     } catch (err) {
@@ -345,7 +345,6 @@ controller.post('/searchuserban', async (req, res)=>{
 controller.get('/checkuser', async (req, res) => {
     try {
         let email = req.query.email
-        console.log(req)
         let result = await querySql.exists('USER', 'email', email)
         res.send(result)
     } catch (err){

@@ -25,73 +25,84 @@
           size="20"
           v-model="type"
           :items="itemstype"
-          :rules="typeRules"
+          :error-messages="typeErrors"
+          @input="$v.type.$touch()"
           label="type"
         ></v-select>
       </div>
-      
+
       <div class="columns" v-if="type == 'student'">
         <div class="column">
           <v-text-field
-            :counter="255"
+            :counter="8"
             label="Student ID"
             v-model="student_id"
-            maxlength="255"
+            :items="itemsDegree"
+            :error-messages="studentIdErrors"
+            @input="$v.student_id.$touch()"
+            maxlength="8"
             required
           >
           </v-text-field>
         </div>
         <div class="column">
           <v-select
-          size="20"
-          v-model="degree"
-          :items="itemsDegree"
-          :rules="typeRules"
-          label="Degree"
-        ></v-select>
+            size="20"
+            v-model="degree"
+            :items="itemsDegree"
+            :error-messages="degreeErrors"
+            @input="$v.degree.$touch()"
+            label="Degree"
+          ></v-select>
         </div>
         <div class="column" v-if="degree == itemsDegree[1]">
           <v-select
-          size="20"
-          v-model="branch"
-          :items="itemsBranch2"
-          :rules="typeRules"
-          label="Branch"
-        ></v-select>
+            size="20"
+            v-model="branch"
+            :items="itemsBranch2"
+            :error-messages="branchErrors"
+            @input="$v.branch.$touch()"
+            label="Branch"
+          ></v-select>
         </div>
         <div class="column" v-else-if="degree == itemsDegree[2]">
           <v-select
-          size="20"
-          v-model="branch"
-          :items="itemsBranch3"
-          :rules="typeRules"
-          label="Branch"
-        ></v-select>
+            size="20"
+            v-model="branch"
+            :items="itemsBranch3"
+            :error-messages="branchErrors"
+            @input="$v.branch.$touch()"
+            label="Branch"
+          ></v-select>
         </div>
         <div class="column" v-else>
           <v-select
-          size="20"
-          v-model="branch"
-          :items="itemsBranch"
-          :rules="typeRules"
-          label="Branch"
-        ></v-select>
+            size="20"
+            v-model="branch"
+            :items="itemsBranch"
+            :error-messages="branchErrors"
+            @input="$v.branch.$touch()"
+            label="Branch"
+          ></v-select>
         </div>
-        
+
         <div class="column" v-if="degree == itemsDegree[0]">
           <v-select
-          size="20"
-          v-model="year"
-          :items="itemsYear"
-          :rules="typeRules"
-          label="Year"
-        ></v-select>
+            size="20"
+            v-model="year"
+            :items="itemsYear"
+            :error-messages="yearErrors"
+            @input="$v.year.$touch()"
+            label="Year"
+          ></v-select>
         </div>
       </div>
       <div class="columns" v-else-if="type == 'personnel'">
         <div class="column">
           <v-text-field
             :counter="255"
+            :error-messages="positionErrors"
+            @input="$v.position.$touch()"
             label="Position"
             v-model="position"
             maxlength="255"
@@ -105,10 +116,12 @@
         <!-- <input type="file" ref="file" @change="selectImage" /> -->
         <div class="column">
           <v-text-field
-            :counter="255"
+            :error-messages="nameErrors"
+            :counter="10"
             label="User Name"
             v-model="name"
-            maxlength="255"
+            maxlength="10"
+            @input="$v.name.$touch()"
             required
           >
           </v-text-field>
@@ -119,7 +132,8 @@
           <v-text-field
             v-model="firstname"
             :counter="255"
-            :rules="firstnameRules"
+            :error-messages="firstnameErrors"
+            @input="$v.firstname.$touch()"
             label="First name"
             required
             maxlength="255"
@@ -129,7 +143,8 @@
           <v-text-field
             v-model="lastname"
             :counter="255"
-            :rules="lastnameRules"
+            :error-messages="firstnameErrors"
+            @input="$v.firstname.$touch()"
             label="Last name"
             required
             maxlength="255"
@@ -141,6 +156,8 @@
           <v-text-field
             v-model="phone"
             :counter="10"
+            :error-messages="phoneErrors"
+            @input="$v.phone.$touch()"
             label="Phone number"
             required
             maxlength="10"
@@ -158,6 +175,8 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="birthday"
+                :error-messages="birthdayErrors"
+                @input="$v.birthday.$touch()"
                 label="Birthday date"
                 prepend-icon="mdi-calendar"
                 readonly
@@ -187,29 +206,194 @@
 
 <script>
 import store from "../../store/index.js";
-//import axios from "axios";
 import AuthService from "../../service/AuthService";
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  maxLength,
+  minLength,
+  numeric,
+} from "vuelidate/lib/validators";
+
+let checkStudentId = function (val) {
+  console.log(val);
+  if (this.type !== 'student') return true
+  if (val.match(/[0-9]{3}7[0-9]{4}/)) {
+    console.log("pass");
+    return true;
+  }
+  return false;
+};
+
+let checkTypeStudent = function (val, type) {
+  //ไว้เช็คว้่เป็นtypeอะไร กัน การเช็ค error
+  if (type !== "student") return true;
+  if (required(val)) return true;
+  return false;
+};
+let checkTypePersonnel = function (val, type) {
+  //ไว้เช็คว้่เป็นtypeอะไร กัน การเช็ค error
+  if (type !== "personnel") return true;
+  if (required(val)) return true;
+  return false;
+};
+// let checkDate = function (val) {
+//   console.log(val)
+//   if (val > 'a') {
+//     return true
+//   }
+//   return false
+// }
+
 export default {
   name: "Confirm",
+  mixins: [validationMixin],
+  validations: {
+    name: { required, maxLength: maxLength(10) },
+    firstname: { required, maxLength: maxLength(255) },
+    lastname: { required, maxLength: maxLength(255) },
+    phone: {
+      required,
+      checkNum: numeric,
+      length,
+      maxLength: maxLength(10),
+      minLength: minLength(10),
+    },
+    birthday: {
+      required,
+      minValue: function (val) {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, "0");
+        var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+        var yyyy = today.getFullYear();
+        today = `${yyyy}-${mm}-${dd}`;
+        if (val < today) return true;
+        return false;
+      },
+    },
+    type: { required },
+    student_id: {
+      required: function (val) {
+        return checkTypeStudent(val, this.type);
+      },
+      minLength: minLength(8),
+      numberic: numeric,
+      check: checkStudentId,
+    },
+    degree: {
+      required: function (val) {
+        return checkTypeStudent(val, this.type);
+      },
+    },
+    branch: {
+      required: function (val) {
+        return checkTypeStudent(val, this.type);
+      },
+    },
+    year: {
+      required: function (val) {
+        return checkTypeStudent(val, this.type);
+      },
+    },
+    position: {
+      required: function (val) {
+        return checkTypePersonnel(val, this.type);
+      },
+    },
+  },
+  computed: {
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.name.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.name.maxLength)
+        errors.push("Name must be at most 10 characters long");
+      if (!this.$v.name.required) errors.push("Name is required.");
+      return errors;
+    },
+    firstnameErrors() {
+      const errors = [];
+      if (!this.$v.firstname.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.firstname.maxLength)
+        errors.push("First Name must be at most 255 characters long");
+      if (!this.$v.firstname.required) errors.push("First Name is required.");
+      return errors;
+    },
+    LastnameErrors() {
+      const errors = [];
+      if (!this.$v.lastname.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.lastname.maxLength)
+        errors.push("Last Name must be at most 255 characters long");
+      if (!this.$v.lastname.required) errors.push("Last Name is required.");
+      return errors;
+    },
+    phoneErrors() {
+      const errors = [];
+      if (!this.$v.phone.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.phone.required) errors.push("Phone number is required.");
+      if (!this.$v.phone.checkNum) errors.push("Invalid Mobile Number.");
+      if (!this.$v.phone.maxLength || !this.$v.phone.minLength)
+        errors.push("Invalid Mobile Number.");
+      return errors;
+    },
+    birthdayErrors() {
+      const errors = [];
+      if (!this.$v.birthday.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.birthday.required) errors.push("Birthday is required.");
+      if (!this.$v.birthday.minValue)
+        errors.push("Days must be less than date now.");
+      return errors;
+    },
+    typeErrors() {
+      const errors = [];
+      if (!this.$v.type.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.type.required) errors.push("Type is required.");
+      return errors;
+    },
+    studentIdErrors() {
+      const errors = [];
+      if (!this.$v.student_id.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.student_id.required) errors.push("Student ID is required.");
+      if (!this.$v.student_id.minLength)
+        errors.push("Student ID must be 8 characters.");
+      if (!this.$v.student_id.numberic) errors.push("Invalid Student ID.");
+      if (!this.$v.student_id.check)
+        errors.push("Student ID is not an IT student.");
+      return errors;
+    },
+    degreeErrors() {
+      const errors = [];
+      if (!this.$v.degree.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.degree.required) errors.push("Degree is required.");
+      return errors;
+    },
+    branchErrors() {
+      const errors = [];
+      if (!this.$v.branch.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.branch.required) errors.push("Branch is required.");
+      return errors;
+    },
+    yearErrors() {
+      const errors = [];
+      if (!this.$v.year.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.year.required) errors.push("Year is required.");
+      return errors;
+    },
+    positionErrors() {
+      const errors = [];
+
+      if (!this.$v.position.$dirty) return errors; //dirty จะ return true เมื่อ touch ไปแล้วอย่างน้อยหนึ่งครั้ง
+      if (!this.$v.position.required && this.type == "personnel")
+        errors.push("Position is required.");
+      return errors;
+    },
+  },
   data() {
     return {
       store,
       valid: true,
-      name: store.getters["auth/getFullName"],
+      name: "",
       firstname: store.getters["auth/getfname"],
-      firstnameRules: [
-        (v) => !!v || "First name is required",
-        (v) =>
-          (v && v.length <= 255) ||
-          "First name must be less than 255 characters",
-      ],
       lastname: store.getters["auth/getlname"],
-      lastnameRules: [
-        (v) => !!v || "Last name is required",
-        (v) =>
-          (v && v.length <= 255) ||
-          "Last name must be less than 255 characters",
-      ],
       show1: false,
       show2: false,
       birthday: null,
@@ -220,12 +404,16 @@ export default {
       degree: "",
       type: "",
       position: "",
-      typeRules: [(v) => !!v || "type is required"],
       itemstype: ["student", "personnel"],
       itemsDegree: ["ปริญญาตรี", "ปริญญาโท", "ปริญญาเอก"],
-      itemsBranch: ["สาขาวิชาเทคโนโลยีสารสนเทศ", "สาขาวิชาวิทยาการข้อมูลและการวิเคราะห์เชิงธุรกิจ", "สาขาเทคโนโลยีสารสนเทศทางธุรกิจ (หลักสูตรนานาชาติ)", 
+      itemsBranch: [
+        "สาขาวิชาเทคโนโลยีสารสนเทศ",
+        "สาขาวิชาวิทยาการข้อมูลและการวิเคราะห์เชิงธุรกิจ",
+        "สาขาเทคโนโลยีสารสนเทศทางธุรกิจ (หลักสูตรนานาชาติ)",
       ],
-      itemsBranch2: ["สาขาวิชาเทคโนโลยีสารสนเทศ", "สาขาปัญญาประดิษฐ์ และการเรียนรู้เชิงลึก", 
+      itemsBranch2: [
+        "สาขาวิชาเทคโนโลยีสารสนเทศ",
+        "สาขาปัญญาประดิษฐ์ และการเรียนรู้เชิงลึก",
       ],
       itemsBranch3: ["สาขาวิชาเทคโนโลยีสารสนเทศ"],
       itemsYear: ["1", "2", "3", "4", "จบการศึกษา"],
@@ -289,68 +477,68 @@ export default {
       }
     },
     async onSave() {
-      const fd = new FormData();
-      console.log(this.saveImage);
-      if (this.profileImage.substring(0, 4) === "data") {
-        fd.append("file", this.saveImage, this.saveImage.name);
-      } else {
-        console.log(1111111111111);
-        fd.append("file", null);
-        fd.append("linkImage", this.profileImage);
-      }
-      fd.append("name", this.name);
-      fd.append("firstname", this.firstname);
-      fd.append("lastname", this.lastname);
-      fd.append("phone", this.phone);
-      fd.append("birthday", this.birthday);
-      fd.append("type", this.type);
-      fd.append("user_id", store.getters["auth/getId"]);
-      fd.append("email", store.getters["auth/getEmail"]);
-      if (!this.type) {
-        console.log(this.name);
-        this.$swal.fire({
-          icon: "error",
-          title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล type",
-        });
-      } else if (!this.name) {
-        console.log(this.name);
-        this.$swal.fire({
-          icon: "error",
-          title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล Name",
-        });
-      } else if (!this.firstname) {
-        console.log(this.name);
-        this.$swal.fire({
-          icon: "error",
-          title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล First name",
-        });
-      } else if (!this.lastname) {
-        console.log(this.name);
-        this.$swal.fire({
-          icon: "error",
-          title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล Last name",
-        });
-      } else if (!this.birthday) {
-        console.log(this.name);
-        this.$swal.fire({
-          icon: "error",
-          title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล Birthdat date",
-        });
-      } else if (
-        !this.phone ||
-        this.phone.length < 10
-      ) {
-        this.$swal.fire({
-          icon: "error",
-          title: "ข้อมูลไม่ครบถ้วน",
-          text: "กรุณากรอกข้อมูล เบอร์โทรศัพท์",
-        });
-      } else {
+      this.$v.$touch();
+      // เช็คว่าในฟอร์มไม่มี error
+      if (!this.$v.$invalid) {
+        const fd = new FormData();
+        console.log(this.saveImage);
+        if (this.profileImage.substring(0, 4) === "data") {
+          fd.append("file", this.saveImage, this.saveImage.name);
+        } else {
+          console.log(1111111111111);
+          fd.append("file", null);
+          fd.append("linkImage", this.profileImage);
+        }
+        fd.append("name", this.name);
+        fd.append("firstname", this.firstname);
+        fd.append("lastname", this.lastname);
+        fd.append("phone", this.phone);
+        fd.append("birthday", this.birthday);
+        fd.append("type", this.type);
+        fd.append("user_id", store.getters["auth/getId"]);
+        fd.append("email", store.getters["auth/getEmail"]);
+        // if (!this.type) {
+        //   console.log(this.name);
+        //   this.$swal.fire({
+        //     icon: "error",
+        //     title: "ข้อมูลไม่ครบถ้วน",
+        //     text: "กรุณากรอกข้อมูล type",
+        //   });
+        // } else if (!this.name) {
+        //   console.log(this.name);
+        //   this.$swal.fire({
+        //     icon: "error",
+        //     title: "ข้อมูลไม่ครบถ้วน",
+        //     text: "กรุณากรอกข้อมูล Name",
+        //   });
+        // } else if (!this.firstname) {
+        //   console.log(this.name);
+        //   this.$swal.fire({
+        //     icon: "error",
+        //     title: "ข้อมูลไม่ครบถ้วน",
+        //     text: "กรุณากรอกข้อมูล First name",
+        //   });
+        // } else if (!this.lastname) {
+        //   console.log(this.name);
+        //   this.$swal.fire({
+        //     icon: "error",
+        //     title: "ข้อมูลไม่ครบถ้วน",
+        //     text: "กรุณากรอกข้อมูล Last name",
+        //   });
+        // } else if (!this.birthday) {
+        //   console.log(this.name);
+        //   this.$swal.fire({
+        //     icon: "error",
+        //     title: "ข้อมูลไม่ครบถ้วน",
+        //     text: "กรุณากรอกข้อมูล Birthdat date",
+        //   });
+        // } else if (!this.phone || this.phone.length < 10) {
+        //   this.$swal.fire({
+        //     icon: "error",
+        //     title: "ข้อมูลไม่ครบถ้วน",
+        //     text: "กรุณากรอกข้อมูล เบอร์โทรศัพท์",
+        //   });
+        //} else {
         await this.$swal
           .fire({
             title: "ยืนยัน",
@@ -403,12 +591,16 @@ export default {
       }
     },
   },
+
   watch: {
     menu(val) {
       val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     },
   },
   created: function () {
+    // if (!window.gapi.auth2.isSignedIn.get()) {
+    //   this.$router.push(`/`);
+    // }
     console.log("path", process.env);
   },
 };

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store/index'
+import Vuelidate from 'vuelidate'
 import {
     LoaderPlugin
 } from 'vue-google-login';
@@ -15,6 +16,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import ChatService from './service/ChatService'
 
 Vue.use(VueSweetalert2);
+Vue.use(Vuelidate);
 
 Vue.use(LoaderPlugin, {
     client_id: "869793669585-thq4uiq4ir7cqqsdg0p90cafo28hu61d.apps.googleusercontent.com"
