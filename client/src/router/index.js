@@ -34,10 +34,12 @@ const routes = [{
     beforeEnter: (to, from, next) => {
       Vue.GoogleAuth.then(async auth2 => {
         const isSigned = auth2.isSignedIn.get()
-        if (isSigned && to.meta.login) next({
-          path: '/home'
-        })
-        else next();
+        if (isSigned) {
+          alertModal('error', 'คุณเข้าสู่ระบบแล้ว')
+          next({
+            path: '/home'
+          })
+        } else next();
       })
     },
     component: login,
@@ -54,14 +56,19 @@ const routes = [{
               email
             }
           }).then(result => {
-            if (result.data.exists) next({
-              path: '/home'
-            })
-            else next()
+            if (result.data.exists) {
+              alertModal('error', 'คุณมีข้อมูลในระบบแล้ว')
+              next({
+                path: '/home'
+              })
+            } else next()
           }).catch(() => {
-            next()
+            alertModal('error', 'ระบบมีปัญหากรุณา login ใหม่อีกครั้ง')
+            auth2.signOut()
+            next('/')
           })
         } else {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
           next({
             path: '/'
           })
@@ -87,14 +94,19 @@ const routes = [{
               email
             }
           }).then(result => {
-            if (result.data.exists) next({
-              path: '/home'
-            })
-            else next()
+            if (result.data.exists) {
+              alertModal('error', 'คุณมีข้อมูลในระบบแล้ว')
+              next({
+                path: '/home'
+              })
+            } else next()
           }).catch(() => {
-            next()
+            alertModal('error', 'ระบบมีปัญหากรุณา login ใหม่อีกครั้ง')
+            auth2.signOut()
+            next('/')
           })
         } else {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
           next({
             path: '/'
           })
@@ -112,10 +124,12 @@ const routes = [{
     beforeEnter: (to, from, next) => {
       Vue.GoogleAuth.then(async auth2 => {
         const isSigned = auth2.isSignedIn.get()
-        if (!isSigned) next({
-          path: '/'
-        })
-        else next();
+        if (!isSigned) {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
+          next({
+            path: '/'
+          })
+        } else next();
       })
     },
     component: CreatePost,
@@ -123,6 +137,34 @@ const routes = [{
   {
     path: '/mypost/:id',
     name: 'MyPost',
+    beforeEnter: (to, from, next) => {
+      console.log(to)
+      Vue.GoogleAuth.then(async auth2 => {
+        const isSigned = auth2.isSignedIn.get()
+        if (isSigned) {
+          let email = await auth2.currentUser.get().getBasicProfile().getEmail()
+          axios.get('http://localhost:8888/apis/profile/user', {
+            params: {
+              email
+            }
+          }).then(result => {
+            let user_id = (result.data.profile.user_id) + ''
+            if (user_id !== to.params.id) next({
+              path: (`/mypost/${user_id}`)
+            })
+            else next();
+          }).catch(() => {
+            alertModal('error', 'เกิดความผิดพลาด')
+            next('/home')
+          })
+        } else {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
+          next({
+            path: '/'
+          })
+        }
+      })
+    },
     component: MyPost
   },
   {
@@ -131,10 +173,12 @@ const routes = [{
     beforeEnter: (to, from, next) => {
       Vue.GoogleAuth.then(async auth2 => {
         const isSigned = auth2.isSignedIn.get()
-        if (!isSigned) next({
-          path: '/'
-        })
-        else next();
+        if (!isSigned) {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
+          next({
+            path: '/'
+          })
+        } else next();
       })
     },
     component: Detail
@@ -154,15 +198,20 @@ const routes = [{
           }).then(result => {
             let role = result.data.profile.role
             if (role == 'admin') next()
-            else next({
-              path: '/'
-            })
+            else {
+              alertModal('error', 'เข้าใช้งานได้เฉพาะผู้ดูแล')
+              next({
+                path: '/'
+              })
+            }
           }).catch(() => {
+            alertModal('error', 'เกิดความผิดพลาดในระบบ')
             next({
               path: '/home'
             })
           })
         } else {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
           next({
             path: '/'
           })
@@ -191,21 +240,44 @@ const routes = [{
     beforeEnter: (to, from, next) => {
       Vue.GoogleAuth.then(async auth2 => {
         const isSigned = auth2.isSignedIn.get()
-        if (!isSigned) next({
-          path: '/'
-        })
-        else next();
+        if (!isSigned) {
+          alertModal('error', 'กรุณาเข้าสู่ระบบ')
+          next({
+            path: '/'
+          })
+        } else next();
       })
     },
     component: ChatRoom
+  },
+  {
+    path: "*",
+    name: 'pageNotFound',
+    beforeEnter: (to, from, next) => {
+      alertModal('error', 'ไม่พบหน้าที่ต้องการ')
+      next()
+    },
+    component: Home
   }
 ]
+
+const alertModal = (icon, title, text) => {
+  Vue.swal.fire({
+    icon: icon,
+    title: title,
+    text: text,
+  });
+
+  return
+}
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+
+
 
 
 
