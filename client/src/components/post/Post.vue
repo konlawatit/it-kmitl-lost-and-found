@@ -26,7 +26,7 @@
             <button
               class="fas fa-ellipsis-h m-3"
               style="float: right; font-size: 1.3rem"
-              v-if="post.user_id == store.getters['auth/getId']"
+              v-if="post.user_id == store.getters['auth/getId'] || store.getters['auth/getRole'] == 'admin'"
               @click="modalEditPost(post.post_id)"
             ></button>
             <i
@@ -205,7 +205,14 @@ export default {
           confirmButtonText: "Yes",
         }).then(async (result) =>{
           if(result.isConfirmed){
-            location.reload()
+            let index = 0
+            for (var i in this.posts){
+              if(this.posts[i].post_id == id){
+                index = i
+                break
+              }
+            }
+            this.posts.splice(index, 1)
             this.editPost = false
             try {
               await PostService.deletePost(id).then((result) => {
@@ -218,11 +225,19 @@ export default {
         })
     },
     async confrimEditPost(id){
-      console.log(id)
+      for(var i in this.posts){
+        if(this.posts[i].post_id == id){
+          console.log("pass")
+          this.posts[i].topic = this.postEdit.topic
+          this.posts[i].place = this.postEdit.place
+          this.posts[i].post_desc = this.postEdit.post_desc
+          this.posts[i].category_post = this.postEdit.type
+          break
+        }
+      }
       await PostService.editPost(this.postEdit).then((result) =>{
         console.log(result)
         this.editPost = false
-        location.reload();
       })
     },
     modalEditPost(id) {

@@ -142,6 +142,29 @@ class QuerySql {
         }
     }
 
+    async allUserBan() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT * FROM USER WHERE role = 'banned'`
+            let users = await conn.query(sql)
+            await users[0].map(data => {
+                data['image'] = 'http://localhost:8888/' + data['image']
+                return data
+            })
+            conn.commit();
+            return users[0]
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all user')
+            conn.release();
+        }
+    }
+
     async normaltoAdmin(id) {
         const conn = await pool.getConnection();
         try {
@@ -196,11 +219,50 @@ class QuerySql {
         }
     }
 
+    async unlockBanUser(id) {
+        const conn = await pool.getConnection();
+        try {
+            let sql = `UPDATE USER SET role = 'normal' WHERE user_id = ?`
+            let user = await conn.query(sql, [id])
+            conn.commit()
+            return {
+                user
+            }
+        } catch (err) {
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally unlock ban")
+            conn.release();
+        }
+    }
+
     async searchUser(data) {
         const conn = await pool.getConnection()
         await conn.beginTransaction();
         try {
             let str = await conn.query("SELECT * FROM USER WHERE user_name like ?", ['%' + data + '%'])
+            await str[0].map(data => {
+                data['picture'] = 'http://localhost:8888/' + data['picture']
+                return data
+            })
+            conn.commit()
+            return str[0]
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            return next(err)
+        }
+        finally {
+            conn.release()
+        }
+    }
+
+    async searchUserBan(data) {
+        const conn = await pool.getConnection()
+        await conn.beginTransaction();
+        try {
+            let str = await conn.query("SELECT * FROM USER WHERE user_name like ? && role = 'banned'", ['%' + data + '%'])
             await str[0].map(data => {
                 data['picture'] = 'http://localhost:8888/' + data['picture']
                 return data
@@ -479,10 +541,17 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = "DELETE FROM INFO_COMMENT WHERE INFO_POST_post_id = ?;"
-            await conn.query(sql, [id])
-            let sql2 = "DELETE FROM INFO_POST WHERE post_id = ?"
+            let sql1 = "DELETE FROM INFO_POST_POST_IMAGE WHERE INFO_POST_post_id = ?"
+            await conn.query(sql1, [id])
+            let sql2 = "DELETE FROM CATEGORY_ITEM_INFO_POST WHERE INFO_POST_post_id = ?"
             await conn.query(sql2, [id])
+            let sql3 = "DELETE FROM INFO_COMMENT_COMMENT_IMAGE WHERE INFO_COMMENT_comment_no in (\
+            SELECT comment_no FROM INFO_COMMENT WHERE INFO_POST_post_id = ?)"
+            await conn.query(sql3, [id])
+            let sql4 = "DELETE FROM INFO_COMMENT WHERE INFO_POST_post_id = ?;"
+            await conn.query(sql4, [id])
+            let sql5 = "DELETE FROM INFO_POST WHERE post_id = ?"
+            await conn.query(sql5, [id])
             conn.commit()
             return result
         } catch (err) {
@@ -715,6 +784,25 @@ class QuerySql {
         } finally {
             console.log('finally add noti chat')
             conn.release();
+        }
+    }
+
+    async addItem(item){
+        const conn = await pool.getConnection();
+        try{
+            let sql = `INSERT INTO CATEGORY_ITEM (name, USER_user_id, image) values(?, 21, './static/uploads/imageItem/newItem.png')`
+            let result = await conn.query(sql, [item, item])
+            conn.commit()
+            return{
+                result
+            }
+        } catch(err){
+            await conn.rollback()
+            console.log(err)
+            throw new Error(err)
+        } finally {
+            console.log('finally add item')
+            conn.release()
         }
     }
 

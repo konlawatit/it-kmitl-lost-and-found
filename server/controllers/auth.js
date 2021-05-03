@@ -174,6 +174,34 @@ controller.get('/alluser', async (req, res) => {
     }
 })
 
+controller.get('/alluserban', async (req, res) => {
+    try {
+        let users = await querySql.allUserBan();
+        let result = []
+        for (user of users) {
+            result.push(await user)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all user ban',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error!',
+        })
+    } finally {
+        console.log('finally all user ban')
+    }
+})
+
 controller.post('/normaltoadmin', async (req, res)=>{
     id = req.body.id
     try{
@@ -243,6 +271,29 @@ controller.post('/banuser', async (req, res)=>{
     }
 })
 
+controller.post('/unlockbanuser', async (req, res)=>{
+    id = req.body.id
+    try{
+        await querySql.unlockBanUser(id)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'Unlock banned user',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally unlock banned user 111')
+    }
+})
+
 controller.post('/searchuser', async (req, res)=>{
     textsearch = req.body.text
     try{
@@ -264,6 +315,30 @@ controller.post('/searchuser', async (req, res)=>{
         })
     } finally {
         console.log('finally search' + textsearch)
+    }
+})
+
+controller.post('/searchuserban', async (req, res)=>{
+    textsearch = req.body.text
+    try{
+        let result = await querySql.searchUserBan(textsearch)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'search banned user',
+            data: result
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally search ban user')
     }
 })
 

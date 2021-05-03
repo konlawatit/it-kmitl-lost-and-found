@@ -137,6 +137,16 @@ class PostService {
             return err
         }
     }
+
+    static addItem(payload) {
+        try {
+            return axios.post(`${url}/additem`, {item:payload.item}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
 }
 
 export default PostService;

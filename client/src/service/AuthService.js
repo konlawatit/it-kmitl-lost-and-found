@@ -32,6 +32,16 @@ class AuthService {
         }
     }
 
+    static getAllUserBan() {
+        try {
+            return axios.get(`${url}/alluserban`).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
     static normaltoAdmin(id) {
         try {
             return axios.post(`${url}/normaltoadmin`, {id:id}).then((result) => {
@@ -62,9 +72,29 @@ class AuthService {
         }
     }
 
+    static unlockBanUser(id) {
+        try {
+            return axios.post(`${url}/unlockbanuser`, {id:id}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
     static searchUser(text) {
         try {
             return axios.post(`${url}/searchuser`, {text:text}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
+    static searchUserBan(text) {
+        try {
+            return axios.post(`${url}/searchuserban`, {text:text}).then((result) => {
                 return result.data
             })
         } catch (err) {

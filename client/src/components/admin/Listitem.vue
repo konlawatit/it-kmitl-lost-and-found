@@ -48,8 +48,20 @@
               style="width: 50%"
               placeholder="Search"
               v-model="searchuser"
+              v-if="inputsearch == true"
             />
-            <v-btn icon @click="searchUser()">
+            <input
+              type="text"
+              class="input mr-1"
+              style="width: 50%"
+              placeholder="Search"
+              v-model="searchuserban"
+              v-else
+            />
+            <v-btn icon @click="searchUser()" v-if="inputsearch == true">
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+            <v-btn icon @click="searchuserBan()" v-else>
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </v-toolbar>
@@ -66,6 +78,12 @@
                 <v-list-item-subtitle
                   v-text="list.role"
                   class="mt-1"
+                  v-if="list.role != 'banned'"
+                ></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-text="list.role"
+                  class="mt-1 red--text"
+                  v-else
                 ></v-list-item-subtitle>
               </v-list-item-content>
 
@@ -121,6 +139,7 @@
               label="Category"
               :rules="rules"
               hide-details="auto"
+              v-model="nameItemAdd"
             ></v-text-field>
             <v-file-input
               :rules="img"
@@ -132,7 +151,7 @@
             <div class="columns mt-2">
               <div class="column is-8"></div>
               <div class="column is-4">
-                <button class="button is primary white--text has-text-centered">
+                <button class="button is primary white--text has-text-centered" @click="addItem()">
                   Add
                 </button>
               </div>
@@ -156,7 +175,7 @@
           ></button>
         </header>
         <section class="modal-card-body">
-          <div class="columns" id="listedit" v-if="userrole != 'admin'">
+          <div class="columns" id="listedit" v-if="userrole != 'admin' && userrole != 'banned'">
             <div
               class="column is-12 is-size-2 has-text-centered"
               @click="normaltoadmin(userid)"
@@ -164,7 +183,7 @@
               Normal user to Admin
             </div>
           </div>
-          <div class="columns" id="listedit" v-else>
+          <div class="columns" id="listedit" v-if="userrole != 'banned' && userrole != 'normal'">
             <div
               class="column is-12 is-size-2 has-text-centered"
               @click="admintonormal(userid)"
@@ -172,12 +191,20 @@
               Admin to Normal user
             </div>
           </div>
-          <div class="columns" id="listedit">
+          <div class="columns" id="listedit" v-if="userrole != 'banned'">
             <div
               class="column is-12 is-size-2 has-text-centered has-text-danger"
               @click="banuser(userid)"
             >
               Banned users
+            </div>
+          </div>
+          <div class="columns" id="listedit" v-if="userrole == 'banned'">
+            <div
+              class="column is-12 is-size-2 has-text-centered has-text-danger"
+              @click="unlockbanuser(userid)"
+            >
+              Unlock ban
             </div>
           </div>
         </section>
@@ -251,10 +278,19 @@ export default {
       listnameban: [],
       listposts: [],
       searchuser: "",
+      searchuserban: "",
       searchposts: "",
+      inputsearch: true,
+      nameItemAdd: "",
     };
   },
   methods: {
+    async addItem(){
+      await PostService.addItem({item: this.nameItemAdd}).then((result) =>{
+        console.log(result)
+        location.reload()
+      })
+    },
     async searchPosts() {
       if (this.searchposts != "") {
         await PostService.searchPosts(this.searchposts).then((result) => {
@@ -269,6 +305,17 @@ export default {
         });
       }
     },
+    async searchuserBan(){
+      if (this.searchuser != "") {
+        await AuthService.searchUserBan(this.searchuserban).then((result) => {
+          this.list = result.data;
+          this.titlelist = "Banned ( " + this.list.length + " )";
+        });
+      } else {
+        this.list = this.listname;
+        this.titlelist = "Banned ( " + this.listname.length + " )";
+      }
+    },
     async searchUser() {
       console.log(this.searchuser);
       if (this.searchuser != "") {
@@ -281,12 +328,37 @@ export default {
         this.titlelist = "Users ( " + this.listname.length + " )";
       }
     },
+    async unlockbanuser(id){
+      await AuthService.unlockBanUser(id).then((result) => {
+        console.log(result);
+        this.edituser = false;
+      });
+      await AuthService.searchUserBan(this.searchuserban).then((result) => {
+        this.list = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+      await AuthService.getAllUser().then((result) => {
+        this.listname = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+    },
     async banuser(id) {
       console.log(id);
       await AuthService.banUser(id).then((result) => {
         console.log(result);
         this.edituser = false;
-        location.reload();
+      });
+      await AuthService.searchUser(this.searchuser).then((result) => {
+        this.list = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+      await AuthService.getAllUser().then((result) => {
+        this.listname = result.data;
+        this.titlelist = "Users ( " + this.list.length + " )";
+      });
+      await AuthService.getAllUserBan().then((result) => {
+        this.listnameban = result.data;
+        this.titlelist = "Banned ( " + this.list.length + " )";
       });
     },
     async admintonormal(id) {
@@ -333,8 +405,15 @@ export default {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
-            location.reload();
-            this.editPost = false;
+            let index = 0
+            for (var i in this.listposts){
+              if(this.listposts[i].post_id == id){
+                index = i
+                break
+              }
+            }
+            this.listposts.splice(index, 1)
+            this.editpost = false;
             try {
               await PostService.deletePost(id).then((result) => {
                 console.log(result);
@@ -364,6 +443,7 @@ export default {
       this.listbox = true;
       this.add = false;
       this.showlistpost = false;
+      this.inputsearch = false;
     },
     changelisttolistname() {
       this.list = this.listname;
@@ -371,16 +451,19 @@ export default {
       this.listbox = true;
       this.add = false;
       this.showlistpost = false;
+      this.inputsearch = true;
     },
     changelisttolistposts() {
       this.listbox = false;
       this.add = false;
       this.showlistpost = true;
+      this.inputsearch = true;
     },
     addCategory() {
       this.listbox = false;
       this.add = true;
       this.showlistpost = false;
+      this.inputsearch = true;
     },
   },
   created: async function () {
@@ -392,6 +475,10 @@ export default {
     await AuthService.getAllUser().then((result) => {
       this.listname = result.data;
       this.titlelist = "Users ( " + this.list.length + " )";
+    });
+    await AuthService.getAllUserBan().then((result) => {
+      this.listnameban = result.data;
+      this.titlelist = "Banned ( " + this.list.length + " )";
     });
   },
 };

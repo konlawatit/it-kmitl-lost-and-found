@@ -356,4 +356,28 @@ controller.post('/searchposts', async (req, res)=>{
     }
 })
 
+controller.post('/additem', async (req, res) => {
+    item = req.body.item
+    try {
+        await querySql.addItem(item);
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'Add item',
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally add item')
+    }
+})
+
 module.exports = controller;

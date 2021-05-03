@@ -184,10 +184,19 @@ export default {
   methods: {
     async confrimEditPost(id){
       console.log(id)
+      for(var i in this.posts){
+        if(this.posts[i].post_id == id){
+          console.log("pass")
+          this.posts[i].topic = this.postEdit.topic
+          this.posts[i].place = this.postEdit.place
+          this.posts[i].post_desc = this.postEdit.post_desc
+          this.posts[i].category_post = this.postEdit.type
+          break
+        }
+      }
       await PostService.editPost(this.postEdit).then((result) =>{
         console.log(result)
         this.editPost = false
-        location.reload()
       })
     },
     modalEditPost(id) {
