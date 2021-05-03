@@ -500,7 +500,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = "INSERT INTO INFO_POST (USER_user_id, topic, category_post, post_desc, post_time, place) VALUES(?, ?, ?, ?, ?, ?)"
+            let sql = "INSERT INTO INFO_POST (USER_user_id, topic, category_post, post_desc, post_time, place, status) VALUES(?, ?, ?, ?, ?, ?, 1)"
             let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time, data.place])
             conn.commit()
             return {
@@ -508,6 +508,7 @@ class QuerySql {
             }
         } catch (err) {
             await conn.rollback();
+            console.log(err)
             console.log(`create post rolback`, err)
             throw new Error(err)
         } finally {
@@ -602,6 +603,47 @@ class QuerySql {
         } finally {
             console.log('finally get comment')
             conn.release();
+        }
+    }
+
+    async editComment(data) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = "UPDATE INFO_COMMENT SET comment_desc = ? WHERE comment_no = ?"
+            let result = await conn.query(sql, [data.comment_desc, data.comment_no])
+            conn.commit()
+            return {
+                result
+            }
+        } catch (err) {
+            console.log(err)
+            console.log("err คิวรี่")
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally edit comment")
+            conn.release();
+        }
+    }
+
+    async deleteComment(data){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = "DELETE FROM INFO_COMMENT_COMMENT_IMAGE WHERE INFO_COMMENT_comment_no = ?"
+            await conn.query(sql, [data])
+            let sql2 = "DELETE FROM INFO_COMMENT WHERE comment_no = ?"
+            await conn.query(sql2, [data])
+            conn.commit()
+        } catch (err){
+            console.log(err)
+            console.log("err คิวรี่")
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally delete comment")
+            conn.release()
         }
     }
 
@@ -796,6 +838,23 @@ class QuerySql {
             return{
                 result
             }
+        } catch(err){
+            await conn.rollback()
+            console.log(err)
+            throw new Error(err)
+        } finally {
+            console.log('finally add item')
+            conn.release()
+        }
+    }
+
+    async getItemPosts(){
+        const conn = await pool.getConnection();
+        try{
+            let sql = `SELECT name FROM CATEGORY_ITEM`
+            let result = await conn.query(sql)
+            conn.commit()
+            return result[0]
         } catch(err){
             await conn.rollback()
             console.log(err)

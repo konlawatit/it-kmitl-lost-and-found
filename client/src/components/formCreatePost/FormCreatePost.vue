@@ -64,6 +64,7 @@
                 label="Filled style"
                 dense
                 outlined
+                v-model="categoryItem"
               ></v-select>
             </div>
           </div>
@@ -147,7 +148,7 @@ export default {
   data() {
     return {
       store,
-      items: ["กระเป๋า", "เสื้อ", "แว่นตา", "Electronic"],
+      items: [],
       valueItem: "",
       locations: "",
       valueLocation: "",
@@ -155,11 +156,19 @@ export default {
       tagPost: "lost",
       postDesc: "",
       time: "",
+      categoryItem: "",
       rules: [
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
     };
+  },
+  created: async function(){
+    await PostService.getItemPosts().then((result) =>{
+      for (var item in result.data){
+        this.items.push(result.data[item].name)
+      }
+    })
   },
   methods: {
     redirect(path) {
@@ -221,7 +230,8 @@ export default {
               categoryPost: this.tagPost,
               postDesc: this.postDesc,
               post_time: this.time,
-              place: this.locations
+              place: this.locations,
+              categoryItem: this.categoryItem
             };
             this.redirect("home");
             try {

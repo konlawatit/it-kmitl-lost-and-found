@@ -36,7 +36,7 @@ class PostService {
 
     static createPost(payload) {
         try {
-            return axios.post(`${url}/createpost`, {userid:payload.userid, topic:payload.topic, categoryPost:payload.categoryPost, postDesc:payload.postDesc, post_time:payload.post_time, place:payload.place}).then((result) =>{
+            return axios.post(`${url}/createpost`, {userid:payload.userid, topic:payload.topic, categoryPost:payload.categoryPost, postDesc:payload.postDesc, post_time:payload.post_time, place:payload.place, categoryItem:payload.categoryItem}).then((result) =>{
                 return result.data
             })
         } catch (err) {
@@ -147,6 +147,18 @@ class PostService {
             return err
         }
     }
+
+    static getItemPosts(){
+        try{
+            return axios.get(`${url}/itempost`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            console.log(err)
+            return err
+        }
+    }
+
 }
 
 export default PostService;

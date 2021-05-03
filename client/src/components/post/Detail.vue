@@ -7,7 +7,10 @@
             <button
               class="fas fa-ellipsis-h m-3"
               style="float: right; font-size: 1.3rem"
-              v-if="post.user_id == store.getters['auth/getId'] || store.getters['auth/getRole'] == 'admin'"
+              v-if="
+                post.user_id == store.getters['auth/getId'] ||
+                store.getters['auth/getRole'] == 'admin'
+              "
               @click="modalEditPost(post.post_id)"
             ></button>
             <i
@@ -19,10 +22,22 @@
               <div class="column is-2">
                 <div class="ml-3 mt-6 is-size-3">
                   {{ post.post_time }}
-                  <v-chip class="ma-2" color="blue" label text-color="white" v-if="post.category_post == 'found'">
+                  <v-chip
+                    class="ma-2"
+                    color="blue"
+                    label
+                    text-color="white"
+                    v-if="post.category_post == 'found'"
+                  >
                     {{ post.category_post }}
                   </v-chip>
-                  <v-chip class="ma-2" color="pink" label text-color="white" v-else>
+                  <v-chip
+                    class="ma-2"
+                    color="pink"
+                    label
+                    text-color="white"
+                    v-else
+                  >
                     {{ post.category_post }}
                   </v-chip>
                 </div>
@@ -128,6 +143,15 @@
                     >{{ comment.comment_date }} เวลา
                     {{ comment.comment_time }} น.
                   </span>
+                  <button
+                    class="fas fa-ellipsis-h m-3"
+                    style="float: right; font-size: 1.3rem"
+                    v-if="
+                      comment.user_id == store.getters['auth/getId'] ||
+                      store.getters['auth/getRole'] == 'admin'
+                    "
+                    @click="editComment(comment.comment_no, comment.comment_desc, post.post_id)"
+                  ></button>
                   <br />
                   <p class="mt-2">{{ comment.comment_desc }}</p>
                 </div>
@@ -201,9 +225,46 @@
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success" @click="confrimEditPost(postEdit.id)">Save changes</button>
+          <button
+            class="button is-success"
+            @click="confrimEditPost(postEdit.id)"
+          >
+            Save changes
+          </button>
           <button class="button is-danger">Delete post</button>
           <button class="button" @click="editPost = false">Cancel</button>
+        </footer>
+      </div>
+    </div>
+    <div class="modal" :class="{ 'is-active': editcomment }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered is-size-3 mt-4">
+            Edit comment
+          </p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="editcomment = false"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns" id="listedit">
+            <div class="column is-12 is-size-2 has-text-centered">
+              <input type="text" class="input" placeholder="comment" v-model="inputcomment"/>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button
+            class="button is-success"
+            @click="confirmEditComment(commentid)"
+          >
+            Save changes
+          </button>
+          <button class="button is-danger" @click="deleteComment()">Delete comment</button>
+          <button class="button" @click="editcomment = false">Cancel</button>
         </footer>
       </div>
     </div>
@@ -226,8 +287,12 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" },
+      postEdit: { id: "", topic: "", place: "", post_desc: "", type: "" },
       items: ["lost", "found"],
+      editcomment: false,
+      inputcomment: "",
+      commentid: "",
+      postid: "",
     };
   },
   created: async function () {
@@ -237,29 +302,80 @@ export default {
     });
   },
   methods: {
-    async confrimEditPost(id){
-      console.log(id)
-      for(var i in this.posts){
-        if(this.posts[i].post_id == id){
-          console.log("pass")
-          this.posts[i].topic = this.postEdit.topic
-          this.posts[i].place = this.postEdit.place
-          this.posts[i].post_desc = this.postEdit.post_desc
-          this.posts[i].category_post = this.postEdit.type
+    async deleteComment(){
+      await this.$swal.fire({
+          title: "ยืนยัน",
+          text: "ต้องการลบ comment หรือไม่",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        }).then(async (result) =>{
+          if(result.isConfirmed){
+            let index = 0
+            for (var i in this.comments){
+              if(this.comments[i].comment_no == this.commentid){
+                index = i
+                break
+              }
+            }
+            this.comments.splice(index, 1)
+            this.editcomment = false
+            try {
+              await CommentService.deleteComment(this.commentid).then((result) => {
+                console.log(result);
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        })
+    },
+    async confirmEditComment(id){
+      for (const item of this.comments){
+        if(item.comment_no == id){
+          console.log('pass')
+          item.comment_desc = this.inputcomment
           break
         }
       }
-      await PostService.editPost(this.postEdit).then((result) =>{
+      let payload = {comment_no: id, comment_desc: this.inputcomment, post_id: this.postid}
+      await CommentService.editComment(payload).then((result) =>{
         console.log(result)
-        this.editPost = false
+        this.editcomment = false
       })
+    },
+    editComment(id, comment, postid){
+      console.log(id)
+      this.editcomment = true
+      this.inputcomment = comment
+      this.commentid = id
+      this.postid = postid
+    },
+    async confrimEditPost(id) {
+      console.log(id);
+      for (var i in this.posts) {
+        if (this.posts[i].post_id == id) {
+          console.log("pass");
+          this.posts[i].topic = this.postEdit.topic;
+          this.posts[i].place = this.postEdit.place;
+          this.posts[i].post_desc = this.postEdit.post_desc;
+          this.posts[i].category_post = this.postEdit.type;
+          break;
+        }
+      }
+      await PostService.editPost(this.postEdit).then((result) => {
+        console.log(result);
+        this.editPost = false;
+      });
     },
     modalEditPost(id) {
       this.editPost = true;
       for (var post in this.posts) {
         if (id == this.posts[post].post_id) {
           console.log("pass");
-          this.postEdit.id = id
+          this.postEdit.id = id;
           this.postEdit.topic = this.posts[post].topic;
           this.postEdit.place = this.posts[post].place;
           this.postEdit.post_desc = this.posts[post].post_desc;
@@ -334,5 +450,8 @@ img {
 #buttonfilter {
   font-family: "Kanit", sans-serif;
   border-radius: 20rem;
+}
+.modal {
+  font-family: "Kanit", sans-serif;
 }
 </style>

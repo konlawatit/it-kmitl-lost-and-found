@@ -210,7 +210,8 @@ controller.post('/createpost', async (req, res) => {
     postDesc = req.body.postDesc
     post_time = req.body.post_time
     place = req.body.place
-    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, postDesc:postDesc, post_time:post_time, place:place}
+    categoryItem = req.body.categoryItem
+    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, postDesc:postDesc, post_time:post_time, place:place, categoryItem: categoryItem}
     try {
         await querySql.createPost(payload);
         //console.log('result',posts)
@@ -377,6 +378,34 @@ controller.post('/additem', async (req, res) => {
         })
     } finally {
         console.log('finally add item')
+    }
+})
+
+controller.get('/itempost', async (req, res) => {
+    try {
+        let items = await querySql.getItemPosts();
+        let result = []
+        for (item of items) {
+            result.push(await item)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all items',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error111',
+        })
+    } finally {
+        console.log('finally get item post')
     }
 })
 
