@@ -598,6 +598,7 @@ class QuerySql {
             let sql = "INSERT INTO INFO_COMMENT(comment_desc, INFO_POST_post_id, USER_user_id, comment_time) VALUES(?)"
             await conn.query(sql, [payload])
             await conn.commit()
+        
             return await this.getComments(postId)
 
         } catch (err) {
@@ -618,7 +619,7 @@ class QuerySql {
             let result = await conn.query(sql)
             conn.commit();
             result = await result[0].map(data => {
-                data['picture'] = 'http://localhost:8888/' + data['picture']
+                data['image'] = 'http://localhost:8888/' + data['image']
                 return data
             })
             //console.log(result)

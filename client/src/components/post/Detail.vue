@@ -102,7 +102,7 @@
                     <template v-slot:activator="{ on }">
                       <v-btn icon x-large v-on="on">
                         <v-avatar color="primary" size="50"
-                          ><img :src="comment.picture" alt="profile"
+                          ><img :src="comment.image" alt="profile"
                         /></v-avatar>
                       </v-btn>
                     </template>
@@ -110,7 +110,7 @@
                       <v-list-item-content class="justify-center">
                         <div class="mx-auto text-center">
                           <v-avatar color="brown mb-2">
-                            <img :src="comment.picture" alt="profile" />
+                            <img :src="comment.image" alt="profile" />
                           </v-avatar>
                           <h3 class="mt-1">{{ comment.user_name }}</h3>
                           <h3 class="mt-1">
@@ -278,7 +278,7 @@ import ChatService from "../../service/ChatService";
 import store from "../../store/index.js";
 import { mapGetters } from "vuex";
 export default {
-  name: "Post",
+  name: "Detail",
   data() {
     return {
       store,
