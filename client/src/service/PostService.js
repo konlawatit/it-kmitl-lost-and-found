@@ -169,6 +169,16 @@ class PostService {
         }
     }
 
+    static getMyPostDate(date, id){
+        try{
+            return axios.post(`${url}/mypostbydate`, {date:date, id:id}).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
 }
 
 export default PostService;

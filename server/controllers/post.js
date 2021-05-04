@@ -438,4 +438,34 @@ controller.post('/postbydate', async (req, res) => {
     }
 })
 
+controller.post('/mypostbydate', async (req, res) => {
+    date = req.body.date
+    id = req.body.id
+    try {
+        let posts = await querySql.myPostbyDate(date, id);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success' + date,
+            error: false,
+            messge: 'get all my posts by date',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error' + date,
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally get post by date')
+    }
+})
+
 module.exports = controller;

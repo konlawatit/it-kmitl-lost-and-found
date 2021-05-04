@@ -889,6 +889,30 @@ class QuerySql {
         }
     }
 
+    async myPostbyDate(date, id) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id WHERE INFO_POST.post_time like ? AND USER.user_id = ? order by INFO_POST.post_time desc`
+            let posts = await conn.query(sql, ["%"+date+"%", id])
+            await posts[0].map(data => {
+                //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            //console.log(posts)
+            conn.commit();
+            return posts[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`+ date)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+    }
+
 }
 
 module.exports = QuerySql

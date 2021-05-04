@@ -12,6 +12,9 @@
           <v-btn id="buttonfilter" value="owner" @click="filterFound()"> ตามหาเจ้าของ </v-btn>
 
           <input type="date" class="input mt-2" v-model="date" />
+          <button class="button ml-6 mt-2 is-info" @click="getPostbyDate()">
+            <i class="fas fa-search"></i>
+          </button>
         </v-btn-toggle>
       </div>
     </div>
@@ -182,6 +185,12 @@ export default {
     });
   },
   methods: {
+    async getPostbyDate(){
+      console.log(this.date)
+      await PostService.getMyPostDate(this.date, this.$route.params.id).then((result) =>{
+        this.posts = result.data
+      })
+    },
     async confrimEditPost(id){
       console.log(id)
       for(var i in this.posts){
