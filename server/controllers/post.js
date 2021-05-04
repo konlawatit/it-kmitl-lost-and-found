@@ -202,6 +202,35 @@ controller.get('/myfoundpost/:id', async (req, res) => {
     }
 })
 
+controller.get('/mycompletepost/:id', async (req, res) => {
+    userid = req.params.id
+    try {
+        let posts = await querySql.myCompletePosts(userid);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally found post')
+    }
+})
+
 
 controller.post('/createpost', async (req, res) => {
     userid = req.body.userid
@@ -465,6 +494,53 @@ controller.post('/mypostbydate', async (req, res) => {
         })
     } finally {
         console.log('finally get post by date')
+    }
+})
+
+controller.post('/completepost', async (req, res)=>{
+    id = req.body.id
+    date = req.body.date
+    try{
+        await querySql.completePost(id, date)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'complete post',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally complete post')
+    }
+})
+
+controller.post('/incompletepost', async (req, res)=>{
+    id = req.body.id
+    try{
+        await querySql.inCompletePost(id)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'incomplete post',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally incomplete post')
     }
 })
 

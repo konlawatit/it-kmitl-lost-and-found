@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns is-mobile is-tablet">
-      <div class="column is-8">
+      <div class="column is-10">
         <v-btn-toggle tile color="blue darken-4" group>
           <v-btn id="buttonfilter" value="all" @click="allmyPosts()">
             ทั้งหมด
@@ -10,6 +10,8 @@
           <v-btn id="buttonfilter" value="find" @click="filterLost()"> ตามหาของ </v-btn>
 
           <v-btn id="buttonfilter" value="owner" @click="filterFound()"> ตามหาเจ้าของ </v-btn>
+
+          <v-btn id="buttonfilter" value="complete" @click="filterComplete()"> โพสต์ที่เสร็จสิ้น </v-btn>
 
           <input type="date" class="input mt-2" v-model="date" />
           <button class="button ml-6 mt-2 is-info" @click="getPostbyDate()">
@@ -35,11 +37,14 @@
               <div class="column is-2">
                 <div class="ml-3 mt-6 is-size-3">
                   {{post.post_time}}
-                  <v-chip class="ma-2" color="blue" label text-color="white" v-if="post.category_post == 'found'">
+                  <v-chip class="ma-2" color="blue" label text-color="white" v-if="post.category_post == 'found' && post.status == 1">
                     {{ post.category_post }}
                   </v-chip>
-                  <v-chip class="ma-2" color="pink" label text-color="white" v-else>
+                  <v-chip class="ma-2" color="pink" label text-color="white" v-else-if="post.category_post == 'lost' && post.status == 1">
                     {{ post.category_post }}
+                  </v-chip>
+                  <v-chip class="ma-2" color="green" label text-color="white" v-else>
+                    complete
                   </v-chip>
                 </div>
               </div>
@@ -150,6 +155,8 @@
         <footer class="modal-card-foot">
           <button class="button is-success" @click="confrimEditPost(postEdit.id)">Save changes</button>
           <button class="button is-danger" @click="deletePost(postEdit.id)">Delete post</button>
+          <button class="button is-primary" @click="completePost(postEdit.id)" v-if="postEdit.status == 1">Post is complete</button>
+          <button class="button is-warning" v-else @click="inCompletePost(postEdit.id)">Post is incomplete</button>
           <button class="button" @click="editPost = false">Cancel</button>
         </footer>
       </div>
@@ -174,7 +181,7 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" },
+      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" , status: ""},
       items: ["lost", "found"],
     };
   },
@@ -185,6 +192,52 @@ export default {
     });
   },
   methods: {
+    async inCompletePost(id){
+      for (var i in this.posts){
+        if(this.posts[i].post_id == id){
+          this.posts[i].status = 1
+          break
+        }
+      }
+      await PostService.inCompletePost(id).then((result) =>{
+        console.log(result)
+        this.editPost = false
+      })
+    },
+    async completePost(id){
+      let d = new Date();
+      let month = d.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      let day = d.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      let hour = d.getHours();
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      let minute = d.getMinutes();
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      let sec = d.getSeconds();
+      if (sec < 10) {
+        sec = "0" + sec;
+      }
+      let datetime = d.getFullYear() + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + sec;
+      for (var i in this.posts){
+        if(this.posts[i].post_id == id){
+          this.posts[i].status = 0
+          break
+        }
+      }
+      await PostService.completePost(id, datetime).then((result) =>{
+        console.log(result)
+        this.editPost = false
+      })
+    },
     async deletePost(id){
       console.log(id)
       await this.$swal.fire({
@@ -249,10 +302,16 @@ export default {
           this.postEdit.place = this.posts[post].place;
           this.postEdit.post_desc = this.posts[post].post_desc;
           this.postEdit.type = this.posts[post].category_post;
+          this.postEdit.status = this.posts[post].status;
         } else {
           console.log("not pass");
         }
       }
+    },
+    async filterComplete(){
+      await PostService.getmyPostsComplete(store.getters["auth/getId"]).then((result) => {
+        this.posts = result.data
+      })
     },
     async filterLost(){
       console.log("test lost")

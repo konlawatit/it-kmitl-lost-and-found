@@ -95,6 +95,18 @@ class PostService {
         }
     }
 
+    static getmyPostsComplete(payload){
+        const id = payload
+        try{
+            return axios.get(`${url}/mycompletepost/${id}`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            console.log(err)
+            return err
+        }
+    }
+
     static getmyPostsFound(payload){
         const id = payload
         try{
@@ -172,6 +184,26 @@ class PostService {
     static getMyPostDate(date, id){
         try{
             return axios.post(`${url}/mypostbydate`, {date:date, id:id}).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static completePost(id, datetime){
+        try{
+            return axios.post(`${url}/completepost`, {id: id, date: datetime}).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static inCompletePost(id){
+        try{
+            return axios.post(`${url}/incompletepost`, {id: id}).then((result) =>{
                 return result.data
             })
         } catch(err){
