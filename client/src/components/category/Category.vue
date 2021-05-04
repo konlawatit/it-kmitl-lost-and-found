@@ -24,8 +24,15 @@
                 width="140"
                 @click="toggle"
               >
-                <img width="40" height="40"  :src="item.image" />
-                <p class="mt-3">{{ item.name }}</p>
+                <v-img
+                  width="45"
+                  height="45"
+                  class="mt-6"
+                  :src="item.image"
+                  style="margin-left: 50px"
+                >
+                </v-img>
+                <p style="margin-top:20px">{{ item.name }}</p>
                 <v-row class="fill-height" align="center" justify="center">
                   <v-scale-transition>
                     <v-icon v-if="active" color="white"></v-icon>
