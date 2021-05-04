@@ -16,6 +16,9 @@
           </v-btn>
 
           <input type="date" class="input mt-2" v-model="date" />
+          <button class="button ml-6 mt-2 is-info" @click="getPostbyDate()">
+            <i class="fas fa-search"></i>
+          </button>
         </v-btn-toggle>
       </div>
     </div>
@@ -193,6 +196,12 @@ export default {
     });
   },
   methods: {
+    async getPostbyDate(){
+      console.log(this.date)
+      await PostService.getPostDate(this.date).then((result) =>{
+        this.posts = result.data
+      })
+    },
     async deletePost(id){
       console.log(id)
       await this.$swal.fire({
