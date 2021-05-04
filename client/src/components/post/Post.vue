@@ -91,7 +91,7 @@
                 <p class="mt-3">{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
-                <img :src="post.post_picture" alt="John" />
+                <img :src="'http://localhost:8888/'+post.post_image" alt="John" />
               </div>
             </div>
             <div class="columns mb-6 mr-4">
@@ -128,6 +128,11 @@
           <div class="columns">
             <div class="column is-2"></div>
             <div class="column is-8">
+              <v-file-input
+                label="Change image"
+                filled
+                prepend-icon="mdi-image"
+              ></v-file-input>
               <v-text-field
                 label="Topic"
                 hide-details="auto"

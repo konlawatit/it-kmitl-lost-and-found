@@ -5,10 +5,10 @@
       <strong>เข้าสู่</strong>
       <strong id="text2">ระบบ</strong>
     </h1>
-    <h2 class="is-size-3 mt-3" id="text1">
+    <h1 class="is-size-3" id="text1">
       <strong>นักศึกษาและ</strong>
       <strong id="text2">บุคลากร IT</strong>
-    </h2>
+    </h1>
     <Login></Login>
   </div>
 </template>

@@ -8,7 +8,7 @@
       max-width="430"
       outlined
       v-for="item in preposts"
-      :key="item"
+      :key="item.id"
       id="cardprepost"
     >
       <v-list-item three-line>

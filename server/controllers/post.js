@@ -1,8 +1,23 @@
 const express = require("express");
 const controller = express.Router();
-
 const querySqlModel = require('../model/querySql')
 const querySql = new querySqlModel()
+const multer = require('multer')
+const path = require("path")
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './static/uploads/imagePost') // path to save file
+    },
+    filename: function (req, file, callback) {
+        // set file name
+        console.log(req.params)
+        callback(null, `${file.originalname}-${Date.now()}${path.extname(file.originalname)}`)
+    }
+})
+
+const upload = multer({
+    storage: storage
+})
 
 controller.get('/allposts', async (req, res) => {
     try {
@@ -232,7 +247,7 @@ controller.get('/mycompletepost/:id', async (req, res) => {
 })
 
 
-controller.post('/createpost', async (req, res) => {
+controller.post('/createpost', upload.single('post_image'), async (req, res) => {
     userid = req.body.userid
     topic = req.body.topic
     categoryPost = req.body.categoryPost
@@ -240,7 +255,12 @@ controller.post('/createpost', async (req, res) => {
     post_time = req.body.post_time
     place = req.body.place
     categoryItem = req.body.categoryItem
-    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, postDesc:postDesc, post_time:post_time, place:place, categoryItem: categoryItem}
+    if(req.file){
+        post_image = req.file.path
+    }
+    console.log(req.file)
+    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, 
+        postDesc:postDesc, post_time:post_time, place:place, categoryItem: categoryItem, post_image: post_image}
     try {
         await querySql.createPost(payload);
         //console.log('result',posts)

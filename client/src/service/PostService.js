@@ -36,7 +36,7 @@ class PostService {
 
     static createPost(payload) {
         try {
-            return axios.post(`${url}/createpost`, {userid:payload.userid, topic:payload.topic, categoryPost:payload.categoryPost, postDesc:payload.postDesc, post_time:payload.post_time, place:payload.place, categoryItem:payload.categoryItem}).then((result) =>{
+            return axios.post(`${url}/createpost`, payload).then((result) =>{
                 return result.data
             })
         } catch (err) {

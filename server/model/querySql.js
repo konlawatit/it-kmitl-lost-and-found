@@ -302,10 +302,13 @@ class QuerySql {
         try {
             //"SELECT *FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id="+postId+") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
             // let sql = `SELECT *, INFO_POST.image as post_picture, USER.picture as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.user_id = USER.user_id order by INFO_POST.post_time desc`
-            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id WHERE INFO_POST.status = 1 order by INFO_POST.post_time desc`
+            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time, post_image 
+            FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id
+            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            WHERE INFO_POST.status = 1 order by INFO_POST.post_time desc`
             let posts = await conn.query(sql)
             await posts[0].map(data => {
-                //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
+                // data['post_image'] = 'http://localhost:8888/' + data['post_image']
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
                 return data
             })
@@ -524,6 +527,8 @@ class QuerySql {
         try {
             let sql = "INSERT INTO INFO_POST (USER_user_id, topic, category_post, post_desc, post_time, place, status) VALUES(?, ?, ?, ?, ?, ?, 1)"
             let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time, data.place])
+            let sql2 = "INSERT INTO INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES (?, ?)"
+            await conn.query(sql2, [data.post_image, result[0].insertId])
             conn.commit()
             return {
                 result

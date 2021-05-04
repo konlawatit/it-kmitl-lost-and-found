@@ -78,10 +78,10 @@
             </div>
             <div class="column is-5">
               <v-text-field
-                  label="Place"
-                  hide-details="auto"
-                  v-model="locations"
-                ></v-text-field>
+                label="Place"
+                hide-details="auto"
+                v-model="locations"
+              ></v-text-field>
             </div>
           </div>
         </div>
@@ -94,9 +94,11 @@
             </div>
             <div class="column is-5">
               <v-file-input
-                label="File input"
+                label="File image"
                 filled
                 prepend-icon="mdi-camera"
+                type="file"
+                v-model="postImage"
               ></v-file-input>
             </div>
           </div>
@@ -161,14 +163,15 @@ export default {
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
+      postImage: ""
     };
   },
-  created: async function(){
-    await PostService.getItemPosts().then((result) =>{
-      for (var item in result.data){
-        this.items.push(result.data[item].name)
+  created: async function () {
+    await PostService.getItemPosts().then((result) => {
+      for (var item in result.data) {
+        this.items.push(result.data[item].name);
       }
-    })
+    });
   },
   methods: {
     redirect(path) {
@@ -200,18 +203,7 @@ export default {
       if (sec < 10) {
         sec = "0" + sec;
       }
-      this.time =
-        d.getFullYear() +
-        "-" +
-        month +
-        "-" +
-        day +
-        " " +
-        hour +
-        ":" +
-        minute +
-        ":" +
-        sec;
+      this.time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`
       await this.$swal
         .fire({
           title: "ยืนยัน",
@@ -224,18 +216,18 @@ export default {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
-            let payload = {
-              userid: store.getters["auth/getId"],
-              topic: this.title,
-              categoryPost: this.tagPost,
-              postDesc: this.postDesc,
-              post_time: this.time,
-              place: this.locations,
-              categoryItem: this.categoryItem
-            };
-            this.redirect("home");
+            const form = new FormData()
+            form.append('userid', store.getters["auth/getId"])
+            form.append('topic', this.title)
+            form.append('categoryPost', this.tagPost)
+            form.append('postDesc', this.postDesc)
+            form.append('post_time', this.time)
+            form.append('place', this.locations)
+            form.append('categoryItem', this.categoryItem)
+            form.append('post_image', this.postImage)
+            // this.redirect("home");
             try {
-              await PostService.createPost(payload).then((result) => {
+              await PostService.createPost(form).then((result) => {
                 //this.profileImage = this.API_URL + "/" + result.path;
                 console.log(result);
               });
