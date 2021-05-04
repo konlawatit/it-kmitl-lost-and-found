@@ -53,7 +53,7 @@
           ></v-file-input>
         </div>
         <div class="column is-2">
-          <button @click="sendMessage" class="button is-info m-2">sent</button>
+          <button  @click="sendMessage" class="button is-info m-2">sent</button>
           <button @click="cancelImage" class="button is-danger m-2">
             Cancel
           </button>
@@ -62,6 +62,7 @@
       <template v-else>
         <div class="column is-10">
           <input
+           v-on:keyup.enter="sendMessage"
             v-model="msg"
             type="text"
             class="input"
@@ -71,7 +72,7 @@
           <button class="button is-info m-2" @click="inputImage = !inputImage">
             <i class="fas fa-image"></i>
           </button>
-        <button @click="sendMessage" class="button is-info m-2">sent</button>
+        <button @click="sendMessage" class="button is-info m-2">send</button>
       </template>
     </div>
   </div>
