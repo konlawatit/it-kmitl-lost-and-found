@@ -150,9 +150,9 @@ class PostService {
         }
     }
 
-    static addItem(payload) {
+    static addItem(fd, item_name, user_id) {
         try {
-            return axios.post(`${url}/additem`, {item:payload.item}).then((result) => {
+            return axios.post(`${url}/additem`, fd, {params: {user_id: user_id, item_name: item_name}}).then((result) => {
                 return result.data
             })
         } catch (err) {
@@ -204,6 +204,16 @@ class PostService {
     static inCompletePost(id){
         try{
             return axios.post(`${url}/incompletepost`, {id: id}).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static getCategoryItems(){
+        try{
+            return axios.get(`${url}/categoryitems`).then((result) =>{
                 return result.data
             })
         } catch(err){

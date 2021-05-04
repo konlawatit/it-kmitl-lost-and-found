@@ -147,6 +147,7 @@
               prepend-icon="mdi-camera"
               label="Image"
               class="mt-6"
+              @change="selectImage"
             ></v-file-input>
             <div class="columns mt-2">
               <div class="column is-8"></div>
@@ -282,11 +283,24 @@ export default {
       searchposts: "",
       inputsearch: true,
       nameItemAdd: "",
+      saveImage: "",
+
     };
   },
   methods: {
+    selectImage(file) {
+      //reader image
+        this.saveImage = file;
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          this.itemImage = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    },
     async addItem(){
-      await PostService.addItem({item: this.nameItemAdd}).then((result) =>{
+      const fd = new FormData();
+      fd.append("file", this.saveImage);
+      await PostService.addItem(fd, this.nameItemAdd, this.$store.getters['auth/getId']).then((result) =>{
         console.log(result)
         location.reload()
       })

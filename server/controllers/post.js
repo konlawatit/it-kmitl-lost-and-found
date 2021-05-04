@@ -19,6 +19,20 @@ const upload = multer({
     storage: storage
 })
 
+var storageItem = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './static/uploads/imageItem') // path to save file
+    },
+    filename: function (req, file, callback) {
+        // set file name
+        callback(null, 'item' + '-' + req.query.item_name + '.png')
+    }
+})
+
+const uploadItem = multer({
+    storage: storageItem
+})
+
 controller.get('/allposts', async (req, res) => {
     try {
         let posts = await querySql.allPosts();
@@ -406,10 +420,16 @@ controller.post('/searchposts', async (req, res)=>{
     }
 })
 
-controller.post('/additem', async (req, res) => {
-    item = req.body.item
+controller.post('/additem', uploadItem.single('file'),async (req, res) => {
+    let item_name = req.query.item_name
+    let user_id = req.query.user_id
+    let image = ''
+
     try {
-        await querySql.addItem(item);
+        console.log(req.file)
+        iamge = req.file.path
+        console.log('add item', item_name, user_id, image)
+        await querySql.addItem(item_name, user_id, req.file.path);
         //console.log('result',posts)
         res.status(200).send({
             statusCode: '200',
@@ -546,6 +566,31 @@ controller.post('/incompletepost', async (req, res)=>{
     try{
         await querySql.inCompletePost(id)
         res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'incomplete post',
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally incomplete post')
+    }
+})
+
+controller.get('/categoryitems', async (req, res)=>{
+    id = req.body.id
+    try{
+        let items = await querySql.getCategoryItems();
+        
+        res.status(200).send({
+            items,
             statusCode: '200',
             statusText: 'Request Success',
             error: false,

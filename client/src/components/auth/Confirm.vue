@@ -497,48 +497,6 @@ export default {
         fd.append("type", this.type);
         fd.append("user_id", store.getters["auth/getId"]);
         fd.append("email", store.getters["auth/getEmail"]);
-        // if (!this.type) {
-        //   console.log(this.name);
-        //   this.$swal.fire({
-        //     icon: "error",
-        //     title: "ข้อมูลไม่ครบถ้วน",
-        //     text: "กรุณากรอกข้อมูล type",
-        //   });
-        // } else if (!this.name) {
-        //   console.log(this.name);
-        //   this.$swal.fire({
-        //     icon: "error",
-        //     title: "ข้อมูลไม่ครบถ้วน",
-        //     text: "กรุณากรอกข้อมูล Name",
-        //   });
-        // } else if (!this.firstname) {
-        //   console.log(this.name);
-        //   this.$swal.fire({
-        //     icon: "error",
-        //     title: "ข้อมูลไม่ครบถ้วน",
-        //     text: "กรุณากรอกข้อมูล First name",
-        //   });
-        // } else if (!this.lastname) {
-        //   console.log(this.name);
-        //   this.$swal.fire({
-        //     icon: "error",
-        //     title: "ข้อมูลไม่ครบถ้วน",
-        //     text: "กรุณากรอกข้อมูล Last name",
-        //   });
-        // } else if (!this.birthday) {
-        //   console.log(this.name);
-        //   this.$swal.fire({
-        //     icon: "error",
-        //     title: "ข้อมูลไม่ครบถ้วน",
-        //     text: "กรุณากรอกข้อมูล Birthdat date",
-        //   });
-        // } else if (!this.phone || this.phone.length < 10) {
-        //   this.$swal.fire({
-        //     icon: "error",
-        //     title: "ข้อมูลไม่ครบถ้วน",
-        //     text: "กรุณากรอกข้อมูล เบอร์โทรศัพท์",
-        //   });
-        //} else {
         await this.$swal
           .fire({
             title: "ยืนยัน",

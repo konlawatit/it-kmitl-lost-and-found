@@ -3,27 +3,29 @@
     <div class="column is-12">
       <div class="columns">
         <div class="column is-2"></div>
-        <div class="column is-8">
+        <div class="column is-8" width="700">
+          
           <v-slide-group
             v-model="model"
             class="pa-4"
             active-class="cyan lighten-1"
             show-arrows
+            max-width="700"
           >
             <v-slide-item
-              v-for="(item, index) in categoryArr"
+              v-for="(item, index) in categoryItems"
               :key="index"
               v-slot="{ active, toggle }"
             >
               <v-card
                 :color="active ? undefined : 'blue darken-4'"
-                class="ma-4"
+                class="ma-4 is-centered"
                 height="130"
                 width="140"
                 @click="toggle"
               >
-                <img :src="`${publicPath}` + item.url" />
-                <p class="mt-3">{{ item.title }}</p>
+                <img width="40" height="40"  :src="item.image" />
+                <p class="mt-3">{{ item.name }}</p>
                 <v-row class="fill-height" align="center" justify="center">
                   <v-scale-transition>
                     <v-icon v-if="active" color="white"></v-icon>
@@ -37,15 +39,18 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
+import PostService from "../../service/PostService"
 export default {
   name: "Category",
   data() {
     return {
       publicPath: process.env.BASE_URL,
       model: null,
+      categoryItems: [],
       categoryArr: [
         {
           id: 1,
@@ -100,9 +105,15 @@ export default {
       ],
     };
   },
-  created() {
+  methods: {
+  },
+  async created() {
     console.log('path', this.publicPath);
     console.log('base path', process)
+    await PostService.getCategoryItems().then(val => {
+        this.categoryItems = val.items.result
+      })
+    
   },
 };
 </script>

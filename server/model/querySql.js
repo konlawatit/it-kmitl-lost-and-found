@@ -861,11 +861,12 @@ class QuerySql {
         }
     }
 
-    async addItem(item){
+    async addItem(item, user_id, image){
         const conn = await pool.getConnection();
         try{
-            let sql = `INSERT INTO CATEGORY_ITEM (name, USER_user_id, image) values(?, 21, './static/uploads/imageItem/newItem.png')`
-            let result = await conn.query(sql, [item, item])
+            let sql = `INSERT INTO CATEGORY_ITEM (name, USER_user_id, image) values(?, ?, ?)`
+            console.log('ass item', user_id)
+            let result = await conn.query(sql, [item, user_id, image])
             conn.commit()
             return{
                 result
@@ -877,6 +878,33 @@ class QuerySql {
         } finally {
             console.log('finally add item')
             conn.release()
+        }
+    }
+
+    async getCategoryItems() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = "SELECT * from CATEGORY_ITEM"
+            let result = (await conn.query(sql))[0]
+            await result.map(data => {
+                data['image'] = `http://localhost:8888/${data['image']}`
+            })
+            // for (let i in result) {
+            //     result['image'] = `htto://localhost:8888/${items['image']}`
+            // }
+            console.log(result)
+            conn.commit()
+            return {
+                result
+            }
+        } catch (err) {
+            console.log("rolback get category items", err)
+            await conn.rollback();
+            throw new Error(err)
+        } finally {
+            console.log("finally get category item post")
+            conn.release();
         }
     }
 
