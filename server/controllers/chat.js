@@ -44,9 +44,10 @@ controller.get('/allconversations', async (req, res) => {
         let {
             user_id
         } = req.query
+        //let user_id = (await querySql.getUser(email).user_id
         let result = (await querySql.getAllConversations(user_id))[0]
         result = await result.map(data => {
-            data['picture'] = 'http://localhost:8888/' + data['picture']
+            data['image'] = 'http://localhost:8888/' + data['image']
             return data
         })
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย
@@ -72,7 +73,7 @@ controller.post('/conversation', async (req, res) => {
             user_id,
             another_id
         } = req.body
-        let result = await querySql.createConversation([`${user_id}_${another_id}`, user_id, another_id])
+        let result = await querySql.createConversation([user_id, another_id])
         if (result == false) {
             res.send({
                 message: 'already have room',

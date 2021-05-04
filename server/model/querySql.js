@@ -673,17 +673,19 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
+            console.log('payload', payload)
             let checkConversationExists = `SELECT EXISTS(
-                 SELECT * FROM CONVERSATIONS WHERE (
-                     user_id_1 = ${payload[1]} AND user_id_2 = ${payload[2]}) OR (user_id_1 = ${payload[2]} AND user_id_2 = ${payload[1]})) as 'exists'`
+                 SELECT * FROM CONVERSATION WHERE (
+                     USER_user_id_1 = ${payload[0]} AND USER_user_id_2 = ${payload[1]}) OR (USER_user_id_1 = ${payload[1]} AND USER_user_id_2 = ${payload[0]})) as 'exists'`
             //let checkConversationExists = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${payload[1]} AND user_id_2 = ${payload[2]}) OR (user_id_1 = ${payload[2]} AND user_id_2 = ${payload[1]})`
+            console.log(checkConversationExists)
             let conversationExists = (await conn.query(checkConversationExists))[0][0]['exists']
             if (conversationExists > 0) {
                 conn.commit();
                 return false
             } else {
-                let sql = `INSERT INTO CONVERSATIONS(con_id, user_id_1, user_id_2, noti_user_id_1, noti_user_id_2) VALUES(?, 0, 0);`
-                let result = await conn.query(sql, [payload])
+                let sql = `INSERT INTO CONVERSATION( USER_user_id_1, USER_user_id_2, noti_user_id_1, noti_user_id_2) VALUES( ${payload[0]}, ${payload[1]}, 0, 0);`
+                let result = await conn.query(sql)
                 conn.commit();
                 return result
             }
@@ -704,12 +706,16 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})`
-            let sql = `SELECT USER.user_name, USER.picture, USER.user_id, con_id, user_id_1, user_id_2, noti_user_id_2,
-            CASE WHEN user_id_1 = ${user_id} THEN noti_user_id_1 
+            let sql = `SELECT USER.user_name, USER.image, USER.user_id, con_id, USER_user_id_1, USER_user_id_2, noti_user_id_2,
+            CASE WHEN USER_user_id_1 = ${user_id} THEN noti_user_id_1 
             ELSE noti_user_id_2 
-            END AS notification FROM USER INNER JOIN (SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id}) OR (user_id_2 = ${user_id})) AS conversations ON (user_id = user_id_2 AND user_id_2 != ${user_id}) or (user_id = user_id_1 AND user_id_1 != ${user_id})`
+            END AS notification 
+            FROM USER JOIN 
+            (SELECT * FROM CONVERSATION WHERE (USER_user_id_1 = ${user_id}) OR (USER_user_id_2 = ${user_id})) AS conversation ON 
+            (user_id = USER_user_id_2 AND USER_user_id_2 != ${user_id}) or (user_id = USER_user_id_1 AND USER_user_id_1 != ${user_id})`
 
             let result = await conn.query(sql)
+            console.log(sql)
 
             conn.commit();
             //result = msg
@@ -730,7 +736,7 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
-            let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
+            let sql = `SELECT * FROM CONVERSATION WHERE (USER_user_id_1 = ${user_id} AND USER_user_id_2 = ${another_id}) OR (USER_user_id_1 = ${another_id} AND USER_user_id_2 = ${user_id})`
             //console.log(sql)
             let conversation = (await conn.query(sql))[0][0]
 
@@ -754,11 +760,10 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
-            let sql = `SELECT * FROM CONVERSATIONS WHERE (user_id_1 = ${user_id} AND user_id_2 = ${another_id}) OR (user_id_1 = ${another_id} AND user_id_2 = ${user_id})`
-            console.log('1111111111111111111', sql)
+            let sql = `SELECT * FROM CONVERSATION WHERE (USER_user_id_1 = ${user_id} AND USER_user_id_2 = ${another_id}) OR (USER_user_id_1 = ${another_id} AND USER_user_id_2 = ${user_id})`
             let conversation = (await conn.query(sql))[0][0]
             conn.commit();
-            let result = await conn.query(`SELECT * FROM MESSAGES WHERE con_id = '${conversation.con_id}'`)
+            let result = await conn.query(`SELECT CONVERSATION_con_id 'con_id', content, msg_no, USER_user_id message_by, msg_time, is_image  FROM MESSAGES WHERE CONVERSATION_con_id = '${conversation.con_id}'`)
 
             //result = msg
             //console.log(result)
@@ -778,7 +783,7 @@ class QuerySql {
         await conn.beginTransaction();
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
-            let sql = "INSERT INTO MESSAGES(content, con_id, message_by, is_image, created_at) VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)"
+            let sql = "INSERT INTO MESSAGES(content, CONVERSATION_con_id, USER_user_id, is_image, msg_time) VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)"
             conn.commit();
             let result = await conn.query(sql, [payload[0], payload[1], payload[2], payload[3]])
             //console.log(result)
@@ -799,12 +804,12 @@ class QuerySql {
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             //let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"\
-            let sql = `UPDATE CONVERSATIONS SET noti_user_id_1 = CASE 
-            WHEN user_id_1 = ${target_id} THEN noti_user_id_1 + 1
+            let sql = `UPDATE CONVERSATION SET noti_user_id_1 = CASE 
+            WHEN USER_user_id_1 = ${target_id} THEN noti_user_id_1 + 1
             ELSE noti_user_id_1
             END, 
             noti_user_id_2 = CASE 
-            WHEN user_id_2 = ${target_id} THEN noti_user_id_2 + 1 
+            WHEN USER_user_id_2 = ${target_id} THEN noti_user_id_2 + 1 
             ELSE noti_user_id_2
             END 
             WHERE con_id = '${con_id}'`
@@ -828,12 +833,12 @@ class QuerySql {
         try {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             //let sql = "INSERT INTO MESSAGES(content, con_id, message_by) VALUES(?)"\
-            let sql = `UPDATE CONVERSATIONS SET noti_user_id_1 = CASE 
-            WHEN user_id_1 = ${target_id} THEN 0
+            let sql = `UPDATE CONVERSATION SET noti_user_id_1 = CASE 
+            WHEN USER_user_id_1 = ${target_id} THEN 0
             ELSE noti_user_id_1
             END, 
             noti_user_id_2 = CASE 
-            WHEN user_id_2 = ${target_id} THEN 0
+            WHEN USER_user_id_2 = ${target_id} THEN 0
             ELSE noti_user_id_2
             END 
             WHERE con_id = '${con_id}'`

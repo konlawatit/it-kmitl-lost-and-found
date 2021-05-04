@@ -10,7 +10,7 @@
         <template v-for="(message, index) in getMessages">
           <div
             class="columns"
-            v-if="message.message_by != $store.getters['auth/getId']"
+            v-if="message.message_by !== $store.getters['auth/getId']"
             :key="index"
           >
             <!-- <div class="column is-1">
@@ -21,20 +21,22 @@
               <img :src="'http://localhost:8888/'+message.content" alt="">
             </div>
             <div class="column is-4 mt-2" id="mes" v-else>
-              <p>
+              <p v-if="checkLink(message.content)" >
                 {{ message.content }}
               </p>
+              <p v-else> <a :href="message.content" target="_blank" rel="noopener noreferrer">{{ message.content }}</a> </p>
             </div>
           </div>
-          <div class="columns mt-3 mr-6" v-else :key="index">
+          <div class="columns mt-3 mr-6"  :key="index" v-else>
             <div class="column is-8"></div>
             <div class="column is-4 mt-2" id="mes2" v-if='message.is_image'>
               <img :src="'http://localhost:8888/'+message.content" alt="">
             </div>
             <div class="column is-4 mt-2" id="mes2" v-else>
-              <p>
+              <p v-if="checkLink(message.content)" rel="noopener noreferrer">
                 {{ message.content }}
               </p>
+              <p v-else> <a :href="message.content" target="_blank">{{ message.content }}</a> </p>
             </div>
           </div>
         </template>
@@ -90,7 +92,18 @@ export default {
     };
   },
   methods: {
+    checkLink(msg) {
+      //https://web.facebook.com/borntodev/photos/a.830302417028053/3393298600728409/?_rdc=1&_rdr
+      var regex = new RegExp(/(http(s)?:\/\/)(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)/);
+      // (http(s)? มีหรือไม่มีก็ได้
+      // . เลือกทุกตัวยกเว้นขึ้นบรรทัดใหม่
+      // \b หลังสุด
+      // * มีไม่มีก็ได้
+      if (!msg.match(regex)) return true
+      else return false
+    },
     async sendMessage() {
+      if (this.msg) {
       let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
       let user_id = this.$store.getters["auth/getId"];
       const formData = new FormData();
@@ -114,6 +127,8 @@ export default {
       myDiv.scrollTop = myDiv.scrollHeight;
       this.msg = "";
       this.cancelImage()
+
+      }
     },
     selectImages(event) {
       if (event) {

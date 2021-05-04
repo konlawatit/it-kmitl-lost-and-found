@@ -42,7 +42,7 @@ Vue.GoogleAuth.then(async auth2 => {
                         isSigned: true,
                     });
                     // if (router.app.$route.fullPath == '/') router.push(`/home`)
-                    if (router.app.$route.fullPath == '/chatroom' || router.app.$route.fullPath == '/home') {
+                    if (router.app.$route.fullPath !== '/' || router.app.$route.fullPath !== '/login/confirm') {
                         await ChatService.getRooms(result.data.user_id).then(data => {
                             console.log('getroom',data)
                             store.dispatch('conversation/setRooms', data)

@@ -280,6 +280,7 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            this.singned = false
             store.dispatch("auth/clearProfile");
             store.dispatch("conversation/clearState")
             window.gapi.auth2
@@ -339,7 +340,6 @@ export default {
       const fd = new FormData();
 
       if (this.profile.image.substring(0, 4) === "data") {
-        console.log('dddddddddddddddddddd',this.profile.image);
         fd.append("file", this.profile.imageFile);
       } else {
         console.log("fiel");
@@ -436,6 +436,7 @@ export default {
     },
   },
   created() {
+    console.log('2222222222222222')
     console.log("created", this.getEmail);
     window.addEventListener("resize", this.handleResize);
     this.handleResize();

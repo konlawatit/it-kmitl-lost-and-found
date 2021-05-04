@@ -8,9 +8,9 @@
       }"
       v-for="(room, index) in getRooms"
       :key="room.con_id"
-      @click="selectRoom(index)"
+      
     >
-      <div class="columns p-3">
+      <div class="columns p-3" @click="selectRoom(index)">
         <div class="column is-3">
           <v-badge avatar bordered overlap :value="room.notification">
             <template v-slot:badge >
@@ -19,7 +19,7 @@
               </v-avatar>
             </template>
             <v-avatar  color="primary" size="56">
-              <img :src="room.picture" />
+              <img :src="room.image" />
             </v-avatar>
           </v-badge>
         </div>
@@ -64,12 +64,12 @@ export default {
       //let user_id = this.getRooms[index].user_id_1 == this.getId ? this.getRooms[index].user_id_2 : this.getRooms[index].user_id_1
       let user_id = this.getRooms[index].user_id;
       let con_id = this.getRooms[index].con_id
+
       this.$store.dispatch("conversation/setSelectRoom", {
         user_id: user_id,
         user_name: this.getRooms[index].user_name,
         con_id: con_id
       });
-      console.log(this.$store.getters["conversation/getSelectRoom"].user_name);
 
       await ChatService.getMessages({
         user_id: this.$store.getters["auth/getId"],
@@ -79,6 +79,7 @@ export default {
       });
 
       await ChatService.clearNoti(this.getId, this.getRooms[index]['con_id']).then(() => {
+        console.log('clear noti')
         this.getRooms[index]['notification'] = 0 //reset noti ให้เป็ร 0 เมื่อกด
       })
 
@@ -88,14 +89,14 @@ export default {
     },
   },
   async mounted() {
-    this.$store.dispatch('conversation/clearSelectRoom')
-  }
-  ,
-    async created() {
+    
+    if (this.getId) {
+
+    
       socket.on("noti_chat", async (sender_id, con_id) => {
-        if (this.getId != sender_id) {
-          if (this.getSelectRoom.user_id != sender_id) {
-            console.log('11111111111111111111111122222222222221')
+        if (this.$router.app.$route.fullPath == '/chatroom') {
+        if (this.getId != sender_id) { //ไม่เอาแชทของตัวเอง
+          if (this.getSelectRoom.user_id != sender_id) { //จะขึ้น noti กับ chat ที่ไม่ได้เลือก
             this.getRooms.map(room => {
               if (room.con_id == con_id) {
                 room['notification'] += 1
@@ -106,10 +107,18 @@ export default {
           console.log("noto_chat", sender_id);
           }
         }
+        }
+        
       });
+      }
+  }
+  ,
+    async created() {
+      
       if (this.getId) { //ให้แสดงผลเมื่อกดมาจากปุ่ม chat
         await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
           async (rooms) => {
+            console.log('list name', rooms)
             this.$store.dispatch("conversation/setRooms", rooms);
           }
         );
