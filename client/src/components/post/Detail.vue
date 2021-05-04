@@ -84,7 +84,7 @@
                 <p class="mt-3">{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
-                <img :src="post.post_picture" alt="John" />
+                <img :src="post.post_image" alt="John" />
               </div>
             </div>
             <v-expansion-panel-header @click="getComments(post.post_id)">

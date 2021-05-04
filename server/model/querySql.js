@@ -367,7 +367,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id wHERE USER.user_id = ? order by INFO_POST.post_time desc`
+            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id WHERE USER.user_id = ? order by INFO_POST.post_time desc`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
@@ -389,9 +389,12 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id wHERE INFO_POST.post_id = ?`
+            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id 
+            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            wHERE INFO_POST.post_id = ?`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
+                data['post_image'] = `http://localhost:8888/${data['post_image']}`
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
                 return data
             })
@@ -402,7 +405,7 @@ class QuerySql {
             console.log(`rolback`)
             throw new Error(err)
         } finally {
-            console.log('finally all my post')
+            console.log('finally one post')
             conn.release();
         }
     }
