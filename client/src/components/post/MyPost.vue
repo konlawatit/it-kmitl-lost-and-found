@@ -17,8 +17,15 @@
           <button class="button ml-6 mt-2 is-info" @click="getPostbyDate()">
             <i class="fas fa-search"></i>
           </button>
+          <input class="input is-normal ml-3 mt-2"  placeholder="ค้นหา" v-model="searchposts" />
+          <button class="button ml-2 mt-2 is-info" @click="searchPosts()">
+            <i class="fas fa-search"></i>
+          </button>
+          
         </v-btn-toggle>
+        
       </div>
+      
     </div>
     <div class="columns" id="body">
       <div class="column is-12">
@@ -188,6 +195,7 @@ export default {
       editPost: false,
       postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" , status: "", update_time: ""},
       items: ["lost", "found"],
+      searchposts: "",
     };
   },
   created: async function () {
@@ -197,6 +205,19 @@ export default {
     });
   },
   methods: {
+    async searchPosts() {
+      if (this.searchposts != "") {
+        await PostService.searchPostsHome(this.searchposts).then((result) => {
+          this.posts = result.data;
+          //this.titlePost = "Posts ( " + this.listposts.length + " )";
+        });
+      } else {
+        await PostService.getMyPosts(this.$route.params.id).then((result) => {
+          console.log(result);
+          this.posts = result.data;
+    });
+      }
+    },
     async inCompletePost(id){
       let index = 0
       for (var i in this.posts){

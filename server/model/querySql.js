@@ -324,6 +324,34 @@ class QuerySql {
         }
     }
 
+    async searchPostsHome(msg) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date, 
+            DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time, post_image 
+            FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id
+            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            WHERE INFO_POST.status = 1 and topic like '%${msg}%' order by INFO_POST.post_time desc`
+            let posts = await conn.query(sql)
+            await posts[0].map(data => {
+                // data['post_image'] = 'http://localhost:8888/' + data['post_image']
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+            //console.log(posts)
+            conn.commit();
+            return posts[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+    }
+
     async countUser() {
         const conn = await pool.getConnection();
         await conn.beginTransaction()

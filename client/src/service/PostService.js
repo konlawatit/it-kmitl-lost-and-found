@@ -150,6 +150,16 @@ class PostService {
         }
     }
 
+    static searchPostsHome(text) {
+        try {
+            return axios.get(`${url}/search/${text}`).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
     static addItem(fd, item_name, user_id) {
         try {
             return axios.post(`${url}/additem`, fd, {params: {user_id: user_id, item_name: item_name}}).then((result) => {

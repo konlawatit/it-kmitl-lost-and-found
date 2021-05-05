@@ -421,6 +421,36 @@ controller.post('/searchposts', async (req, res)=>{
     }
 })
 
+controller.get('/search/:msg', async (req, res) => { //สำหรับหน้า post และอื่นๆ
+    try {
+        let msg = req.params.msg;
+        console.log(msg)
+        let posts = await querySql.searchPostsHome(msg);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get search posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
 controller.post('/additem', uploadItem.single('file'),async (req, res) => {
     let item_name = req.query.item_name
     let user_id = req.query.user_id
