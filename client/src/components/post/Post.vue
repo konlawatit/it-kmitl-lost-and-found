@@ -41,12 +41,17 @@
               <div class="column is-2">
                 <div class="ml-3 mt-6 is-size-3">
                   {{ post.post_time }}
-                  <v-chip class="ma-2" color="blue" label text-color="white" v-if="post.category_post == 'found'">
-                    {{ post.category_post }}
-                  </v-chip>
-                  <v-chip class="ma-2" color="pink" label text-color="white" v-else>
-                    {{ post.category_post }}
-                  </v-chip>
+                  <div class="overline is-white" id="prepost">
+                    {{ post.post_date }}
+                  </div>
+                  <div>
+                    <v-chip class="ma-2" color="blue" label text-color="white" v-if="post.category_post == 'found'">
+                      {{ post.category_post }}
+                    </v-chip>
+                    <v-chip class="ma-2" color="pink" label text-color="white" v-else>
+                      {{ post.category_post }}
+                    </v-chip>
+                  </div>
                 </div>
               </div>
               <div class="column is-1 mt-6">

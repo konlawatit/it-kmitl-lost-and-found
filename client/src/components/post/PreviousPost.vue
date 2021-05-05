@@ -13,44 +13,57 @@
     >
       <v-list-item three-line>
         <div class="columns">
-          <div class="column is-8">
+          <div class="column is-12">
             <v-list-item-content>
               <div class="overline is-white" id="prepost">
                 {{ item.post_time }} {{ item.post_date }}
               </div>
-              <v-list-item-title class="headline mb-1 is-size-6" id="prepost">
-                {{ item.topic }}<br />
-              </v-list-item-title>
+              <div class="headline mb-1 is-size-6" id="prepost">
+                {{ item.topic }}
+                <v-chip
+                  class="ma-2"
+                  color="blue"
+                  label
+                  text-color="white"
+                  v-if="item.category_post == 'found'"
+                >
+                  {{ item.category_post }}
+                </v-chip>
+                <v-chip
+                  class="ma-2"
+                  color="pink"
+                  label
+                  text-color="white"
+                  v-if="item.category_post == 'lost'"
+                >
+                  {{ item.category_post }}
+                </v-chip>
+              </div>
               <v-list-item-subtitle id="prepost">
                 <v-list-item-title class="is-size-6" id="prepost">
-                   <v-chip class="ma-2" color="blue" label text-color="white"  v-if="item.category_post == 'found'">
-                    {{ item.category_post }}
-                  </v-chip>
-                  <v-chip class="ma-2" color="pink" label text-color="white"  v-if="item.category_post == 'lost'">
-                    {{ item.category_post }}
-                  </v-chip>
                   {{ item.place }}
                 </v-list-item-title>
-                <br />
               </v-list-item-subtitle>
             </v-list-item-content>
-          </div>
-          <div class="column is-4">
-            <img :src="item.post_picture" alt="John" />
           </div>
         </div>
       </v-list-item>
       <div class="columns">
         <div class="column is-12">
-          <p class="ml-3 mb-6" id="prepost">
-            {{item.post_desc}}
+          <img :src="'http://localhost:8888/' + item.post_image" alt="John" />
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-12">
+          <p class="ml-3" id="prepost">
+            {{ item.post_desc }}
           </p>
         </div>
       </div>
       <div class="columns">
         <div class="column is-10"></div>
         <div class="column is-1 ml-3 mb-2">
-          <button @click="redirect('detail/'+item.post_id)">
+          <button @click="redirect('detail/' + item.post_id)">
             <i class="fas fa-arrow-right"></i>
           </button>
         </div>
@@ -80,12 +93,12 @@ export default {
       }
     });
   },
-  methods:{
+  methods: {
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
     },
-  }
+  },
 };
 </script>
 
@@ -101,7 +114,7 @@ export default {
 }
 img {
   width: 100%;
-  margin-bottom: 1rem;
+  padding: 1rem;
 }
 .box {
   background: #0f3057;
