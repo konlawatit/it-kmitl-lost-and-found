@@ -8,22 +8,21 @@
       }"
       v-for="(room, index) in getRooms"
       :key="room.con_id"
-      
     >
       <div class="columns p-3" @click="selectRoom(index)">
         <div class="column is-3">
           <v-badge avatar bordered overlap :value="room.notification">
-            <template v-slot:badge >
+            <template v-slot:badge>
               <v-avatar class="has-background-danger">
-                {{room.notification}}
+                {{ room.notification }}
               </v-avatar>
             </template>
-            <v-avatar  color="primary" size="56">
+            <v-avatar color="primary" size="56">
               <img :src="room.image" />
             </v-avatar>
           </v-badge>
         </div>
-        
+
         <div class="column is-9">
           <div class="mt-4 is-size-6">
             {{ room.user_name }}
@@ -63,12 +62,12 @@ export default {
     async selectRoom(index) {
       //let user_id = this.getRooms[index].user_id_1 == this.getId ? this.getRooms[index].user_id_2 : this.getRooms[index].user_id_1
       let user_id = this.getRooms[index].user_id;
-      let con_id = this.getRooms[index].con_id
+      let con_id = this.getRooms[index].con_id;
 
       this.$store.dispatch("conversation/setSelectRoom", {
         user_id: user_id,
         user_name: this.getRooms[index].user_name,
-        con_id: con_id
+        con_id: con_id,
       });
 
       await ChatService.getMessages({
@@ -78,52 +77,51 @@ export default {
         this.$store.dispatch("conversation/setMessages", data);
       });
 
-      await ChatService.clearNoti(this.getId, this.getRooms[index]['con_id']).then(() => {
-        console.log('clear noti')
-        this.getRooms[index]['notification'] = 0 //reset noti ให้เป็ร 0 เมื่อกด
-      })
-
+      await ChatService.clearNoti(
+        this.getId,
+        this.getRooms[index]["con_id"]
+      ).then(() => {
+        console.log("clear noti");
+        this.getRooms[index]["notification"] = 0; //reset noti ให้เป็ร 0 เมื่อกด
+      });
 
       let myDiv = window.document.getElementById("chatbox"); //ส่งให้ข้อความเลื่อลงด้านล่างของ componetn Chatbox
       myDiv.scrollTop = myDiv.scrollHeight;
     },
   },
   async mounted() {
-    
     if (this.getId) {
-
-    
       socket.on("noti_chat", async (sender_id, con_id) => {
-        if (this.$router.app.$route.fullPath == '/chatroom') {
-        if (this.getId != sender_id) { //ไม่เอาแชทของตัวเอง
-          if (this.getSelectRoom.user_id != sender_id) { //จะขึ้น noti กับ chat ที่ไม่ได้เลือก
-            this.getRooms.map(room => {
-              if (room.con_id == con_id) {
-                room['notification'] += 1
-              }
-              return room
-            })
-            //this.$store.dispatch("conversation/seteRooms", setRoom)
-          console.log("noto_chat", sender_id);
+        if (this.$router.app.$route.fullPath == "/chatroom") {
+          if (this.getId != sender_id) {
+            //ไม่เอาแชทของตัวเอง
+            if (this.getSelectRoom.user_id != sender_id) {
+              //จะขึ้น noti กับ chat ที่ไม่ได้เลือก
+              this.getRooms.map((room) => {
+                if (room.con_id == con_id) {
+                  room["notification"] += 1;
+                }
+                return room;
+              });
+              //this.$store.dispatch("conversation/seteRooms", setRoom)
+              console.log("noto_chat", sender_id);
+            }
           }
         }
-        }
-        
       });
-      }
-  }
-  ,
-    async created() {
-      
-      if (this.getId) { //ให้แสดงผลเมื่อกดมาจากปุ่ม chat
-        await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
-          async (rooms) => {
-            console.log('list name', rooms)
-            this.$store.dispatch("conversation/setRooms", rooms);
-          }
-        );
-      }
-    },
+    }
+  },
+  async created() {
+    if (this.getId) {
+      //ให้แสดงผลเมื่อกดมาจากปุ่ม chat
+      await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
+        async (rooms) => {
+          console.log("list name", rooms);
+          this.$store.dispatch("conversation/setRooms", rooms);
+        }
+      );
+    }
+  },
   computed: {
     ...mapGetters("conversation", ["getRooms", "getSelectRoom"]),
     ...mapGetters("auth", ["getId"]),
