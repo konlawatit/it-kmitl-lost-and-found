@@ -304,7 +304,8 @@ controller.post('/editpost', async (req, res)=>{
     place = req.body.place
     post_desc = req.body.post_desc
     type = req.body.type
-    let payload = {id:id, topic:topic, place:place, post_desc:post_desc, type:type}
+    update_time = req.body.update_time
+    let payload = {id:id, topic:topic, place:place, post_desc:post_desc, type:type, update_time: update_time}
     try{
         await querySql.editPost(payload)
         res.status(200).send({

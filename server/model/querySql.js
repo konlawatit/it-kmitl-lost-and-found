@@ -575,8 +575,8 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = "UPDATE INFO_POST SET topic = ?, category_post = ?, post_desc = ?, place = ? where post_id = ?"
-            let result = await conn.query(sql, [data.topic, data.type, data.post_desc, data.place, data.id])
+            let sql = "UPDATE INFO_POST SET topic = ?, category_post = ?, post_desc = ?, place = ?, update_time = ? where post_id = ?"
+            let result = await conn.query(sql, [data.topic, data.type, data.post_desc, data.place, data.update_time, data.id])
             conn.commit()
             return {
                 result

@@ -195,7 +195,7 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" },
+      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "", update_time: ""},
       items: ["lost", "found"],
     };
   },
@@ -244,6 +244,28 @@ export default {
         })
     },
     async confrimEditPost(id){
+      let d = new Date();
+      let month = d.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      let day = d.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      let hour = d.getHours();
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      let minute = d.getMinutes();
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      let sec = d.getSeconds();
+      if (sec < 10) {
+        sec = "0" + sec;
+      }
+      this.postEdit.update_time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`
       for(var i in this.posts){
         if(this.posts[i].post_id == id){
           console.log("pass")
