@@ -186,7 +186,7 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" , status: ""},
+      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "" , status: "", update_time: ""},
       items: ["lost", "found"],
     };
   },
@@ -198,12 +198,14 @@ export default {
   },
   methods: {
     async inCompletePost(id){
+      let index = 0
       for (var i in this.posts){
         if(this.posts[i].post_id == id){
-          this.posts[i].status = 1
+          index = i
           break
         }
       }
+      this.posts.splice(index, 1)
       await PostService.inCompletePost(id).then((result) =>{
         console.log(result)
         this.editPost = false
@@ -232,12 +234,14 @@ export default {
         sec = "0" + sec;
       }
       let datetime = d.getFullYear() + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + sec;
+      let index = 0
       for (var i in this.posts){
         if(this.posts[i].post_id == id){
-          this.posts[i].status = 0
+          index = i
           break
         }
       }
+      this.posts.splice(index, 1)
       await PostService.completePost(id, datetime).then((result) =>{
         console.log(result)
         this.editPost = false
@@ -281,6 +285,28 @@ export default {
       })
     },
     async confrimEditPost(id){
+      let d = new Date();
+      let month = d.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      let day = d.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      let hour = d.getHours();
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      let minute = d.getMinutes();
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      let sec = d.getSeconds();
+      if (sec < 10) {
+        sec = "0" + sec;
+      }
+      this.postEdit.update_time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`
       console.log(id)
       for(var i in this.posts){
         if(this.posts[i].post_id == id){

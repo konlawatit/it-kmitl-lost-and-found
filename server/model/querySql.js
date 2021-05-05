@@ -370,7 +370,7 @@ class QuerySql {
             DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time 
             FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id
             JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
-            WHERE USER.user_id = ? order by INFO_POST.post_time desc`
+            WHERE USER.user_id = ? AND status = 1 order by INFO_POST.post_time desc`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
