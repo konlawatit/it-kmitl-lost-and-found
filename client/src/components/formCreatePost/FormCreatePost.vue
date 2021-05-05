@@ -229,6 +229,7 @@ export default {
             try {
               await PostService.createPost(form).then((result) => {
                 //this.profileImage = this.API_URL + "/" + result.path;
+                this.redirect(`detail/${result.data.result[0].insertId}`)
                 console.log(result);
               });
             } catch (err) {

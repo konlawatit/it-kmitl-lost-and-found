@@ -276,7 +276,7 @@ controller.post('/createpost', upload.single('post_image'), async (req, res) => 
     let payload = {userid: userid, topic:topic, categoryPost:categoryPost, 
         postDesc:postDesc, post_time:post_time, place:place, categoryItem: categoryItem, post_image: post_image}
     try {
-        await querySql.createPost(payload);
+        let result = await querySql.createPost(payload);
         //console.log('result',posts)
         res.status(200).send({
             statusCode: '200',

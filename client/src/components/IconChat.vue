@@ -58,9 +58,18 @@ export default {
       socket.disconnect()
       socket.connect()
       socket.on("noti_chat", async (sender_id, con_id, receiver_id) => {
+        console.log('มีคนส่งมาาาาาา')
         if (this.getId == receiver_id) {
           //if (this.$router.app.$route.fullPath == '/home') {
           //\if (this.getSelectRoom.user_id != sender_id) {
+            if (this.getRooms) {
+              await ChatService.getRooms(this.$store.getters["auth/getId"]).then(
+          async (rooms) => {
+            console.log('list name', rooms)
+            this.$store.dispatch("conversation/setRooms", rooms);
+          }
+        );
+            }
             this.getRooms.map(room => {
               if (room.con_id == con_id) {
                 room['notification'] += 1

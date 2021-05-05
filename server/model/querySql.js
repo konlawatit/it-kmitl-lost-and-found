@@ -555,6 +555,7 @@ class QuerySql {
             let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time, data.place])
             let sql2 = "INSERT INTO INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES (?, ?)"
             await conn.query(sql2, [data.post_image, result[0].insertId])
+            console.log(result)
             conn.commit()
             return {
                 result
@@ -794,11 +795,12 @@ class QuerySql {
             //let sql = `UPDATE USER SET user_name = ?, firstname = ?, lastname = ? ,picture=?, birthday = ?, phone_number = ? WHERE user_id = ?`
             let sql = `SELECT * FROM CONVERSATION WHERE (USER_user_id_1 = ${user_id} AND USER_user_id_2 = ${another_id}) OR (USER_user_id_1 = ${another_id} AND USER_user_id_2 = ${user_id})`
             let conversation = (await conn.query(sql))[0][0]
+            console.log(234234234, conversation)
             conn.commit();
-            let result = await conn.query(`SELECT CONVERSATION_con_id 'con_id', content, msg_no, USER_user_id message_by, msg_time, is_image  FROM MESSAGES WHERE CONVERSATION_con_id = '${conversation.con_id}'`)
+            let result = await conn.query(`SELECT CONVERSATION_con_id 'con_id', content, msg_no, USER_user_id message_by, msg_time, is_image  FROM MESSAGES WHERE CONVERSATION_con_id = ${conversation.con_id}`)
 
             //result = msg
-            //console.log(result)
+            console.log(111111111111111,result)
             return result
         } catch (err) {
             await conn.rollback();
