@@ -119,6 +119,10 @@
                 <v-list-item-title v-text="list.topic"></v-list-item-title>
 
                 <v-list-item-subtitle
+                  v-text="list.post_date"
+                  class="mt-1"
+                ></v-list-item-subtitle>
+                <v-list-item-subtitle
                   v-text="list.post_time"
                   class="mt-1"
                 ></v-list-item-subtitle>
@@ -343,66 +347,61 @@ export default {
       }
     },
     async unlockbanuser(id){
+      let index = 0
+      for(var i in this.list){
+        if(this.list[i].user_id == id){
+          this.list[i].role = 'normal'
+          index = i
+        }
+      }
+      this.listname.push(this.list[index])
+      this.list.splice(index, 1)
+      this.titlelist = "Banned ( " + this.list.length + " )";
       await AuthService.unlockBanUser(id).then((result) => {
         console.log(result);
         this.edituser = false;
       });
-      await AuthService.searchUserBan(this.searchuserban).then((result) => {
-        this.list = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
-      await AuthService.getAllUser().then((result) => {
-        this.listname = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
     },
     async banuser(id) {
+      let index = 0
+      for(var i in this.list){
+        if(this.list[i].user_id == id){
+          this.list[i].role = 'banned'
+          index = i
+          break
+        }
+      }
+      this.listnameban.push(this.list[index])
+      this.list.splice(index, 1)
+      this.titlelist = "Users ( " + this.list.length + " )";
       console.log(id);
       await AuthService.banUser(id).then((result) => {
         console.log(result);
         this.edituser = false;
       });
-      await AuthService.searchUser(this.searchuser).then((result) => {
-        this.list = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
-      await AuthService.getAllUser().then((result) => {
-        this.listname = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
-      await AuthService.getAllUserBan().then((result) => {
-        this.listnameban = result.data;
-        this.titlelist = "Banned ( " + this.list.length + " )";
-      });
     },
     async admintonormal(id) {
+      for(var i in this.list){
+        if(this.list[i].user_id == id){
+          this.list[i].role = 'normal'
+        }
+      }
       console.log(id);
       await AuthService.admintoNormal(id).then((result) => {
         console.log(result);
         this.edituser = false;
       });
-      await AuthService.searchUser(this.searchuser).then((result) => {
-        this.list = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
-      await AuthService.getAllUser().then((result) => {
-        this.listname = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
     },
     async normaltoadmin(id) {
+      for(var i in this.list){
+        if(this.list[i].user_id == id){
+          this.list[i].role = 'admin'
+        }
+      }
       console.log(id);
       await AuthService.normaltoAdmin(id).then((result) => {
         console.log(result);
         this.edituser = false;
-      });
-      await AuthService.searchUser(this.searchuser).then((result) => {
-        this.list = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
-      });
-      await AuthService.getAllUser().then((result) => {
-        this.listname = result.data;
-        this.titlelist = "Users ( " + this.list.length + " )";
       });
     },
     async deletePost(id) {

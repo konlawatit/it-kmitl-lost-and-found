@@ -123,7 +123,7 @@ class QuerySql {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT * FROM USER`
+            let sql = `SELECT * FROM USER WHERE role <> 'banned'`
             let users = await conn.query(sql)
             await users[0].map(data => {
                 data['image'] = 'http://localhost:8888/' + data['image']
