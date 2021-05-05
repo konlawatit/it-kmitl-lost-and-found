@@ -135,14 +135,24 @@ controller.post('/login/confirm/:email', upload.single('file'), async (req, res)
             [name, firstname, lastname, email, image, birthday, phone, type, 'normal'],
         ]
         console.log('payload', sqlPayload)
-        await querySql.createUser(sqlPayload).then(async () => {
-            let user_info = await querySql.getUser(email)
+        await querySql.createUser(sqlPayload).then(async (result) => {
+            console.log('create user', result.result)
+            //let user_info = await querySql.getUser(email)
             //let info = await querySql.getUser(user_id)
-            console.log('create success', user_info)
-            res.send({data: user_info})
+            console.log('create success')
+            res.send({data: {
+                user_id : result.result[0].insertId,
+                user_name: name,
+                email: email,
+                fname: firstname,
+                lname: lastname,
+                image: `http://localhost:8888/${image}`,
+                type: type,
+                role: 'normal',
+                phone_number: phone,
+                birthday: birthday
+            }})
         });
-        
-
     } catch (err) {
         console.log(err)
         res.send(err)

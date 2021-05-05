@@ -104,7 +104,7 @@ export default {
       else return false
     },
     async sendMessage() {
-      if (this.msg) {
+      if (this.msg || this.inputImage) {
       let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
       let user_id = this.$store.getters["auth/getId"];
       const formData = new FormData();
@@ -180,8 +180,7 @@ export default {
       //เช็คว่าได้เลือกห้องหรือ ข้อความที่คนอื่นส่งมาตรงกับ user_id เราหรือไม่
       console.log(another_id, another_id,this.getId)
       if (this.getSelectRoom.user_id && another_id == this.getId) {
-        let another_id = this.$store.getters["conversation/getSelectRoom"]
-          .user_id;
+        let another_id = this.$store.getters["conversation/getSelectRoom"].user_id;
         let user_id = this.$store.getters["auth/getId"];
         await ChatService.getMessages({
           user_id: user_id,
