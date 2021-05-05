@@ -155,20 +155,43 @@
                       comment.user_id == store.getters['auth/getId'] ||
                       store.getters['auth/getRole'] == 'admin'
                     "
-                    @click="editComment(comment.comment_no, comment.comment_desc, post.post_id)"
+                    @click="
+                      editComment(
+                        comment.comment_no,
+                        comment.comment_desc,
+                        post.post_id
+                      )
+                    "
                   ></button>
                   <br />
                   <p class="mt-2">{{ comment.comment_desc }}</p>
+                  <div class="columns">
+                    <div class="column is-4" v-if="comment.comment_image !=''">
+                      <img
+                        :src="'http://localhost:8888/'+comment.comment_image"
+                        alt="John"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-10">
+                <div class="column is-7">
                   <input
                     type="text"
                     placeholder="comments"
                     class="input is-black"
                     v-model="commentText"
                   />
+                </div>
+                <div class="column is-3">
+                  <v-file-input
+                    label="File image"
+                    filled
+                    prepend-icon="mdi-camera"
+                    type="file"
+                    v-model="postImage"
+                  ></v-file-input>
                 </div>
                 <div class="column is-2">
                   <button
@@ -236,7 +259,9 @@
           >
             Save changes
           </button>
-          <button class="button is-danger" @click="deletePost(postEdit.id)">Delete post</button>
+          <button class="button is-danger" @click="deletePost(postEdit.id)">
+            Delete post
+          </button>
           <button class="button" @click="editPost = false">Cancel</button>
         </footer>
       </div>
@@ -257,7 +282,12 @@
         <section class="modal-card-body">
           <div class="columns" id="listedit">
             <div class="column is-12 is-size-2 has-text-centered">
-              <input type="text" class="input" placeholder="comment" v-model="inputcomment"/>
+              <input
+                type="text"
+                class="input"
+                placeholder="comment"
+                v-model="inputcomment"
+              />
             </div>
           </div>
         </section>
@@ -268,7 +298,9 @@
           >
             Save changes
           </button>
-          <button class="button is-danger" @click="deleteComment()">Delete comment</button>
+          <button class="button is-danger" @click="deleteComment()">
+            Delete comment
+          </button>
           <button class="button" @click="editcomment = false">Cancel</button>
         </footer>
       </div>
@@ -292,12 +324,20 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { id: "", topic: "", place: "", post_desc: "", type: "", update_time: ""},
+      postEdit: {
+        id: "",
+        topic: "",
+        place: "",
+        post_desc: "",
+        type: "",
+        update_time: "",
+      },
       items: ["lost", "found"],
       editcomment: false,
       inputcomment: "",
       commentid: "",
       postid: "",
+      postImage: ""
     };
   },
   created: async function () {
@@ -307,9 +347,10 @@ export default {
     });
   },
   methods: {
-    async deletePost(id){
-      console.log(id)
-      await this.$swal.fire({
+    async deletePost(id) {
+      console.log(id);
+      await this.$swal
+        .fire({
           title: "ยืนยัน",
           text: "ต้องการลบโพสต์หรือไม่",
           icon: "question",
@@ -317,22 +358,24 @@ export default {
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes",
-        }).then(async (result) =>{
-          if(result.isConfirmed){
-            this.editPost = false
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            this.editPost = false;
             try {
               await PostService.deletePost(id).then((result) => {
                 console.log(result);
-                this.redirect('home')
+                this.redirect("home");
               });
             } catch (err) {
               console.log(err);
             }
           }
-        })
+        });
     },
-    async deleteComment(){
-      await this.$swal.fire({
+    async deleteComment() {
+      await this.$swal
+        .fire({
           title: "ยืนยัน",
           text: "ต้องการลบ comment หรือไม่",
           icon: "question",
@@ -340,47 +383,54 @@ export default {
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes",
-        }).then(async (result) =>{
-          if(result.isConfirmed){
-            let index = 0
-            for (var i in this.comments){
-              if(this.comments[i].comment_no == this.commentid){
-                index = i
-                break
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            let index = 0;
+            for (var i in this.comments) {
+              if (this.comments[i].comment_no == this.commentid) {
+                index = i;
+                break;
               }
             }
-            this.comments.splice(index, 1)
-            this.editcomment = false
+            this.comments.splice(index, 1);
+            this.editcomment = false;
             try {
-              await CommentService.deleteComment(this.commentid).then((result) => {
-                console.log(result);
-              });
+              await CommentService.deleteComment(this.commentid).then(
+                (result) => {
+                  console.log(result);
+                }
+              );
             } catch (err) {
               console.log(err);
             }
           }
-        })
+        });
     },
-    async confirmEditComment(id){
-      for (const item of this.comments){
-        if(item.comment_no == id){
-          console.log('pass')
-          item.comment_desc = this.inputcomment
-          break
+    async confirmEditComment(id) {
+      for (const item of this.comments) {
+        if (item.comment_no == id) {
+          console.log("pass");
+          item.comment_desc = this.inputcomment;
+          break;
         }
       }
-      let payload = {comment_no: id, comment_desc: this.inputcomment, post_id: this.postid}
-      await CommentService.editComment(payload).then((result) =>{
-        console.log(result)
-        this.editcomment = false
-      })
+      let payload = {
+        comment_no: id,
+        comment_desc: this.inputcomment,
+        post_id: this.postid,
+      };
+      await CommentService.editComment(payload).then((result) => {
+        console.log(result);
+        this.editcomment = false;
+      });
     },
-    editComment(id, comment, postid){
-      console.log(id)
-      this.editcomment = true
-      this.inputcomment = comment
-      this.commentid = id
-      this.postid = postid
+    editComment(id, comment, postid) {
+      console.log(id);
+      this.editcomment = true;
+      this.inputcomment = comment;
+      this.commentid = id;
+      this.postid = postid;
     },
     async confrimEditPost(id) {
       let d = new Date();
@@ -404,7 +454,7 @@ export default {
       if (sec < 10) {
         sec = "0" + sec;
       }
-      this.postEdit.update_time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`
+      this.postEdit.update_time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`;
       console.log(id);
       for (var i in this.posts) {
         if (this.posts[i].post_id == id) {
@@ -450,14 +500,24 @@ export default {
       //alert('comment add'+postId)
     },
     async addComment(postId) {
-      await CommentService.createComment({
-        postId,
-        commentText: this.commentText,
-        user_id: this.$store.getters["auth/getId"],
-      }).then(async (result) => {
+      const fd = new FormData()
+      fd.append('postId', postId)
+      fd.append('commentText', this.commentText)
+      fd.append('user_id', this.$store.getters["auth/getId"])
+      fd.append('comment_image', this.postImage)
+      await CommentService.createComment(fd, postId).then(async (result) => {
         this.commentText = "";
         this.comments = result;
+        this.postImage = ""
       });
+      // await CommentService.createComment({
+      //   postId,
+      //   commentText: this.commentText,
+      //   user_id: this.$store.getters["auth/getId"],
+      // }).then(async (result) => {
+      //   this.commentText = "";
+      //   this.comments = result;
+      // });
     },
     async createChatRoom(another_id, another_name) {
       await ChatService.createConversation(

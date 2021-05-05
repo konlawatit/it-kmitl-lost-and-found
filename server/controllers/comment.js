@@ -3,22 +3,48 @@ const controller = express.Router();
 
 const querySqlModel = require('../model/querySql')
 const querySql = new querySqlModel()
+const multer = require('multer')
+const path = require("path")
 
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './static/uploads/imageComment') // path to save file
+    },
+    filename: function (req, file, callback) {
+        // set file name
+        console.log(req.params)
+        callback(null, `${file.originalname}-${Date.now()}${path.extname(file.originalname)}`)
+    }
+})
+
+const upload = multer({
+    storage: storage
+})
 
 //create new comment
-controller.post('/:postId', async (req, res) => {
+controller.post('/:postId', upload.single('comment_image'), async (req, res) => {
+    let comment = req.body.commentText
+    let user_id = req.body.user_id
+    let postId = req.params.postId
+    let comment_image = ""
+    if(req.file){
+        comment_image = req.file.path
+        console.log(comment_image)
+    }
+    else{
+        comment_image = ''
+        console.log('')
+    }
     try {
-        let {
-            comment,
-            user_id
-        } = req.body
         var today = new Date();
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date + ' ' + time;
-        let result = await querySql.createComment([
-            comment, req.params.postId, user_id, dateTime
-        ], req.params.postId)
+        let payload = {comment: comment, user_id: user_id, postId: postId, dateTime: dateTime, comment_image: comment_image}
+        // let result = await querySql.createComment([
+        //     comment, req.params.postId, user_id, dateTime
+        // ], req.params.postId)
+        let result = await querySql.createComment(payload)
         //console.log('result',posts)
         res.status(200).send(result)
     } catch (err) {

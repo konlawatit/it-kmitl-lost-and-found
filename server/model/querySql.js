@@ -617,16 +617,19 @@ class QuerySql {
             conn.release()
         }
     }
-    async createComment(payload, postId) {
+    async createComment(payload) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
             console.log(payload)
-            let sql = "INSERT INTO INFO_COMMENT(comment_desc, INFO_POST_post_id, USER_user_id, comment_time) VALUES(?)"
-            await conn.query(sql, [payload])
+            let sql = "INSERT INTO INFO_COMMENT(comment_desc, INFO_POST_post_id, USER_user_id, comment_time) VALUES(?, ?, ?, ?)"
+            let result = await conn.query(sql, [payload.comment, payload.postId, payload.user_id, payload.dateTime])
+            let noImage = false
+            let sql2 = "INSERT INTO INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES(?,?)"
+            await conn.query(sql2, [payload.comment_image, result[0].insertId])
             await conn.commit()
         
-            return await this.getComments(postId)
+            return await this.getComments(payload.postId)
 
         } catch (err) {
             await conn.rollback();
@@ -638,11 +641,14 @@ class QuerySql {
         }
     }
 
-    async getComments(postId) {
+    async getComments(postId, noImage) {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
-            let sql = "SELECT *, DATE_FORMAT(comment_time, '%d/%m/%Y') as `comment_date`, DATE_FORMAT(comment_time, '%H:%i') as `comment_time` FROM (SELECT * FROM INFO_COMMENT INNER JOIN USER ON INFO_COMMENT.INFO_POST_post_id=" + postId + ") AS `INFO_COMMENT_USER` WHERE user_id = USER_user_id ORDER BY comment_time"
+            let sql = "SELECT *, DATE_FORMAT(comment_time, '%d/%m/%Y') as `comment_date`, \
+                DATE_FORMAT(comment_time, '%H:%i') as `comment_time` FROM (SELECT * FROM INFO_COMMENT INNER \
+                JOIN USER ON INFO_COMMENT.INFO_POST_post_id=" + postId + " ) AS `INFO_COMMENT_USER` JOIN INFO_COMMENT_COMMENT_IMAGE ON INFO_COMMENT_COMMENT_IMAGE.INFO_COMMENT_comment_no = comment_no\
+                WHERE user_id = USER_user_id ORDER BY comment_time"
             let result = await conn.query(sql)
             conn.commit();
             result = await result[0].map(data => {
