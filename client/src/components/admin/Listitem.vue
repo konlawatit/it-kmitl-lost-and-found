@@ -69,7 +69,7 @@
           <v-list subheader two-line>
             <v-list-item v-for="list in list" :key="list.user_id">
               <v-list-item-avatar>
-                <img :src="list.picture" alt="profile" />
+                <img :src="list.image" alt="profile" />
               </v-list-item-avatar>
 
               <v-list-item-content>
