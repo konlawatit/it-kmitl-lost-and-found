@@ -116,6 +116,7 @@
           v-model="page"
           :length="15"
           :total-visible="7"
+          @click="selectPage"
         ></v-pagination>
       </div>
     </div>
@@ -203,8 +204,11 @@ export default {
       console.log(result);
       this.posts = result.data;
     });
+    
+    
   },
   methods: {
+
     async searchPosts() {
       if (this.searchposts != "") {
         await PostService.searchPostsHome(this.searchposts).then((result) => {

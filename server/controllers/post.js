@@ -33,6 +33,62 @@ const uploadItem = multer({
     storage: storageItem
 })
 
+controller.get('/count', async (req, res) => {
+    try {
+        let posts = await querySql.pagePosts();
+        let result = []
+        // for (post of posts) {
+        //     result.push(await post)
+        // }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: posts
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
+controller.get('/test/:page', async (req, res) => {
+    try {
+        let posts = await querySql.allPostTest(req.params.page);
+        let result = []
+        // for (post of posts) {
+        //     result.push(await post)
+        // }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: posts
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
 controller.get('/allposts', async (req, res) => {
     try {
         let posts = await querySql.allPosts();

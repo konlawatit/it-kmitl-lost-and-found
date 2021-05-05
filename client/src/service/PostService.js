@@ -231,6 +231,26 @@ class PostService {
         }
     }
 
+    static getCountPost() {
+        try{
+            return axios.get(`${url}/count`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
+    static selectPage(page) {
+        try{
+            return axios.get(`${url}/test/${page}`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
 }
 
 export default PostService;

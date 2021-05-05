@@ -296,6 +296,69 @@ class QuerySql {
         }
     }
 
+    async pagePosts() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            
+
+            let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST'))[0][0]['count']
+            console.log('count post', countPosts)
+
+            //console.log(posts)
+            conn.commit();
+            return countPosts
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback pst test`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+
+    }
+
+    async allPostTest( page) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            
+            let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST'))[0][0]['count']
+            console.log('raw count post', rawCountPosts)
+            //let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST'))[0][0]['count']
+            let countPosts = await this.pagePosts();
+            console.log('count post', countPosts)
+            //let page = 2
+            let endPage = parseInt(page) == countPosts ? Math.ceil((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
+            let sql = `select * from (select * from (select * from INFO_POST order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
+            JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
+            WHERE test.status = 1
+            order by post_time asc limit ${endPage}) test order by post_time desc;`
+
+            let rows = await conn.query(sql)
+            console.log('all post test rows', rows[0])
+
+            await rows[0].map(data => {
+                // data['post_image'] = 'http://localhost:8888/' + data['post_image']
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                return data
+            })
+
+            //console.log(posts)
+            conn.commit();
+            return rows[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback pst test`, err)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+    }
+
     async allPosts() {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
@@ -306,11 +369,16 @@ class QuerySql {
             JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
             WHERE INFO_POST.status = 1 order by INFO_POST.post_time desc`
             let posts = await conn.query(sql)
+
             await posts[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
                 data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user'] = {
+                    name: "bas"
+                }
                 return data
             })
+
             //console.log(posts)
             conn.commit();
             return posts[0]
