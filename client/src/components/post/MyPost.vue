@@ -36,7 +36,12 @@
             <div class="columns mt-6 is-mobile">
               <div class="column is-2">
                 <div class="ml-3 mt-6 is-size-3">
-                  {{post.post_time}}
+                  {{ post.post_time }}
+                  <div class="overline is-white" id="prepost">
+                    {{ post.post_date }}
+                  </div>
+                </div>
+                <div class="ml-3 is-size-3">
                   <v-chip class="ma-2" color="blue" label text-color="white" v-if="post.category_post == 'found' && post.status == 1">
                     {{ post.category_post }}
                   </v-chip>
