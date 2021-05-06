@@ -800,6 +800,9 @@ class QuerySql {
             let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time, data.place])
             let sql2 = "INSERT INTO INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES (?, ?)"
             await conn.query(sql2, [data.post_image, result[0].insertId])
+            let item_id = (await conn.query(`select item_id from CATEGORY_ITEM where name = '${data.categoryItem}'`))[0][0].item_id
+            console.log('item id', item_id, result[0].insertId)
+            await conn.query(`insert into CATEGORY_ITEM_INFO_POST (CATEGORY_ITEM_item_id, INFO_POST_post_id) VALUES(${item_id}, ${result[0].insertId})`)
             console.log(result)
             conn.commit()
             return {
@@ -815,6 +818,30 @@ class QuerySql {
             conn.release();
         }
     }
+
+    // async saveItem() {
+    //     const conn = await pool.getConnection();
+    //     await conn.beginTransaction()
+    //     try {
+    //         let sql = "INSERT INTO INFO_POST (USER_user_id, topic, category_post, post_desc, post_time, place, status) VALUES(?, ?, ?, ?, ?, ?, 1)"
+    //         let result = await conn.query(sql, [data.userid, data.topic, data.categoryPost, data.postDesc, data.post_time, data.place])
+    //         let sql2 = "INSERT INTO INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES (?, ?)"
+    //         await conn.query(sql2, [data.post_image, result[0].insertId])
+    //         console.log(result)
+    //         conn.commit()
+    //         return {
+    //             result
+    //         }
+    //     } catch (err) {
+    //         await conn.rollback();
+    //         console.log(err)
+    //         console.log(`create post rolback`, err)
+    //         throw new Error(err)
+    //     } finally {
+    //         console.log('finally save items post')
+    //         conn.release();
+    //     }
+    // }
 
     async editPost(data) {
         const conn = await pool.getConnection();
