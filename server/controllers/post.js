@@ -18,6 +18,18 @@ const addItemSchema = Joi.object({
     item_name: Joi.string().required().min(3).external(nameValidator),
     user_id: Joi.string().required()
 })
+
+const createPostSchema = Joi.object({
+    userid: Joi.string().required(),
+    topic: Joi.string().required().min(3),
+    categoryPost: Joi.string(),
+    postDesc: Joi.string(),
+    post_time:Joi.string(),
+    place: Joi.string(),
+    post_image: Joi.string().required().min(1),
+    categoryItem: Joi.string().required()
+})
+
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './static/uploads/imagePost') // path to save file
@@ -344,10 +356,19 @@ controller.post('/createpost', upload.single('post_image'), async (req, res) => 
     if (req.file) {
         post_image = req.file.path
     }
+    else{
+        post_image = ""
+    }
     console.log(req.file)
     let payload = {
         userid: userid, topic: topic, categoryPost: categoryPost,
         postDesc: postDesc, post_time: post_time, place: place, categoryItem: categoryItem, post_image: post_image
+    }
+    try {
+        await createPostSchema.validateAsync(payload, { abortEarly: false })
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json(err)
     }
     try {
         console.log('cat item',categoryItem)
