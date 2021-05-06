@@ -737,14 +737,14 @@ class QuerySql {
         }
     }
 
-    async getComments(postId, noImage) {
+    async getComments(postId) {
         const conn = await pool.getConnection();
         await conn.beginTransaction();
         try {
             let sql = "SELECT *, DATE_FORMAT(comment_time, '%d/%m/%Y') as `comment_date`, \
                 DATE_FORMAT(comment_time, '%H:%i') as `comment_time` FROM (SELECT * FROM INFO_COMMENT INNER \
                 JOIN USER ON INFO_COMMENT.INFO_POST_post_id=" + postId + " ) AS `INFO_COMMENT_USER` JOIN INFO_COMMENT_COMMENT_IMAGE ON INFO_COMMENT_COMMENT_IMAGE.INFO_COMMENT_comment_no = comment_no\
-                WHERE user_id = USER_user_id ORDER BY comment_time"
+                WHERE user_id = USER_user_id ORDER BY comment_date, comment_time"
             let result = await conn.query(sql)
             conn.commit();
             result = await result[0].map(data => {

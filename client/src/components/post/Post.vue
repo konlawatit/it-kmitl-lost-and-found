@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns is-mobile is-tablet">
-      <div class="column is-8">
+      <div class="column is-12">
         <v-btn-toggle tile color="blue darken-4" group>
           <v-btn id="buttonfilter" value="all" @click="allposts()">
             ทั้งหมด

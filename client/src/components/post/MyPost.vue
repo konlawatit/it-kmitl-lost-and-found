@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns is-mobile is-tablet">
-      <div class="column is-10">
+      <div class="column is-12">
         <v-btn-toggle tile color="blue darken-4" group>
           <v-btn id="buttonfilter" value="all" @click="allmyPosts()">
             ทั้งหมด
@@ -114,9 +114,9 @@
       <div class="column is-12">
         <v-pagination
           v-model="page"
-          :length="15"
+          :length="pageLength"
           :total-visible="7"
-          @click="selectPage"
+          @click="selectPage()"
         ></v-pagination>
       </div>
     </div>
@@ -189,6 +189,7 @@ export default {
     return {
       store,
       page: 1,
+      pageLength: '',
       posts: [],
       commentText: "",
       comments: {},
@@ -204,11 +205,28 @@ export default {
       console.log(result);
       this.posts = result.data;
     });
-    
+    let page = (await PostService.getCountPost()).data
+    this.pageLength = parseInt(page)
     
   },
-  methods: {
+  watch: {
+    page: async function  (newPage, oldPage) {
+      console.log(newPage, oldPage)
+      await PostService.selectPage(this.page).then(result => {
+        this.posts = result.data
+      })
+      this.selectPage(newPage)
+    }
 
+  },
+  
+  methods: {
+    async selectPage() {
+      console.log('select page')
+      await PostService.selectPage(this.page).then(result => {
+        console.log(1111111111111111111111,result)
+      })
+    },
     async searchPosts() {
       if (this.searchposts != "") {
         await PostService.searchPostsHome(this.searchposts).then((result) => {
