@@ -164,12 +164,8 @@ export default {
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
-      categoryRules:[
-        (value) => !!value || "Required."
-      ],
-      postImageRules:[
-        (value) => !!value || "Required."
-      ],
+      categoryRules: [(value) => !!value || "Required."],
+      postImageRules: [(value) => !!value || "Required."],
       postImage: "",
     };
   },
@@ -223,36 +219,6 @@ export default {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
-            if (this.title == "") {
-              await this.$swal.fire({
-                title: "กรอกข้อมูลไม่ครบ",
-                text: "โปรดกรอกหัวข้อโพสต์",
-                icon: "error",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Ok",
-              });
-              return 0;
-            }
-            if (this.categoryItem == "") {
-              await this.$swal.fire({
-                title: "กรอกข้อมูลไม่ครบ",
-                text: "โปรดเลือกประเภทของ",
-                icon: "error",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Ok",
-              });
-              return 0;
-            }
-            if (this.postImage == "") {
-              await this.$swal.fire({
-                title: "กรอกข้อมูลไม่ครบ",
-                text: "โปรดอัพโหลดรูป",
-                icon: "error",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Ok",
-              });
-              return 0;
-            }
             const form = new FormData();
             form.append("userid", store.getters["auth/getId"]);
             form.append("topic", this.title);
@@ -271,6 +237,46 @@ export default {
               });
             } catch (err) {
               console.log(err);
+              if (this.title == "") {
+                await this.$swal.fire({
+                  title: "กรอกข้อมูลไม่ครบ",
+                  text: "โปรดกรอกหัวข้อโพสต์",
+                  icon: "error",
+                  confirmButtonColor: "#3085d6",
+                  confirmButtonText: "Ok",
+                });
+                return 0;
+              }
+              if (this.categoryItem == "") {
+                await this.$swal.fire({
+                  title: "กรอกข้อมูลไม่ครบ",
+                  text: "โปรดเลือกประเภทของ",
+                  icon: "error",
+                  confirmButtonColor: "#3085d6",
+                  confirmButtonText: "Ok",
+                });
+                return 0;
+              }
+              if (this.postImage == "") {
+                await this.$swal.fire({
+                  title: "กรอกข้อมูลไม่ครบ",
+                  text: "โปรดอัพโหลดรูป",
+                  icon: "error",
+                  confirmButtonColor: "#3085d6",
+                  confirmButtonText: "Ok",
+                });
+                return 0;
+              }
+              else{
+                await this.$swal.fire({
+                  title: "ระบบผิดพลาด",
+                  text: "มึงเขียนแตกบางอย่าง",
+                  icon: "error",
+                  confirmButtonColor: "#3085d6",
+                  confirmButtonText: "Ok",
+                });
+                return 0;
+              }
             }
           }
         });
