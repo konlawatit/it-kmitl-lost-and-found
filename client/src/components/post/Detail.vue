@@ -177,7 +177,7 @@
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-7">
+                <div class="column is-9" v-if="showinputcomment == true">
                   <input
                     type="text"
                     placeholder="comments"
@@ -185,7 +185,7 @@
                     v-model="commentText"
                   />
                 </div>
-                <div class="column is-3">
+                <div class="column is-9" v-else>
                   <v-file-input
                     label="File image"
                     filled
@@ -193,6 +193,22 @@
                     type="file"
                     v-model="postImage"
                   ></v-file-input>
+                </div>
+                <div class="column is-1" v-if="showinputcomment == true">
+                  <button
+                    class="button is-info"
+                    @click="showinputcomment = false"
+                  >
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+                <div class="column is-1" v-else>
+                  <button
+                    class="button is-danger"
+                    @click="showinputcomment = true"
+                  >
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                  </button>
                 </div>
                 <div class="column is-2">
                   <button
@@ -352,6 +368,7 @@ export default {
       postid: "",
       postImage: "",
       comment_image: "",
+      showinputcomment: true,
     };
   },
   created: async function () {
