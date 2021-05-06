@@ -1,6 +1,5 @@
 const pool = require('../database/mysql')
 //const db = require('../database/mysql')
-
 class QuerySql {
     // constructor(sql, payload) {
     //     this.sql = sql;
@@ -1405,6 +1404,23 @@ class QuerySql {
         } finally {
             console.log('finally all post')
             conn.release();
+        }
+    }
+
+    async checkItemName(data){
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try{
+            let sql = "SELECT name FROM CATEGORY_ITEM WHERE name = ?"
+            let result = await conn.query(sql, [data])
+            return result
+        } catch(err){
+            await conn.rollback();
+            console.log(err)
+            throw new Error(err)
+        } finally {
+            console.log('finally check name')
+            conn.release()
         }
     }
 

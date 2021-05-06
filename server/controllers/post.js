@@ -4,6 +4,20 @@ const querySqlModel = require('../model/querySql')
 const querySql = new querySqlModel()
 const multer = require('multer')
 const path = require("path")
+const Joi = require('joi')
+
+const nameValidator = async (value, helpers) => {
+    const [rows, _] = await querySql.checkItemName(value)
+    if (rows.length > 0) {
+        const message = 'This item name is already taken'
+        throw new Joi.ValidationError(message, { message })
+    }
+    return value
+}
+const addItemSchema = Joi.object({
+    item_name: Joi.string().required().min(3).external(nameValidator),
+    user_id: Joi.string().required()
+})
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './static/uploads/imagePost') // path to save file
@@ -37,7 +51,7 @@ controller.get('/count/:select', async (req, res) => {
     try {
         console.log(req.query.date)
         let posts = await querySql.pagePosts(req.params.select, req.query.date, req.query.search, req.query.id);
-        
+
         let result = []
         // for (post of posts) {
         //     result.push(await post)
@@ -119,12 +133,12 @@ controller.get('/allposts', async (req, res) => {
     }
 })
 
-controller.get('/allmyposts/:id/:page', async (req, res) =>{
+controller.get('/allmyposts/:id/:page', async (req, res) => {
     userid = req.params.id
-    try{
+    try {
         let myposts = await querySql.myPosts(userid, req.params.page);
         let result = []
-        for (post of myposts){
+        for (post of myposts) {
             result.push(await post)
         }
         res.status(200).send({
@@ -134,7 +148,7 @@ controller.get('/allmyposts/:id/:page', async (req, res) =>{
             messge: 'get all my posts',
             data: result
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -147,12 +161,12 @@ controller.get('/allmyposts/:id/:page', async (req, res) =>{
     }
 })
 
-controller.get('/oneposts/:id', async (req, res) =>{
+controller.get('/oneposts/:id', async (req, res) => {
     post_id = req.params.id
-    try{
+    try {
         let myposts = await querySql.onePosts(post_id);
         let result = []
-        for (post of myposts){
+        for (post of myposts) {
             result.push(await post)
         }
         res.status(200).send({
@@ -162,7 +176,7 @@ controller.get('/oneposts/:id', async (req, res) =>{
             messge: 'get posts',
             data: result
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -327,12 +341,14 @@ controller.post('/createpost', upload.single('post_image'), async (req, res) => 
     post_time = req.body.post_time
     place = req.body.place
     categoryItem = req.body.categoryItem
-    if(req.file){
+    if (req.file) {
         post_image = req.file.path
     }
     console.log(req.file)
-    let payload = {userid: userid, topic:topic, categoryPost:categoryPost, 
-        postDesc:postDesc, post_time:post_time, place:place, categoryItem: categoryItem, post_image: post_image}
+    let payload = {
+        userid: userid, topic: topic, categoryPost: categoryPost,
+        postDesc: postDesc, post_time: post_time, place: place, categoryItem: categoryItem, post_image: post_image
+    }
     try {
         console.log('cat item',categoryItem)
         let result = await querySql.createPost(payload);
@@ -357,7 +373,7 @@ controller.post('/createpost', upload.single('post_image'), async (req, res) => 
     }
 })
 
-controller.post('/editpost', upload.single('post_image'), async (req, res)=>{
+controller.post('/editpost', upload.single('post_image'), async (req, res) => {
     id = req.body.id
     topic = req.body.topic
     place = req.body.place
@@ -365,16 +381,16 @@ controller.post('/editpost', upload.single('post_image'), async (req, res)=>{
     type = req.body.category_post
     update_time = req.body.update_time
     post_image = ""
-    if(req.file){
+    if (req.file) {
         post_image = req.file.path
         console.log(req.file)
     }
-    else{
+    else {
         post_image = req.body.post_image
         console.log(req.body.post_image)
     }
-    let payload = {id:id, topic:topic, place:place, post_desc:post_desc, type:type, update_time: update_time, post_image: post_image}
-    try{
+    let payload = { id: id, topic: topic, place: place, post_desc: post_desc, type: type, update_time: update_time, post_image: post_image }
+    try {
         await querySql.editPost(payload)
         res.status(200).send({
             statusCode: '200',
@@ -382,7 +398,7 @@ controller.post('/editpost', upload.single('post_image'), async (req, res)=>{
             error: false,
             messge: 'edit post',
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -465,9 +481,9 @@ controller.get('/countpost', async (req, res) => {
     }
 })
 
-controller.post('/searchposts', async (req, res)=>{
+controller.post('/searchposts', async (req, res) => {
     textsearch = req.body.text
-    try{
+    try {
         let result = await querySql.searchPosts(textsearch)
         res.status(200).send({
             statusCode: '200',
@@ -476,7 +492,7 @@ controller.post('/searchposts', async (req, res)=>{
             messge: 'banned user',
             data: result
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -519,7 +535,13 @@ controller.get('/search/:id/:page/:msg', async (req, res) => { //สำหรั
     }
 })
 
-controller.post('/additem', uploadItem.single('file'),async (req, res) => {
+controller.post('/additem', uploadItem.single('file'), async (req, res) => {
+    try {
+        await addItemSchema.validateAsync(req.query, { abortEarly: false })
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json(err)
+    }
     let item_name = req.query.item_name
     let user_id = req.query.user_id
     let image = ''
@@ -636,10 +658,10 @@ controller.post('/mypostbydate', async (req, res) => {
     }
 })
 
-controller.post('/completepost', async (req, res)=>{
+controller.post('/completepost', async (req, res) => {
     id = req.body.id
     date = req.body.date
-    try{
+    try {
         await querySql.completePost(id, date)
         res.status(200).send({
             statusCode: '200',
@@ -647,7 +669,7 @@ controller.post('/completepost', async (req, res)=>{
             error: false,
             messge: 'complete post',
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -660,9 +682,9 @@ controller.post('/completepost', async (req, res)=>{
     }
 })
 
-controller.post('/incompletepost', async (req, res)=>{
+controller.post('/incompletepost', async (req, res) => {
     id = req.body.id
-    try{
+    try {
         await querySql.inCompletePost(id)
         res.status(200).send({
             statusCode: '200',
@@ -670,7 +692,7 @@ controller.post('/incompletepost', async (req, res)=>{
             error: false,
             messge: 'incomplete post',
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -683,11 +705,11 @@ controller.post('/incompletepost', async (req, res)=>{
     }
 })
 
-controller.get('/categoryitems', async (req, res)=>{
+controller.get('/categoryitems', async (req, res) => {
     id = req.body.id
-    try{
+    try {
         let items = await querySql.getCategoryItems();
-        
+
         res.status(200).send({
             items,
             statusCode: '200',
@@ -695,7 +717,7 @@ controller.get('/categoryitems', async (req, res)=>{
             error: false,
             messge: 'incomplete post',
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
@@ -708,9 +730,9 @@ controller.get('/categoryitems', async (req, res)=>{
     }
 })
 
-controller.post('/searchcompleteposts', async (req, res)=>{
+controller.post('/searchcompleteposts', async (req, res) => {
     textsearch = req.body.text
-    try{
+    try {
         let result = await querySql.searchCompletePosts(textsearch)
         res.status(200).send({
             statusCode: '200',
@@ -719,7 +741,7 @@ controller.post('/searchcompleteposts', async (req, res)=>{
             messge: 'banned user',
             data: result
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(500).send({
             statusCode: '500',
