@@ -121,7 +121,7 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-12" v-if="select == 'home'">
+      <div class="column is-12">
         <v-pagination
         
           v-model="page"
@@ -130,9 +130,8 @@
         >
         </v-pagination>
       </div>
-      <div class="column is-12" v-else-if="select == 'lost'">
+      <!-- <div class="column is-12" v-else-if="select == 'lost'">
         <v-pagination
-        
           v-model="page"
           :length="pageLength"
           :total-visible="7"
@@ -147,7 +146,7 @@
           :total-visible="7"
         >
         </v-pagination>
-      </div>
+      </div> -->
     </div>
     <div class="modal" :class="{ 'is-active': editPost }">
       <div class="modal-background"></div>
@@ -264,6 +263,11 @@ export default {
           this.posts = result.data
         })
       }
+      else if (this.select == 'date') {
+        await PostService.getPostDate(this.date,this.page).then(result => {
+          this.posts = result.data
+        })
+      }
     }
 
   },
@@ -277,24 +281,33 @@ export default {
     
     async searchPosts() {
       if (this.searchposts != "") {
-        await PostService.searchPostsHome(this.searchposts).then((result) => {
+        this.select = 'search'
+        this.page = 1
+        await PostService.searchPostsHome(this.searchposts, 1).then((result) => {
           this.posts = result.data;
           //this.titlePost = "Posts ( " + this.listposts.length + " )";
         });
+        let page = (await PostService.getCountPost('search')).data
+      this.pageLength = parseInt(page)
       } else {
-        await PostService.getAllPosts().then((result) => {
-          //console.log(result);
-          console.log(result)
-          this.posts = result.data;
-          //this.titlePost = "Posts ( " + this.listposts.length + " )";
-        });
+        this.allposts()
+        // await PostService.getAllPosts().then((result) => {
+        //   //console.log(result);
+        //   console.log(result)
+        //   this.posts = result.data;
+        //   //this.titlePost = "Posts ( " + this.listposts.length + " )";
+        // });
       }
     },
     async getPostbyDate(){
       console.log(this.date)
-      await PostService.getPostDate(this.date).then((result) =>{
+      this.select = 'date'
+      this.page = 1
+      await PostService.getPostDate(this.date, 1).then((result) =>{
         this.posts = result.data
       })
+      let page = (await PostService.getCountPost('date', this.date)).data
+      this.pageLength = parseInt(page)
     },
     async deletePost(id){
       console.log(id)
@@ -413,6 +426,8 @@ export default {
       await PostService.selectPage(1).then(result => {
         this.posts = result.data
       })
+      let page = (await PostService.getCountPost('post')).data
+      this.pageLength = parseInt(page)
     },
     redirect(path) {
       console.log("redirect to : ", path);

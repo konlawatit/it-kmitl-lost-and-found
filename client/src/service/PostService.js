@@ -150,9 +150,9 @@ class PostService {
         }
     }
 
-    static searchPostsHome(text) {
+    static searchPostsHome(text, page) {
         try {
-            return axios.get(`${url}/search/${text}`).then((result) => {
+            return axios.get(`${url}/search/${page}/${text}`).then((result) => {
                 return result.data
             })
         } catch (err) {
@@ -181,9 +181,9 @@ class PostService {
         }
     }
 
-    static getPostDate(date){
+    static getPostDate(date, page){
         try{
-            return axios.post(`${url}/postbydate`, {date:date}).then((result) =>{
+            return axios.post(`${url}/postbydate/${page}`, {date:date}).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -231,9 +231,9 @@ class PostService {
         }
     }
 
-    static getCountPost(select) {
+    static getCountPost(select, date) {
         try{
-            return axios.get(`${url}/count/${select}`).then((result) =>{
+            return axios.get(`${url}/count/${select}`, {params:{date: date}}).then((result) =>{
                 return result.data
             })
         } catch(err){

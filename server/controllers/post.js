@@ -35,7 +35,9 @@ const uploadItem = multer({
 
 controller.get('/count/:select', async (req, res) => {
     try {
-        let posts = await querySql.pagePosts(req.params.select);
+        console.log(req.query.date)
+        let posts = await querySql.pagePosts(req.params.select, req.query.date);
+        
         let result = []
         // for (post of posts) {
         //     result.push(await post)
@@ -565,10 +567,10 @@ controller.get('/itempost', async (req, res) => {
     }
 })
 
-controller.post('/postbydate', async (req, res) => {
+controller.post('/postbydate/:page', async (req, res) => {
     date = req.body.date
     try {
-        let posts = await querySql.postbyDate(date);
+        let posts = await querySql.postbyDate(date, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
