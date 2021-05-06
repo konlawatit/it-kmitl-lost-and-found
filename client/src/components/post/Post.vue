@@ -2,6 +2,7 @@
   <div>
     <div class="columns is-mobile is-tablet">
       <div class="column is-12">
+        
         <v-btn-toggle tile color="blue darken-4" group>
           <v-btn id="buttonfilter" value="all" @click="allposts()">
             ทั้งหมด
@@ -34,6 +35,7 @@
       </div>
     </div>
     <div class="columns" id="body">
+  
       <div class="column is-12">
         <v-expansion-panels focusable id="post" class="mt-3">
           <v-expansion-panel v-for="(post, i) in posts" :key="i" class="mt-6">
@@ -220,6 +222,7 @@ import CommentService from "../../service/CommentService";
 import ChatService from "../../service/ChatService";
 import store from "../../store/index.js";
 import { mapGetters } from "vuex";
+
 export default {
   name: "Post",
   data() {
@@ -275,6 +278,9 @@ export default {
           this.posts = result.data
         })
       }
+    },
+    getItem: function (newVal) {
+      this.filterItem(newVal)
     }
 
   },
@@ -432,6 +438,15 @@ export default {
       this.pageLength = parseInt(page)
     },
 
+    async filterItem(item) {
+      this.select = 'item'
+      this.page = 1
+      await PostService.getFilterItem(item, 1).then(result => {
+        this.posts = result.data
+      })
+      let page = (await PostService.getCountPost('item', null, null, null, item)).data
+      this.pageLength = parseInt(page) == 0 ? 1 : parseInt(page)
+    },
     async allposts() {
       this.select = 'home'
       this.page = 1
@@ -491,6 +506,7 @@ export default {
   computed: {
     ...mapGetters("conversation", ["getRooms"]),
     ...mapGetters("auth", ["getId"]),
+    ...mapGetters("category", ["getItem"])
   },
 };
 </script>

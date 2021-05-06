@@ -50,7 +50,7 @@ const uploadItem = multer({
 controller.get('/count/:select', async (req, res) => {
     try {
         console.log(req.query.date)
-        let posts = await querySql.pagePosts(req.params.select, req.query.date, req.query.search, req.query.id);
+        let posts = await querySql.pagePosts(req.params.select, req.query.date, req.query.search, req.query.id, req.query.item);
 
         let result = []
         // for (post of posts) {
@@ -758,6 +758,34 @@ controller.post('/searchcompleteposts', async (req, res) => {
 controller.get('/allcompleteposts', async (req, res) => {
     try {
         let posts = await querySql.allCompletePosts();
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
+controller.get('/filteritem/:page/:item', async (req, res) => {
+    try {
+        let posts = await querySql.filterItem(req.params.item, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)

@@ -22,7 +22,8 @@
                 class="ma-4 is-centered"
                 height="130"
                 width="140"
-                @click="toggle"
+                @click="toggle, selectItem(item.item_id)"
+                
               >
                 <v-img
                   width="45"
@@ -51,10 +52,12 @@
 
 <script>
 import PostService from "../../service/PostService"
+import store from "../../store/index.js";
 export default {
   name: "Category",
   data() {
     return {
+      store,
       publicPath: process.env.BASE_URL,
       model: null,
       categoryItems: [],
@@ -113,6 +116,9 @@ export default {
     };
   },
   methods: {
+    selectItem(item) {
+      this.$store.dispatch('category/changSelect', item)
+  }
   },
   async created() {
     console.log('path', this.publicPath);
@@ -122,6 +128,7 @@ export default {
       })
     
   },
+  
 };
 </script>
 

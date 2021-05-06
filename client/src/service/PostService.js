@@ -210,6 +210,16 @@ class PostService {
         }
     }
 
+    static getFilterItem(item, page){
+        try{
+            return axios.get(`${url}/filteritem/${page}/${item}`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
+
     static completePost(id, datetime){
         try{
             return axios.post(`${url}/completepost`, {id: id, date: datetime}).then((result) =>{
@@ -240,9 +250,9 @@ class PostService {
         }
     }
 
-    static getCountPost(select, date, search, id) {
+    static getCountPost(select, date, search, id, item) {
         try{
-            return axios.get(`${url}/count/${select}`, {params:{date: date, search: search, id: id}}).then((result) =>{
+            return axios.get(`${url}/count/${select}`, {params:{date: date, search: search, id: id, item:item}}).then((result) =>{
                 return result.data
             })
         } catch(err){
