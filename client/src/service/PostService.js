@@ -251,6 +251,26 @@ class PostService {
         }
     }
 
+    static searchCompletePosts(text) {
+        try {
+            return axios.post(`${url}/searchcompleteposts`, {text:text}).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
+    static getAllCompletePosts() {
+        try {
+            return axios.get(`${url}/allcompleteposts`).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
 }
 
 export default PostService;

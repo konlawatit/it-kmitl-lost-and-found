@@ -18,12 +18,6 @@
         </a>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="control has-icons-right is-mobile" id="inputsearch">
-        <input class="input is-normal" placeholder="ค้นหา" />
-        <span class="icon is-small is-right">
-          <i class="fas fa-search"></i>
-        </span>
-      </div>
       <a @click="redirect('createpost')"
         ><button class="button mr-6 is-success" go>
           <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
