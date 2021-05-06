@@ -55,11 +55,12 @@
         <div class="column is-12">
           <div class="columns">
             <div class="column is-2 has-text-centered mt-2 is-size-5">
-              สิ่งของ :
+              ประเภทของ :
             </div>
             <div class="column is-5">
               <v-select
                 :items="items"
+                :rules="categoryRules"
                 filled
                 label="Filled style"
                 dense
@@ -163,7 +164,13 @@ export default {
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
-      postImage: ""
+      categoryRules:[
+        (value) => !!value || "Required."
+      ],
+      postImageRules:[
+        (value) => !!value || "Required."
+      ],
+      postImage: "",
     };
   },
   created: async function () {
@@ -203,7 +210,7 @@ export default {
       if (sec < 10) {
         sec = "0" + sec;
       }
-      this.time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`
+      this.time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`;
       await this.$swal
         .fire({
           title: "ยืนยัน",
@@ -216,20 +223,50 @@ export default {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
-            const form = new FormData()
-            form.append('userid', store.getters["auth/getId"])
-            form.append('topic', this.title)
-            form.append('categoryPost', this.tagPost)
-            form.append('postDesc', this.postDesc)
-            form.append('post_time', this.time)
-            form.append('place', this.locations)
-            form.append('categoryItem', this.categoryItem)
-            form.append('post_image', this.postImage)
+            if (this.title == "") {
+              await this.$swal.fire({
+                title: "กรอกข้อมูลไม่ครบ",
+                text: "โปรดกรอกหัวข้อโพสต์",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Ok",
+              });
+              return 0;
+            }
+            if (this.categoryItem == "") {
+              await this.$swal.fire({
+                title: "กรอกข้อมูลไม่ครบ",
+                text: "โปรดเลือกประเภทของ",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Ok",
+              });
+              return 0;
+            }
+            if (this.postImage == "") {
+              await this.$swal.fire({
+                title: "กรอกข้อมูลไม่ครบ",
+                text: "โปรดอัพโหลดรูป",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Ok",
+              });
+              return 0;
+            }
+            const form = new FormData();
+            form.append("userid", store.getters["auth/getId"]);
+            form.append("topic", this.title);
+            form.append("categoryPost", this.tagPost);
+            form.append("postDesc", this.postDesc);
+            form.append("post_time", this.time);
+            form.append("place", this.locations);
+            form.append("categoryItem", this.categoryItem);
+            form.append("post_image", this.postImage);
             // this.redirect("home");
             try {
               await PostService.createPost(form).then((result) => {
                 //this.profileImage = this.API_URL + "/" + result.path;
-                this.redirect(`detail/${result.data.result[0].insertId}`)
+                this.redirect(`detail/${result.data.result[0].insertId}`);
                 console.log(result);
               });
             } catch (err) {
