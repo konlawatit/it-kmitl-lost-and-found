@@ -1,14 +1,6 @@
 <template>
   <div>
     <Navbar></Navbar>
-    <h1 class="is-size-1 mt-6" id="text1">
-      <strong>เข้าสู่</strong>
-      <strong id="text2">ระบบ</strong>
-    </h1>
-    <h1 class="is-size-3" id="text1">
-      <strong>นักศึกษาและ</strong>
-      <strong id="text2">บุคลากร IT</strong>
-    </h1>
     <Login></Login>
   </div>
 </template>

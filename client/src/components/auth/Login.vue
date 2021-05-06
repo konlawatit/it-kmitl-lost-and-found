@@ -1,17 +1,32 @@
 <template>
   <div class="container">
-    <div class="columns is-centered mt-4 is-mobile">
-      <div class="field">
-        <p class="control">
-          <GoogleLogin
-            :renderParams="renderParams"
-            :params="params"
-            :onSuccess="onSuccess"
-            :onFailure="onFailure"
-            >Google Login</GoogleLogin
-          >
-        </p>
+    <div class="columns">
+      <div class="column is-3"></div>
+      <div class="column is-6" style="background: #2568ba; margin-top: 7rem; border-radius: 1rem;  box-shadow: 8px 10px gray">
+        <h1 class="is-size-1 mt-6" id="text1">
+          <strong>เข้าสู่</strong>
+          <strong id="text2">ระบบ</strong>
+        </h1>
+        <h1 class="is-size-3 mt-6" id="text1">
+          <strong>นักศึกษาและ</strong>
+          <strong id="text2">บุคลากร IT</strong>
+        </h1>
+        <br />
+        <div class="columns is-centered mt-2 mb-6 is-mobile">
+          <div class="field">
+            <p class="control">
+              <GoogleLogin
+                :renderParams="renderParams"
+                :params="params"
+                :onSuccess="onSuccess"
+                :onFailure="onFailure"
+                >Google Login</GoogleLogin
+              >
+            </p>
+          </div>
+        </div>
       </div>
+      <div class="column is-3"></div>
     </div>
   </div>
 </template>
@@ -56,53 +71,53 @@ export default {
       //     text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
       //   });
       //   this.onSignOut();
-      // } 
+      // }
       //else {
-        await AuthService.login(googleUser.getAuthResponse().id_token).then(
-          (result) => {
-            if (result.statusCode == "200" && result.new_user) {
-              console.log('new user')
-              store.dispatch("auth/setProfile", {
-                fullname: result.data.user_name,
-                fname: result.data.fname,
-                lname: result.data.lname,
-                email: result.data.email,
-                image: result.data.image,
-                id: "",
-                isSigned: true,
-              });
-              this.redirect("login/confirm");
-            } else if (result.statusCode == "200") {
-              store.dispatch("auth/setProfile", {
-                fullname: result.data.user_name,
-                fname: result.data.fname,
-                lname: result.data.lname,
-                email: result.data.email,
-                image: result.data.image,
-                id: result.data.user_id,
-                role: result.data.role,
-                type: result.data.type,
-                phone_number: result.data.phone_number,
-                birthday: result.data.birthday,
-                isSigned: true,
-              });
-              this.redirect("home");
-            } else if (result.statusCode == "400") {
-              this.$swal.fire({
-                icon: "error",
-                title: "ไม่สามารถเข้าระบบได้",
-                text: "กรุณาลองใหม่อีกครั้ง",
-              });
-              this.onSignOut();
-            } else {
-              this.$swal.fire({
-                icon: "error",
-                title: "ระบบผิดพลาด",
-                text: "กรุณาลองใหม่อีกครั้ง",
-              });
-            }
+      await AuthService.login(googleUser.getAuthResponse().id_token).then(
+        (result) => {
+          if (result.statusCode == "200" && result.new_user) {
+            console.log("new user");
+            store.dispatch("auth/setProfile", {
+              fullname: result.data.user_name,
+              fname: result.data.fname,
+              lname: result.data.lname,
+              email: result.data.email,
+              image: result.data.image,
+              id: "",
+              isSigned: true,
+            });
+            this.redirect("login/confirm");
+          } else if (result.statusCode == "200") {
+            store.dispatch("auth/setProfile", {
+              fullname: result.data.user_name,
+              fname: result.data.fname,
+              lname: result.data.lname,
+              email: result.data.email,
+              image: result.data.image,
+              id: result.data.user_id,
+              role: result.data.role,
+              type: result.data.type,
+              phone_number: result.data.phone_number,
+              birthday: result.data.birthday,
+              isSigned: true,
+            });
+            this.redirect("home");
+          } else if (result.statusCode == "400") {
+            this.$swal.fire({
+              icon: "error",
+              title: "ไม่สามารถเข้าระบบได้",
+              text: "กรุณาลองใหม่อีกครั้ง",
+            });
+            this.onSignOut();
+          } else {
+            this.$swal.fire({
+              icon: "error",
+              title: "ระบบผิดพลาด",
+              text: "กรุณาลองใหม่อีกครั้ง",
+            });
           }
-        );
+        }
+      );
       //}
     },
     onFailure() {
@@ -150,7 +165,7 @@ button {
 }
 #text1 {
   font-family: "Kanit", sans-serif;
-  color: black;
+  color: rgb(68, 68, 68);
 }
 #text2 {
   font-family: "Kanit", sans-serif;
