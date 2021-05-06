@@ -231,9 +231,9 @@ class PostService {
         }
     }
 
-    static getCountPost(select, date) {
+    static getCountPost(select, date, search) {
         try{
-            return axios.get(`${url}/count/${select}`, {params:{date: date}}).then((result) =>{
+            return axios.get(`${url}/count/${select}`, {params:{date: date, search: search}}).then((result) =>{
                 return result.data
             })
         } catch(err){

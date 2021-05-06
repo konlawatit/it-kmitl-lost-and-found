@@ -36,7 +36,7 @@ const uploadItem = multer({
 controller.get('/count/:select', async (req, res) => {
     try {
         console.log(req.query.date)
-        let posts = await querySql.pagePosts(req.params.select, req.query.date);
+        let posts = await querySql.pagePosts(req.params.select, req.query.date, req.query.search);
         
         let result = []
         // for (post of posts) {
@@ -479,11 +479,11 @@ controller.post('/searchposts', async (req, res)=>{
     }
 })
 
-controller.get('/search/:msg', async (req, res) => { //สำหรับหน้า post และอื่นๆ
+controller.get('/search/:page/:msg', async (req, res) => { //สำหรับหน้า post และอื่นๆ
     try {
         let msg = req.params.msg;
-        console.log(msg)
-        let posts = await querySql.searchPostsHome(msg);
+        console.log(msg, req.params.page)
+        let posts = await querySql.searchPostsHome(msg, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)

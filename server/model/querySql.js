@@ -300,7 +300,7 @@ class QuerySql {
         }
     }
 
-    async pagePosts(select, date) {
+    async pagePosts(select, date, search) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
@@ -318,7 +318,7 @@ class QuerySql {
                 where = 'post_time like '+`'%${date}%'`+' AND `status` = 1'
             }
             else if (select == 'search') {
-                where = 'category_post = "search" AND `status` = 1'
+                where = 'topic like '+`'%${search}%'`+' AND `status` = 1'
             }
             let countPosts = (await conn.query(`SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST where ${where}`))[0][0]['count']
             console.log('count post', countPosts)
@@ -407,19 +407,30 @@ class QuerySql {
         }
     }
 
-    async searchPostsHome(msg) {
+    async searchPostsHome(msg, page) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date, 
-            DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time, post_image 
-            FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id
-            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
-            WHERE INFO_POST.status = 1 and topic like '%${msg}%' order by INFO_POST.post_time desc`
+            // let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date, 
+            // DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time, post_image 
+            // FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id
+            // JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            // WHERE INFO_POST.status = 1 and topic like '%${msg}%' order by INFO_POST.post_time desc`
+            // let posts = await conn.query(sql)
+            let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST where status = 1'))[0][0]['count']
+            let countPosts = await this.pagePosts('search', null, msg)
+            let endPage = ((parseInt(page) == countPosts) && (countPosts !== '1')) ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+
+            console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page,)
+            let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
+            from (select * from (select * from INFO_POST where topic like '%${msg}%' AND status = 1 order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
+            JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
+            order by post_time asc limit ${endPage}) test order by test.post_time desc;`
+
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = 'http://localhost:8888/' + data['image']
                 return data
             })
             //console.log(posts)
@@ -427,7 +438,7 @@ class QuerySql {
             return posts[0]
         } catch (err) {
             await conn.rollback();
-            console.log(`rolback`)
+            console.log(`rolback`, err)
             throw new Error(err)
         } finally {
             console.log('finally all post')
