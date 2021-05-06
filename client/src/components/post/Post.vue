@@ -167,6 +167,7 @@
                 label="Change image"
                 filled
                 prepend-icon="mdi-image"
+                v-model="postEdit.post_image"
               ></v-file-input>
               <v-text-field
                 label="Topic"
@@ -175,9 +176,14 @@
                 v-model="postEdit.topic"
               ></v-text-field>
               <v-select
-                :items="items"
+                :items="category_post"
                 label="Category post"
                 class="mt-6"
+                v-model="postEdit.type"
+              ></v-select>
+              <v-select
+                :items="category_item"
+                label="Category item"
                 v-model="postEdit.type"
               ></v-select>
               <v-text-field
@@ -226,8 +232,9 @@ export default {
       comments: {},
       date: new Date().toISOString().slice(0, 10),
       editPost: false,
-      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "", update_time: ""},
-      items: ["lost", "found"],
+      postEdit: { id:"", topic: "", place: "", post_desc: "", type: "", update_time: "", post_image: ""},
+      category_post: ["lost", "found"],
+      category_item: [],
       searchposts: "",
       select: "home"
     };
@@ -363,9 +370,16 @@ export default {
         sec = "0" + sec;
       }
       this.postEdit.update_time = `${d.getFullYear()}-${month}-${day} ${hour}:${minute}:${sec}`
+      const fd = new FormData()
+      fd.append('topic', this.postEdit.topic)
+      fd.append('place', this.postEdit.place)
+      fd.append('post_desc', this.postEdit.post_desc)
+      fd.append('category_post', this.postEdit.type)
+      fd.append('post_image', this.postEdit.post_image)
+      fd.append('id', id)
+      fd.append('update_time', this.postEdit.update_time)
       for(var i in this.posts){
         if(this.posts[i].post_id == id){
-          console.log("pass")
           this.posts[i].topic = this.postEdit.topic
           this.posts[i].place = this.postEdit.place
           this.posts[i].post_desc = this.postEdit.post_desc
@@ -373,7 +387,7 @@ export default {
           break
         }
       }
-      await PostService.editPost(this.postEdit).then((result) =>{
+      await PostService.editPost(fd).then((result) =>{
         console.log(result)
         this.editPost = false
       })
@@ -388,6 +402,7 @@ export default {
           this.postEdit.place = this.posts[post].place;
           this.postEdit.post_desc = this.posts[post].post_desc;
           this.postEdit.type = this.posts[post].category_post;
+          this.postEdit.post_image = this.posts[post].post_image;
         } else {
           console.log("not pass");
         }

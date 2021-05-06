@@ -822,6 +822,8 @@ class QuerySql {
         try {
             let sql = "UPDATE INFO_POST SET topic = ?, category_post = ?, post_desc = ?, place = ?, update_time = ? where post_id = ?"
             let result = await conn.query(sql, [data.topic, data.type, data.post_desc, data.place, data.update_time, data.id])
+            let sql2 = "UPDATE INFO_POST_POST_IMAGE SET post_image = ? WHERE INFO_POST_post_id = ?"
+            await conn.query(sql2, [data.post_image, data.id])
             conn.commit()
             return {
                 result

@@ -356,14 +356,23 @@ controller.post('/createpost', upload.single('post_image'), async (req, res) => 
     }
 })
 
-controller.post('/editpost', async (req, res)=>{
+controller.post('/editpost', upload.single('post_image'), async (req, res)=>{
     id = req.body.id
     topic = req.body.topic
     place = req.body.place
     post_desc = req.body.post_desc
-    type = req.body.type
+    type = req.body.category_post
     update_time = req.body.update_time
-    let payload = {id:id, topic:topic, place:place, post_desc:post_desc, type:type, update_time: update_time}
+    post_image = ""
+    if(req.file){
+        post_image = req.file.path
+        console.log(req.file)
+    }
+    else{
+        post_image = req.body.post_image
+        console.log(req.body.post_image)
+    }
+    let payload = {id:id, topic:topic, place:place, post_desc:post_desc, type:type, update_time: update_time, post_image: post_image}
     try{
         await querySql.editPost(payload)
         res.status(200).send({
