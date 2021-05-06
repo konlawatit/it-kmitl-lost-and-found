@@ -8,7 +8,7 @@
               <v-btn
                 depressed
                 color="light-blue darken-4"
-                class="button mt-6 white--text"
+                class="button mt-3 white--text"
                 @click="addCategory()"
                 >เพิ่มประเภทสิ่งของ</v-btn
               >
@@ -23,13 +23,20 @@
                 depressed
                 color="light-blue darken-4"
                 class="button mt-6 white--text"
+                @click="changelisttocompletepost()"
+                >โพสต์ที่เสร็จสิ้น</v-btn
+              >
+              <v-btn
+                depressed
+                color="light-blue darken-4"
+                class="button mt-6 white--text"
                 @click="changelisttolistname()"
                 >รายชื่อผู้ใช้งาน</v-btn
               >
               <v-btn
                 depressed
                 color="light-blue darken-4"
-                class="button mt-6 mb-6 white--text"
+                class="button mt-6 mb-3 white--text"
                 @click="changelisttolistnameban()"
                 >รายชื่อผู้ถูกระงับ</v-btn
               >
@@ -38,7 +45,7 @@
         </div>
       </div>
       <div class="column is-8">
-        <v-card max-width="600" class="mx-auto" v-show="listbox == true">
+        <v-card max-width="600" class="mx-auto" v-show="listbox == true"> <!--card user and userban -->
           <v-toolbar color="light-blue darken-4" dark>
             <v-toolbar-title>{{ titlelist }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -97,7 +104,7 @@
             </v-list-item>
           </v-list>
         </v-card>
-        <v-card max-width="600" class="mx-auto" v-show="showlistpost == true">
+        <v-card max-width="600" class="mx-auto" v-show="showlistpost == true"> <!--card all post-->
           <v-toolbar color="light-blue darken-4" dark>
             <v-toolbar-title>{{ titlePost }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -115,6 +122,45 @@
 
           <v-list subheader two-line>
             <v-list-item v-for="list in listposts" :key="list.post_id">
+              <v-list-item-content>
+                <v-list-item-title v-text="list.topic"></v-list-item-title>
+
+                <v-list-item-subtitle
+                  v-text="list.post_date"
+                  class="mt-1"
+                ></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-text="list.post_time"
+                  class="mt-1"
+                ></v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-action>
+                <v-btn icon @click="editpostModal(list.post_id)">
+                  <v-icon color="grey lighten-1">mdi-information</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card>
+
+        <v-card max-width="600" class="mx-auto" v-show="showlistcompletepost == true"> <!--card complete post-->
+          <v-toolbar color="light-blue darken-4" dark>
+            <v-toolbar-title>{{ titlePost }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <input
+              type="text"
+              class="input mr-1"
+              style="width: 50%"
+              placeholder="Search"
+              v-model="searchcompleteposts"
+            />
+            <v-btn icon @click="searchCompletePosts()">
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-list subheader two-line>
+            <v-list-item v-for="list in listcompleteposts" :key="list.post_id">
               <v-list-item-content>
                 <v-list-item-title v-text="list.topic"></v-list-item-title>
 
@@ -278,13 +324,16 @@ export default {
       titlelist: "",
       titlePost: "",
       showlistpost: false,
+      showlistcompletepost: false,
       list: [],
       listname: [],
       listnameban: [],
       listposts: [],
+      listcompleteposts: [],
       searchuser: "",
       searchuserban: "",
       searchposts: "",
+      searchcompleteposts: "",
       inputsearch: true,
       nameItemAdd: "",
       saveImage: "",
@@ -308,6 +357,20 @@ export default {
         console.log(result)
         location.reload()
       })
+    },
+    async searchCompletePosts(){
+      if (this.searchcompleteposts != "") {
+        await PostService.searchCompletePosts(this.searchcompleteposts).then((result) => {
+          this.listcompleteposts = result.data;
+          this.titlePost = "Complete posts ( " + this.listcompleteposts.length + " )";
+        });
+      } else {
+        await PostService.getAllCompletePosts().then((result) => {
+          console.log(result);
+          this.listcompleteposts = result.data;
+          this.titlePost = "Complete posts ( " + this.listcompleteposts.length + " )";
+        });
+      }
     },
     async searchPosts() {
       if (this.searchposts != "") {
@@ -450,6 +513,14 @@ export default {
       this.userid = id;
       this.userrole = role;
     },
+    changelisttocompletepost(){
+      this.listbox = false;
+      this.showlistpost = false;
+      this.add = false;
+      this.showlistcompletepost = true;
+      this.inputsearch = true;
+      this.titlePost = "Complete posts ( " + this.listcompleteposts.length + " )";
+    },
     changelisttolistnameban() {
       this.list = this.listnameban;
       this.titlelist = "Banned ( " + this.list.length + " )";
@@ -457,6 +528,7 @@ export default {
       this.add = false;
       this.showlistpost = false;
       this.inputsearch = false;
+      this.showlistcompletepost = false;
     },
     changelisttolistname() {
       this.list = this.listname;
@@ -465,33 +537,38 @@ export default {
       this.add = false;
       this.showlistpost = false;
       this.inputsearch = true;
+      this.showlistcompletepost = false;
     },
     changelisttolistposts() {
       this.listbox = false;
       this.add = false;
       this.showlistpost = true;
       this.inputsearch = true;
+      this.showlistcompletepost = false;
+      this.titlePost = "Posts ( " + this.listposts.length + " )";
     },
     addCategory() {
       this.listbox = false;
       this.add = true;
       this.showlistpost = false;
       this.inputsearch = true;
+      this.showlistcompletepost = false;
     },
   },
   created: async function () {
     await PostService.getAllPosts().then((result) => {
       console.log(result);
       this.listposts = result.data;
-      this.titlePost = "Posts ( " + this.listposts.length + " )";
+    });
+    await PostService.getAllCompletePosts().then((result) => {
+      console.log(result);
+      this.listcompleteposts = result.data;
     });
     await AuthService.getAllUser().then((result) => {
       this.listname = result.data;
-      this.titlelist = "Users ( " + this.list.length + " )";
     });
     await AuthService.getAllUserBan().then((result) => {
       this.listnameban = result.data;
-      this.titlelist = "Banned ( " + this.list.length + " )";
     });
   },
 };

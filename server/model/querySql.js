@@ -1327,6 +1327,56 @@ class QuerySql {
         }
     }
 
+    async searchCompletePosts(data) {
+        const conn = await pool.getConnection()
+        await conn.beginTransaction();
+        try {
+            let str = await conn.query("SELECT *, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time FROM INFO_POST WHERE topic like ? AND status = 0", ['%' + data + '%'])
+            conn.commit()
+            return str[0]
+        } catch (err) {
+            console.log(err)
+            await conn.rollback();
+            return next(err)
+        }
+        finally {
+            conn.release()
+        }
+    }
+
+    async allCompletePosts() {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date, 
+            DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time, post_image 
+            FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id
+            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            WHERE INFO_POST.status = 0 order by INFO_POST.post_time desc`
+            let posts = await conn.query(sql)
+
+            await posts[0].map(data => {
+                // data['post_image'] = 'http://localhost:8888/' + data['post_image']
+                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user'] = {
+                    name: "bas"
+                }
+                return data
+            })
+
+            //console.log(posts)
+            conn.commit();
+            return posts[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+    }
+
 }
 
 module.exports = QuerySql

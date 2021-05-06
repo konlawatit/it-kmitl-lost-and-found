@@ -698,4 +698,57 @@ controller.get('/categoryitems', async (req, res)=>{
     }
 })
 
+controller.post('/searchcompleteposts', async (req, res)=>{
+    textsearch = req.body.text
+    try{
+        let result = await querySql.searchCompletePosts(textsearch)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'banned user',
+            data: result
+        })
+    } catch (err){
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error แตกก',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally search')
+    }
+})
+
+
+controller.get('/allcompleteposts', async (req, res) => {
+    try {
+        let posts = await querySql.allCompletePosts();
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
 module.exports = controller;
