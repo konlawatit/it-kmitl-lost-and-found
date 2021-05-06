@@ -313,7 +313,16 @@ export default {
         }
       );
       }
+      else if (this.select == "mysearch") {
+        await PostService.searchMyPosts(this.searchposts, this.$route.params.id, this.page).then((result) => {
+          this.posts = result.data;
+          //this.titlePost = "Posts ( " + this.listposts.length + " )";
+        });
+      }
     },
+    getItem: function (newVal) {
+      this.filterItem(newVal)
+    }
   },
 
 
@@ -575,6 +584,17 @@ export default {
       ).data;
       this.pageLength = parseInt(page);
     },
+
+    async filterItem(item) {
+      this.select = 'item'
+      this.page = 1
+      await PostService.getFilterMyItem(item, this.getId ,1).then(result => {
+        this.posts = result.data
+      })
+      let page = (await PostService.getCountPost('myitem', null, null, null, item)).data
+      this.pageLength = parseInt(page) == 0 ? 1 : parseInt(page)
+    },
+
     redirect(path) {
       console.log("redirect to : ", path);
       this.$router.push(`/${path}`);
@@ -622,6 +642,7 @@ export default {
   computed: {
     ...mapGetters("conversation", ["getRooms"]),
     ...mapGetters("auth", ["getId"]),
+    ...mapGetters("category", ["getItem"])
   },
 };
 </script>

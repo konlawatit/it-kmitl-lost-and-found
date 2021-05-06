@@ -343,6 +343,14 @@ class QuerySql {
                 conn.commit();
                 return count
             }
+            else if (select == 'myitem') {
+                where = `SELECT (count(category_item_count) / 10) as count FROM CATEGORY_ITEM_INFO_POST where CATEGORY_ITEM_item_id = ${item} and INFO_POST_post_id in  (
+                    select post_id from INFO_POST where USER_user_id = ${id} 
+                )`
+                let count = (await conn.query(where))[0][0]['count']
+                conn.commit();
+                return count
+            }
             let countPosts = (await conn.query(`SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST where ${where}`))[0][0]['count']
             console.log('count post', countPosts)
 
@@ -1340,6 +1348,48 @@ class QuerySql {
                 JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
                 order by post_time) test order by test.post_time desc) test join CATEGORY_ITEM_INFO_POST ciip on (test.post_id = ciip.INFO_POST_post_id)
                 where CATEGORY_ITEM_item_id = ${item} order by post_time asc limit ${endPage};`
+            
+            let posts = await conn.query(sql)
+
+            await posts[0].map(data => {
+                //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
+                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                return data
+            })
+            //console.log(posts)
+            conn.commit();
+            return posts[0]
+        } catch (err) {
+            await conn.rollback();
+            console.log(`rolback`+ date)
+            throw new Error(err)
+        } finally {
+            console.log('finally all post')
+            conn.release();
+        }
+    }
+
+    async filterMyItem(item, id, page) {
+        const conn = await pool.getConnection();
+        await conn.beginTransaction()
+        try {
+
+            let rawCountPosts = (await conn.query(` SELECT (count(category_item_count) / 10) as count FROM CATEGORY_ITEM_INFO_POST where CATEGORY_ITEM_item_id = ${item} and INFO_POST_post_id in  (
+                select post_id from INFO_POST where USER_user_id = ${id} 
+            )`))[0][0]['count']
+            let countPosts = await this.pagePosts('myitem', null, null, id, item)
+            let endPage = ((parseInt(page) == countPosts) && (countPosts !== '1')) ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+
+            console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page,)
+            // let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
+            // from (select * from (select * from INFO_POST where USER_user_id = ${id} AND status = 1 AND post_date = '${date}' order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
+            // JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
+            // order by post_time asc limit ${endPage}) test order by test.post_time desc;`
+            let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time from (select *
+                from (select * from (select * from INFO_POST where status = '1' order by post_time desc limit ${parseInt(page)*10}) test join USER u on test.USER_user_id = u.user_id 
+                JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
+                order by post_time) test order by test.post_time desc) test join CATEGORY_ITEM_INFO_POST ciip on (test.post_id = ciip.INFO_POST_post_id)
+                where CATEGORY_ITEM_item_id = ${item} and USER_user_id = ${id} order by post_time asc limit ${endPage};`
             
             let posts = await conn.query(sql)
 

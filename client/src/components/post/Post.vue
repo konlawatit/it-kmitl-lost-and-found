@@ -20,7 +20,7 @@
           <button class="button ml-2 mt-2 is-info" @click="getPostbyDate()">
             <i class="fas fa-search"></i>
           </button>
-          <input class="input is-normal ml-3 mt-2"  placeholder="ค้นหา" v-model="searchposts" />
+          <input type="text" class="input is-normal ml-3 mt-2"  placeholder="ค้นหา" v-model="searchposts" />
           <button class="button ml-2 mt-2 is-info" @click="searchPosts()">
             <i class="fas fa-search"></i>
           </button>
@@ -238,7 +238,7 @@ export default {
       postEdit: { id:"", topic: "", place: "", post_desc: "", type: "", update_time: "", post_image: ""},
       category_post: ["lost", "found"],
       category_item: [],
-      searchposts: "",
+      searchposts: '',
       select: "home"
     };
   },
@@ -278,6 +278,18 @@ export default {
           this.posts = result.data
         })
       }
+
+      else if (this.select == 'search') {
+        await PostService.searchPostsHome(this.searchposts.toString(), this.page).then((result) => {
+          this.posts = result.data;
+        });
+      }
+      
+      else if (this.select == 'item') {
+        await PostService.getFilterItem(this.getItem, this.page).then(result => {
+        this.posts = result.data
+      })
+      }
     },
     getItem: function (newVal) {
       this.filterItem(newVal)
@@ -293,15 +305,15 @@ export default {
     },
     
     async searchPosts() {
-      if (this.searchposts != "") {
+      if (this.searchposts.toString() != "") {
+        console.log(this.searchposts.toString())
         this.select = 'search'
         this.page = 1
-        await PostService.searchPostsHome(this.searchposts, 1).then((result) => {
+        await PostService.searchPostsHome(this.searchposts.toString(), 1).then((result) => {
           this.posts = result.data;
-          //this.titlePost = "Posts ( " + this.listposts.length + " )";
         });
-        let page = (await PostService.getCountPost('search')).data
-      this.pageLength = parseInt(page)
+        let page = (await PostService.getCountPost('search',null, this.searchposts.toString())).data
+        this.pageLength = parseInt(page)
       } else {
         this.allposts()
         // await PostService.getAllPosts().then((result) => {

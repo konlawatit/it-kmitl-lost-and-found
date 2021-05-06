@@ -219,6 +219,15 @@ class PostService {
             return err
         }
     }
+    static getFilterMyItem(item, id, page){
+        try{
+            return axios.get(`${url}/filtermyitem/${page}/${id}/${item}`).then((result) =>{
+                return result.data
+            })
+        } catch(err){
+            return err
+        }
+    }
 
     static completePost(id, datetime){
         try{

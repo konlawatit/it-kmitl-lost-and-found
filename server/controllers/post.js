@@ -556,6 +556,36 @@ controller.get('/search/:id/:page/:msg', async (req, res) => { //สำหรั
     }
 })
 
+controller.get('/search/:page/:msg', async (req, res) => { //สำหรับหน้า post home
+    try {
+        let msg = req.params.msg;
+        console.log(msg, req.params.page)
+        let posts = await querySql.searchPostsHome(msg, req.params.page);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get search posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
 controller.post('/additem', uploadItem.single('file'), async (req, res) => {
     try {
         await addItemSchema.validateAsync(req.query, { abortEarly: false })
@@ -807,6 +837,34 @@ controller.get('/allcompleteposts', async (req, res) => {
 controller.get('/filteritem/:page/:item', async (req, res) => {
     try {
         let posts = await querySql.filterItem(req.params.item, req.params.page);
+        let result = []
+        for (post of posts) {
+            result.push(await post)
+        }
+        //console.log('result',posts)
+        res.status(200).send({
+            statusCode: '200',
+            statusText: 'Request Success',
+            error: false,
+            messge: 'get all posts',
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            messge: 'Internal Server Error',
+        })
+    } finally {
+        console.log('finally allpost')
+    }
+})
+
+controller.get('/filterMyitem/:page/:id/:item', async (req, res) => {
+    try {
+        let posts = await querySql.filterMyItem(req.params.item, req.params.id, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
