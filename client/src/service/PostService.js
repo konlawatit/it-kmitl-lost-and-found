@@ -12,10 +12,10 @@ class PostService {
             return err
         }
     }
-    static getMyPosts(payload){
+    static getMyPosts(payload, page){
         const id = payload
         try{
-            return axios.get(`${url}/allmyposts/${id}`,).then((result) => {
+            return axios.get(`${url}/allmyposts/${id}/${page}`).then((result) => {
                 return result.data
             })
         } catch (err){
@@ -83,10 +83,10 @@ class PostService {
         }
     }
 
-    static getmyPostsLost(payload){
+    static getmyPostsLost(payload, page){
         const id = payload
         try{
-            return axios.get(`${url}/mylostpost/${id}`).then((result) =>{
+            return axios.get(`${url}/mylostpost/${id}/${page}`).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -95,10 +95,10 @@ class PostService {
         }
     }
 
-    static getmyPostsComplete(payload){
+    static getmyPostsComplete(payload, page){
         const id = payload
         try{
-            return axios.get(`${url}/mycompletepost/${id}`).then((result) =>{
+            return axios.get(`${url}/mycompletepost/${id}/${page}`).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -107,10 +107,10 @@ class PostService {
         }
     }
 
-    static getmyPostsFound(payload){
+    static getmyPostsFound(payload, page){
         const id = payload
         try{
-            return axios.get(`${url}/myfoundpost/${id}`).then((result) =>{
+            return axios.get(`${url}/myfoundpost/${id}/${page}`).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -160,6 +160,16 @@ class PostService {
         }
     }
 
+    static searchMyPosts(text, id,page) {
+        try {
+            return axios.get(`${url}/search/${id}/${page}/${text}`).then((result) => {
+                return result.data
+            })
+        } catch (err) {
+            return err
+        }
+    }
+
     static addItem(fd, item_name, user_id) {
         try {
             return axios.post(`${url}/additem`, fd, {params: {user_id: user_id, item_name: item_name}}).then((result) => {
@@ -191,9 +201,9 @@ class PostService {
         }
     }
 
-    static getMyPostDate(date, id){
+    static getMyPostDate(date, id, page){
         try{
-            return axios.post(`${url}/mypostbydate`, {date:date, id:id}).then((result) =>{
+            return axios.post(`${url}/mypostbydate`, {date:date, id:id, page:page}).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -231,9 +241,9 @@ class PostService {
         }
     }
 
-    static getCountPost(select, date, search) {
+    static getCountPost(select, date, search, id) {
         try{
-            return axios.get(`${url}/count/${select}`, {params:{date: date, search: search}}).then((result) =>{
+            return axios.get(`${url}/count/${select}`, {params:{date: date, search: search, id: id}}).then((result) =>{
                 return result.data
             })
         } catch(err){

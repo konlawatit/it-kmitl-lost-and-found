@@ -36,7 +36,7 @@ const uploadItem = multer({
 controller.get('/count/:select', async (req, res) => {
     try {
         console.log(req.query.date)
-        let posts = await querySql.pagePosts(req.params.select, req.query.date, req.query.search);
+        let posts = await querySql.pagePosts(req.params.select, req.query.date, req.query.search, req.query.id);
         
         let result = []
         // for (post of posts) {
@@ -119,10 +119,10 @@ controller.get('/allposts', async (req, res) => {
     }
 })
 
-controller.get('/allmyposts/:id', async (req, res) =>{
+controller.get('/allmyposts/:id/:page', async (req, res) =>{
     userid = req.params.id
     try{
-        let myposts = await querySql.myPosts(userid);
+        let myposts = await querySql.myPosts(userid, req.params.page);
         let result = []
         for (post of myposts){
             result.push(await post)
@@ -231,10 +231,10 @@ controller.get('/foundpost/:page', async (req, res) => {
     }
 })
 
-controller.get('/mylostpost/:id', async (req, res) => {
+controller.get('/mylostpost/:id/:page', async (req, res) => {
     userid = req.params.id
     try {
-        let posts = await querySql.myLostPosts(userid);
+        let posts = await querySql.myLostPosts(userid, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
@@ -260,10 +260,10 @@ controller.get('/mylostpost/:id', async (req, res) => {
     }
 })
 
-controller.get('/myfoundpost/:id', async (req, res) => {
+controller.get('/myfoundpost/:id/:page', async (req, res) => {
     userid = req.params.id
     try {
-        let posts = await querySql.myFoundPosts(userid);
+        let posts = await querySql.myFoundPosts(userid, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
@@ -289,10 +289,10 @@ controller.get('/myfoundpost/:id', async (req, res) => {
     }
 })
 
-controller.get('/mycompletepost/:id', async (req, res) => {
+controller.get('/mycompletepost/:id/:page', async (req, res) => {
     userid = req.params.id
     try {
-        let posts = await querySql.myCompletePosts(userid);
+        let posts = await querySql.myCompletePosts(userid, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
@@ -479,11 +479,11 @@ controller.post('/searchposts', async (req, res)=>{
     }
 })
 
-controller.get('/search/:page/:msg', async (req, res) => { //สำหรับหน้า post และอื่นๆ
+controller.get('/search/:id/:page/:msg', async (req, res) => { //สำหรับหน้า post และอื่นๆ
     try {
         let msg = req.params.msg;
         console.log(msg, req.params.page)
-        let posts = await querySql.searchPostsHome(msg, req.params.page);
+        let posts = await querySql.searchMyPosts(msg, req.params.id, req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
@@ -600,7 +600,7 @@ controller.post('/mypostbydate', async (req, res) => {
     date = req.body.date
     id = req.body.id
     try {
-        let posts = await querySql.myPostbyDate(date, id);
+        let posts = await querySql.myPostbyDate(date, id, req.body.page);
         let result = []
         for (post of posts) {
             result.push(await post)
