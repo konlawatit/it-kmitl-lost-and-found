@@ -206,6 +206,8 @@ class QuerySql {
         try {
             let sql = `UPDATE USER SET role = 'banned' WHERE user_id = ?`
             let user = await conn.query(sql, [id])
+            let sql2 = `UPDATE INFO_POST SET status = 0 WHERE USER_user_id = ?`
+            await conn.query(sql2, [id])
             conn.commit()
             return {
                 user
@@ -224,6 +226,8 @@ class QuerySql {
         try {
             let sql = `UPDATE USER SET role = 'normal' WHERE user_id = ?`
             let user = await conn.query(sql, [id])
+            let sql2 = `UPDATE INFO_POST SET status = 1 WHERE USER_user_id = ?`
+            await conn.query(sql2, [id])
             conn.commit()
             return {
                 user
