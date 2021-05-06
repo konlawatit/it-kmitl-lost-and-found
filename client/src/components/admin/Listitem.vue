@@ -353,15 +353,40 @@ export default {
     async addItem(){
       const fd = new FormData();
       fd.append("file", this.saveImage);
-
-      await PostService.addItem(fd, this.nameItemAdd, this.$store.getters['auth/getId']).then((result) =>{
-        try{
+      try{
+        await PostService.addItem(fd, this.nameItemAdd, this.$store.getters['auth/getId']).then((result) =>{
           console.log(result)
           location.reload()
-        } catch(err){
-          alert("ชื่อ item ถูกใช้ไปแล้ว")
+        })
+      } catch(err){
+        if(this.nameItemAdd == ""){
+          await this.$swal.fire({
+                title: "กรอกข้อมูลไม่ครบ",
+                text: "โปรดกรอกชื่อ Item",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Ok",
+              });
         }
-      })
+        else{
+          await this.$swal.fire({
+                title: "กรอกข้อมูลไม่ถูกต้อง",
+                text: "ชื่อ Item นี้ถูกใช้ไปแล้ว",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Ok",
+              });
+        }
+        if(this.saveImage == ""){
+          await this.$swal.fire({
+                title: "กรอกข้อมูลไม่ครบ",
+                text: "โปรด Upload รูป",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Ok",
+              });
+        }
+      }
     },
     async searchCompletePosts(){
       if (this.searchcompleteposts != "") {
