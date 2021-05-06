@@ -63,9 +63,9 @@ class PostService {
         }
     }
 
-    static getPostsLost(){
+    static getPostsLost(page){
         try{
-            return axios.get(`${url}/lostpost`).then((result) =>{
+            return axios.get(`${url}/lostpost/${page}`).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -73,9 +73,9 @@ class PostService {
         }
     }
 
-    static getPostsFound(){
+    static getPostsFound(page){
         try{
-            return axios.get(`${url}/foundpost`).then((result) =>{
+            return axios.get(`${url}/foundpost/${page}`).then((result) =>{
                 return result.data
             })
         } catch(err){
@@ -231,9 +231,9 @@ class PostService {
         }
     }
 
-    static getCountPost() {
+    static getCountPost(select) {
         try{
-            return axios.get(`${url}/count`).then((result) =>{
+            return axios.get(`${url}/count/${select}`).then((result) =>{
                 return result.data
             })
         } catch(err){

@@ -121,9 +121,27 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-12">
+      <div class="column is-12" v-if="select == 'home'">
         <v-pagination
-        @click="selectPage()"
+        
+          v-model="page"
+          :length="pageLength"
+          :total-visible="7"
+        >
+        </v-pagination>
+      </div>
+      <div class="column is-12" v-else-if="select == 'lost'">
+        <v-pagination
+        
+          v-model="page"
+          :length="pageLength"
+          :total-visible="7"
+        >
+        </v-pagination>
+      </div>
+      <div class="column is-12" v-else-if="select == 'found'">
+        <v-pagination
+        
           v-model="page"
           :length="pageLength"
           :total-visible="7"
@@ -212,6 +230,7 @@ export default {
       postEdit: { id:"", topic: "", place: "", post_desc: "", type: "", update_time: ""},
       items: ["lost", "found"],
       searchposts: "",
+      select: "home"
     };
   },
   created: async function () {
@@ -223,17 +242,28 @@ export default {
         this.posts = result.data
       })
 
-    let page = (await PostService.getCountPost()).data
+    let page = (await PostService.getCountPost('home')).data
     this.pageLength = parseInt(page)
 
   },
   watch: {
     page: async function  (newPage, oldPage) {
       console.log(newPage, oldPage)
-      await PostService.selectPage(this.page).then(result => {
-        this.posts = result.data
-      })
-      this.selectPage(newPage)
+      if (this.select == 'home') {
+        await PostService.selectPage(this.page).then(result => {
+          this.posts = result.data
+        })
+        this.selectPage(newPage)
+      } else if (this.select == 'lost') {
+        await PostService.getPostsLost(this.page).then(result => {
+          this.posts = result.data
+        })
+        // this.selectPage(newPage)
+      } else if (this.select == 'found') {
+        await PostService.getPostsFound(this.page).then(result => {
+          this.posts = result.data
+        })
+      }
     }
 
   },
@@ -351,19 +381,38 @@ export default {
       }
     },
     async filterLost() {
-      await PostService.getPostsLost().then((result) => {
-        this.posts = result.data;
-      });
+      // await PostService.getPostsLost().then((result) => {
+      //   this.posts = result.data;
+      // });
+      this.select = 'lost'
+      this.page = 1
+      await PostService.getPostsLost(1).then(result => {
+        this.posts = result.data
+      })
+
+      let page = (await PostService.getCountPost('lost')).data
+      this.pageLength = parseInt(page)
     },
+
     async filterFound() {
-      await PostService.getPostsFound().then((result) => {
+      this.select = 'found'
+      this.page = 1
+      await PostService.getPostsFound(1).then((result) => {
         this.posts = result.data;
       });
+      let page = (await PostService.getCountPost('found')).data
+      this.pageLength = parseInt(page)
     },
+
     async allposts() {
-      await PostService.getAllPosts().then((result) => {
-        this.posts = result.data;
-      });
+      this.select = 'home'
+      this.page = 1
+      // await PostService.getAllPosts().then((result) => {
+      //   this.posts = result.data;
+      // });
+      await PostService.selectPage(1).then(result => {
+        this.posts = result.data
+      })
     },
     redirect(path) {
       console.log("redirect to : ", path);

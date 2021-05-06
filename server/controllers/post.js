@@ -33,9 +33,9 @@ const uploadItem = multer({
     storage: storageItem
 })
 
-controller.get('/count', async (req, res) => {
+controller.get('/count/:select', async (req, res) => {
     try {
-        let posts = await querySql.pagePosts();
+        let posts = await querySql.pagePosts(req.params.select);
         let result = []
         // for (post of posts) {
         //     result.push(await post)
@@ -173,9 +173,9 @@ controller.get('/oneposts/:id', async (req, res) =>{
     }
 })
 
-controller.get('/lostpost', async (req, res) => {
+controller.get('/lostpost/:page', async (req, res) => {
     try {
-        let posts = await querySql.lostPosts();
+        let posts = await querySql.lostPosts(req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)
@@ -201,9 +201,9 @@ controller.get('/lostpost', async (req, res) => {
     }
 })
 
-controller.get('/foundpost', async (req, res) => {
+controller.get('/foundpost/:page', async (req, res) => {
     try {
-        let posts = await querySql.foundPosts();
+        let posts = await querySql.foundPosts(req.params.page);
         let result = []
         for (post of posts) {
             result.push(await post)

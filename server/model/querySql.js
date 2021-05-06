@@ -296,13 +296,20 @@ class QuerySql {
         }
     }
 
-    async pagePosts() {
+    async pagePosts(select) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            
-
-            let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST'))[0][0]['count']
+            let where = ''
+            if (select == 'home')
+                where = 'status = 1'
+            else if (select == 'lost') {
+                where = 'category_post = "lost" AND `status` = 1'
+            }
+            else if (select == 'found') {
+                where = 'category_post = "found" AND `status` = 1'
+            }
+            let countPosts = (await conn.query(`SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST where ${where}`))[0][0]['count']
             console.log('count post', countPosts)
 
             //console.log(posts)
@@ -324,13 +331,13 @@ class QuerySql {
         await conn.beginTransaction()
         try {
             
-            let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST'))[0][0]['count']
+            let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST where status = 1'))[0][0]['count']
             console.log('raw count post', rawCountPosts)
             //let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST'))[0][0]['count']
-            let countPosts = await this.pagePosts();
+            let countPosts = await this.pagePosts('home');
             console.log('count post', countPosts)
             //let page = 2
-            let endPage = parseInt(page) == countPosts ? Math.ceil((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            let endPage = parseInt(page) == countPosts ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
             console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
             let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time from (select * from (select * from INFO_POST order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
             JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
@@ -587,19 +594,31 @@ class QuerySql {
         }
     }
 
-    async lostPosts() {
+    async lostPosts(page) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , 
-            DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time 
-            FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id 
-            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
-            WHERE INFO_POST.category_post = 'lost' AND INFO_POST.status = 1 order by INFO_POST.post_time desc`
+            let countPosts = await this.pagePosts('lost');
+            //let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST where category_post = "lost" AND `status` = 1'))[0][0]['count']
+            let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST where category_post = "lost" AND `status` = 1'))[0][0]['count']
+
+            // let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , 
+            // DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time 
+            // FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id 
+            // JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            // WHERE INFO_POST.category_post = 'lost' AND INFO_POST.status = 1 order by INFO_POST.post_time desc`
+            let endPage = parseInt(page) == countPosts ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
+            let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
+            from (select * from (select * from INFO_POST where category_post = 'lost' AND status = 1 order by post_time desc limit ${parseInt(page)*10} ) test 
+            join USER u on test.USER_user_id = u.user_id 
+            JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
+            WHERE test.status = 1 AND test.category_post = 'lost'
+            order by post_time asc limit ${endPage}) test order by test.post_time desc;`
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = 'http://localhost:8888/' + data['image']
                 return data
             })
             //console.log(posts)
@@ -615,19 +634,30 @@ class QuerySql {
         }
     }
 
-    async foundPosts() {
+    async foundPosts(page) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
-            let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , 
-            DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time 
-            FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id 
-            JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
-            WHERE INFO_POST.category_post = 'found' AND INFO_POST.status = 1 order by INFO_POST.post_time desc`
+            // let sql = `SELECT *, USER.image as user_picture, DATE_FORMAT(INFO_POST.post_time, '%d/%m/%Y') as post_date , 
+            // DATE_FORMAT(INFO_POST.post_time, '%H:%i') as post_time 
+            // FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id 
+            // JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
+            // WHERE INFO_POST.category_post = 'found' AND INFO_POST.status = 1 order by INFO_POST.post_time desc`
+            let countPosts = await this.pagePosts('found');
+            //let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST where category_post = "lost" AND `status` = 1'))[0][0]['count']
+            let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST where category_post = "found" AND `status` = 1'))[0][0]['count']
+            let endPage = parseInt(page) == countPosts ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
+            let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
+            from (select * from (select * from INFO_POST where category_post = 'found' AND status = 1 order by post_time desc limit ${parseInt(page)*10} ) test 
+            join USER u on test.USER_user_id = u.user_id 
+            JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
+            WHERE test.status = 1 AND test.category_post = 'found'
+            order by post_time asc limit ${endPage}) test order by test.post_time desc;`
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = 'http://localhost:8888/' + data['image']
                 return data
             })
             //console.log(posts)
