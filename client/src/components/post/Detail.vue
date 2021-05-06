@@ -500,6 +500,17 @@ export default {
       //alert('comment add'+postId)
     },
     async addComment(postId) {
+      if(this.commentText == "" && this.postImage == ""){
+        await this.$swal
+        .fire({
+          title: "กรอกข้อมูลไม่ครบ",
+          text: "ต้องกรอกข้อความหรืออัพโหลดรูปภาพอย่างใดอย่างหนึ่ง",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "Ok",
+        })
+        return 0
+      }
       const fd = new FormData()
       fd.append('postId', postId)
       fd.append('commentText', this.commentText)
