@@ -340,7 +340,7 @@ class QuerySql {
             
             let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST where status = 1'))[0][0]['count']
             let countPosts = await this.pagePosts('home');
-            let endPage = parseInt(page) == countPosts ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            let endPage = parseInt(page) == countPosts && countPosts != '1' ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
             console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
             let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
             from (select * from (select * from INFO_POST where status = 1 order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
@@ -611,7 +611,7 @@ class QuerySql {
             // FROM INFO_POST INNER JOIN USER ON INFO_POST.USER_user_id = USER.user_id 
             // JOIN INFO_POST_POST_IMAGE ON INFO_POST.post_id = INFO_POST_POST_IMAGE.INFO_POST_post_id
             // WHERE INFO_POST.category_post = 'lost' AND INFO_POST.status = 1 order by INFO_POST.post_time desc`
-            let endPage = parseInt(page) == countPosts ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            let endPage = parseInt(page) == countPosts && countPosts != '1' ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
             console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
             let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
             from (select * from (select * from INFO_POST where category_post = 'lost' AND status = 1 order by post_time desc limit ${parseInt(page)*10} ) test 
@@ -650,7 +650,7 @@ class QuerySql {
             let countPosts = await this.pagePosts('found');
             //let countPosts = (await conn.query('SELECT CEILING(count(post_id) / 10) as count FROM INFO_POST where category_post = "lost" AND `status` = 1'))[0][0]['count']
             let rawCountPosts = (await conn.query('SELECT (count(post_id) / 10) as count FROM INFO_POST where category_post = "found" AND `status` = 1'))[0][0]['count']
-            let endPage = parseInt(page) == countPosts ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
+            let endPage = parseInt(page) == countPosts && countPosts != '1' ? Math.floor((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
             console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
             let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time 
             from (select * from (select * from INFO_POST where category_post = 'found' AND status = 1 order by post_time desc limit ${parseInt(page)*10} ) test 
