@@ -353,9 +353,14 @@ export default {
     async addItem(){
       const fd = new FormData();
       fd.append("file", this.saveImage);
+
       await PostService.addItem(fd, this.nameItemAdd, this.$store.getters['auth/getId']).then((result) =>{
-        console.log(result)
-        location.reload()
+        try{
+          console.log(result)
+          location.reload()
+        } catch(err){
+          alert("ชื่อ item ถูกใช้ไปแล้ว")
+        }
       })
     },
     async searchCompletePosts(){
