@@ -46,40 +46,66 @@ controller.post('/login', async (req, res) => {
                 //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
             });
             const payload = ticket.getPayload();
-            if ((await querySql.exists('USER', 'email', payload.email)).exists) {
-                let user_info = await querySql.getUser(payload.email);
-                console.log(user_info)
-                res.status(200).send({
-                    statusCode: '200',
-                    statusText: 'Request Success',
-                    error: false,
-                    messge: 'login successful',
-                    data: user_info,
-                    new_user: false,
-                });
-            } else if (req.body.state == 'reload') {
-                res.status(200).send({
-                    statusCode: '200',
-                    statusText: 'Request Success',
-                    error: true,
-                    messge: 'user not pass',
-                });
-            } else {
-                res.status(200).send({
-                    statusCode: '200',
-                    statusText: 'Request Success',
-                    error: false,
-                    messge: 'New user, login successful',
-                    data: {
-                        user_name: payload.name,
-                        fname: payload.given_name,
-                        lname: payload.family_name,
-                        email: payload.email,
-                        image: payload.picture,
-                    },
-                    new_user: true
-                });
-            }
+            //if ((payload.email).split('@')[1] === 'it.kmitl.ac.th') {
+                if ((await querySql.exists('USER', 'email', payload.email)).exists) {
+                    let user_info = await querySql.getUser(payload.email);
+                    if (user_info.role == 'banned') {
+                        console.log('ban', user_info.role)
+                        res.send({
+                            statusCode: '401',
+                            statusText: 'Unauthorized',
+                            error: true,
+                            messge: 'user banned',
+                            it_kmitl: true,
+                            new_user: false,
+                        })
+                    } else {
+                        console.log(user_info)
+                        res.status(200).send({
+                            statusCode: '200',
+                            statusText: 'Request Success',
+                            error: false,
+                            messge: 'login successful',
+                            data: user_info,
+                            it_kmitl: true,
+                            new_user: false,
+                        });
+                        
+                    }
+                } else if (req.body.state == 'reload') { //ลงทพเบียนยังไม่เสร็จ
+                    res.status(200).send({
+                        statusCode: '200',
+                        statusText: 'Request Success',
+                        error: true,
+                        it_kmitl: true,
+                        messge: 'user not pass',
+                    });
+                } else {
+                    res.status(200).send({
+                        statusCode: '200',
+                        statusText: 'Request Success',
+                        error: false,
+                        messge: 'New user, login successful',
+                        it_kmitl: true,
+                        data: {
+                            user_name: payload.name,
+                            fname: payload.given_name,
+                            lname: payload.family_name,
+                            email: payload.email,
+                            image: payload.picture,
+                        },
+                        new_user: true
+                    });
+                }
+            // } else {
+            //     res.status(400).send({
+            //         statusCode: '400',
+            //         statusText: '',
+            //         error: true,
+            //         message: 'user invalid',
+            //         it_kmitl: false
+            //     })
+            // }
 
             // If request specified a G Suite domain:
             // const domain = payload['hd'];

@@ -92,10 +92,10 @@
                 <img :src="post.post_image" alt="John" />
               </div>
             </div>
-            <v-expansion-panel-header @click="getComments(post.post_id)">
+            <v-expansion-panel-header @click="getComments(post.post_id)" >
               Comments</v-expansion-panel-header
             >
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-content class="mt-6" >
               <div
                 class="columns"
                 v-for="comment in comments"
@@ -347,6 +347,7 @@ export default {
   name: "Detail",
   data() {
     return {
+      
       store,
       posts: [],
       commentText: "",
@@ -369,6 +370,7 @@ export default {
       postImage: "",
       comment_image: "",
       showinputcomment: true,
+      
     };
   },
   created: async function () {

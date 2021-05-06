@@ -64,7 +64,7 @@ export default {
       // This only gets the user information: id, name, imageUrl and email
       //let profile = await googleUser.getBasicProfile();
       //let email = profile.getEmail();
-      // if (email.split("@")[1] == "gm") { //ค่อยกลับมาแก้
+      // if (email.split("@")[1] == "it.kmitl.ac.th") { //ค่อยกลับมาแก้
       //   this.$swal.fire({
       //     icon: "error",
       //     title: "ไม่สามารถเข้าระบบได้",
@@ -75,49 +75,78 @@ export default {
       //else {
       await AuthService.login(googleUser.getAuthResponse().id_token).then(
         (result) => {
-          if (result.statusCode == "200" && result.new_user) {
-            console.log("new user");
-            store.dispatch("auth/setProfile", {
-              fullname: result.data.user_name,
-              fname: result.data.fname,
-              lname: result.data.lname,
-              email: result.data.email,
-              image: result.data.image,
-              id: "",
-              isSigned: true,
-            });
-            this.redirect("login/confirm");
-          } else if (result.statusCode == "200") {
-            store.dispatch("auth/setProfile", {
-              fullname: result.data.user_name,
-              fname: result.data.fname,
-              lname: result.data.lname,
-              email: result.data.email,
-              image: result.data.image,
-              id: result.data.user_id,
-              role: result.data.role,
-              type: result.data.type,
-              phone_number: result.data.phone_number,
-              birthday: result.data.birthday,
-              isSigned: true,
-            });
-            this.redirect("home");
-          } else if (result.statusCode == "400") {
-            this.$swal.fire({
-              icon: "error",
-              title: "ไม่สามารถเข้าระบบได้",
-              text: "กรุณาลองใหม่อีกครั้ง",
-            });
+          console.log(result)
+          if (result.statusText == 'Unauthorized') {
+            console.log('banned')
             this.onSignOut();
-          } else {
             this.$swal.fire({
-              icon: "error",
-              title: "ระบบผิดพลาด",
-              text: "กรุณาลองใหม่อีกครั้ง",
-            });
+                  icon: "error",
+                  title: "บัญชีของคุณถูกระงับการใช้งาน",
+                  text: "กรุณาลองติดต่อผู้ดูแลระบบ",
+                });
+          } else {
+            //if (result.it_kmitl) {
+
+              if (result.statusCode == "200" && result.new_user) {
+                console.log("new user");
+                store.dispatch("auth/setProfile", {
+                  fullname: result.data.user_name,
+                  fname: result.data.fname,
+                  lname: result.data.lname,
+                  email: result.data.email,
+                  image: result.data.image,
+                  id: "",
+                  isSigned: true,
+                });
+                this.redirect("login/confirm");
+              } else if (result.statusCode == "200") {
+                store.dispatch("auth/setProfile", {
+                  fullname: result.data.user_name,
+                  fname: result.data.fname,
+                  lname: result.data.lname,
+                  email: result.data.email,
+                  image: result.data.image,
+                  id: result.data.user_id,
+                  role: result.data.role,
+                  type: result.data.type,
+                  phone_number: result.data.phone_number,
+                  birthday: result.data.birthday,
+                  isSigned: true,
+                });
+                this.redirect("home");
+              } else if (result.statusCode == "400") {
+                this.$swal.fire({
+                  icon: "error",
+                  title: "ไม่สามารถเข้าระบบได้",
+                  text: "กรุณาลองใหม่อีกครั้ง",
+                });
+                this.onSignOut();
+              } else {
+                this.onSignOut();
+                this.$swal.fire({
+                  icon: "error",
+                  title: "ระบบผิดพลาด",
+                  text: "กรุณาลองใหม่อีกครั้ง",
+                });
+              }
+            // } else{
+            //   this.onSignOut();
+            //   this.$swal.fire({
+            //     icon: "error",
+            //     title: "ไม่สามารถเข้าระบบได้",
+            //     text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
+            //   });
+            // }
           }
         }
-      );
+      ).catch(() => {
+        this.onSignOut();
+        this.$swal.fire({
+                  icon: "error",
+                  title: "ระบบผิดพลาด",
+                  text: "กรุณาลองใหม่อีกครั้ง",
+                });
+      });
       //}
     },
     onFailure() {

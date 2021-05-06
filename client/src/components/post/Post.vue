@@ -104,9 +104,9 @@
                 </v-menu>
               </div>
               <div class="column is-6 mt-3 ml-6">
-                {{ post.topic }}
-                <p class="mt-3">{{ post.place }}</p>
-                <p class="mt-3">{{ post.post_desc }}</p>
+                <p class="mt-3 is-size-4">{{ post.topic }}</p>
+                <p class="mt-3"><span class="has-text-weight-bold">สถานที่ : </span> {{ post.place }}</p>
+                <p class="mt-3"><span class="has-text-weight-bold">รายละเอียด : </span>{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
                 <img :src="'http://localhost:8888/'+post.post_image" alt="John" />

@@ -15,16 +15,17 @@
       <template v-slot:extension>
         <v-tabs align-with-title v-show="window.width >= 768">
           <div class="columns ml-1" v-if="store.getters['auth/getRole'] == 'admin'"> <!-- only admin role -->
-            <div class="column is-6" id="tabs1" @click="redirect('home')">
+            <div class="column is-6" id="tabs1" @click="redirect('home')" style="cursor: pointer;">
               <p>Home</p>
             </div>
-            <div class="column is-6" id="tabs2" @click="redirect('mypost/'+store.getters['auth/getId'])">
+            <div class="column is-6" id="tabs2" @click="redirect('mypost/'+store.getters['auth/getId'])" style="cursor: pointer;">
               <p>My post</p>
             </div>
             <div
               class="column is-7"
               id="tabs3"
               @click="redirect('admin')"
+              style="cursor: pointer;"
             >
               <p>Admin dashboard</p>
             </div>
@@ -36,7 +37,7 @@
               <p>Home</p>
             </div>
              <div class="column is-1"></div>
-            <div class="column is-7" id="tabs2" @click="redirect('mypost/'+store.getters['auth/getId'])">
+            <div class="column is-7" id="tabs2" @click="redirect('mypost/'+store.getters['auth/getId'])" v-if="getId">
               <p>My post</p>
             </div>
           </div>
@@ -54,13 +55,18 @@
           <i class="fas fa-search"></i>
         </span>
       </div> -->
-      <a @click="redirect('createpost')"
+      
+      <a @click="redirect('createpost')" v-if="getId"
         ><button class="button mr-6 is-success" go>
           <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
           เขียนโพสต์
-        </button></a
-      >
-      <div v-show="window.width >= 768">
+        </button></a>
+        <a @click="redirect('')" v-else
+        ><button class="button mr-6 is-info" go>
+          <i class="fa fa-pencil mr-2" aria-hidden="true"></i>
+          Login
+        </button></a>
+      <div v-show="window.width >= 768" v-if="getId">
         <v-menu bottom min-width="200px" rounded offset-y>
           <template v-slot:activator="{ on }">
             <v-btn icon x-large v-on="on">

@@ -481,11 +481,9 @@ export default {
       // เช็คว่าในฟอร์มไม่มี error
       if (!this.$v.$invalid) {
         const fd = new FormData();
-        console.log(this.saveImage);
         if (this.profileImage.substring(0, 4) === "data") {
           fd.append("file", this.saveImage, this.saveImage.name);
         } else {
-          console.log(1111111111111);
           fd.append("file", null);
           fd.append("linkImage", this.profileImage);
         }
@@ -515,7 +513,6 @@ export default {
                   user_id: store.getters["auth/getId"],
                 }).then((result) => {
                   //this.profileImage = this.API_URL + "/" + result.path;
-                  console.log("er", result);
                   store.dispatch("auth/setProfile", {
                     fullname: result.data.user_name,
                     fname: result.data.fname,
@@ -533,6 +530,11 @@ export default {
                   this.redirect("home");
                 });
               } catch (err) {
+                this.$swal.fire({
+                icon: "error",
+                title: "ระบบผิดพลาด",
+                text: "กรุณาลองใหม่อีกครั้ง",
+              });
                 console.log(err);
                 store.dispatch("auth/clearProfile");
                 window.gapi.auth2
