@@ -243,7 +243,7 @@ class PostService {
 
     static selectPage(page) {
         try{
-            return axios.get(`${url}/test/${page}`).then((result) =>{
+            return axios.get(`${url}/home/${page}`).then((result) =>{
                 return result.data
             })
         } catch(err){

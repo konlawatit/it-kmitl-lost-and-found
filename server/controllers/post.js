@@ -61,9 +61,9 @@ controller.get('/count', async (req, res) => {
     }
 })
 
-controller.get('/test/:page', async (req, res) => {
+controller.get('/home/:page', async (req, res) => {
     try {
-        let posts = await querySql.allPostTest(req.params.page);
+        let posts = await querySql.allPostsPage(req.params.page);
         let result = []
         // for (post of posts) {
         //     result.push(await post)

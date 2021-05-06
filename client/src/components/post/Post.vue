@@ -215,10 +215,13 @@ export default {
     };
   },
   created: async function () {
-    await PostService.getAllPosts().then((result) => {
-      console.log(result);
-      this.posts = result.data;
-    });
+    // await PostService.getAllPosts().then((result) => {
+    //   console.log(result);
+    //   this.posts = result.data;
+    // });
+    await PostService.selectPage(1).then(result => {
+        this.posts = result.data
+      })
 
     let page = (await PostService.getCountPost()).data
     this.pageLength = parseInt(page)

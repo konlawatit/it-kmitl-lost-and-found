@@ -319,7 +319,7 @@ class QuerySql {
 
     }
 
-    async allPostTest( page) {
+    async allPostsPage( page) {
         const conn = await pool.getConnection();
         await conn.beginTransaction()
         try {
@@ -332,23 +332,23 @@ class QuerySql {
             //let page = 2
             let endPage = parseInt(page) == countPosts ? Math.ceil((rawCountPosts - Math.floor(rawCountPosts)) * 10) : 10
             console.log('rawCountPosts', rawCountPosts, 'count post ', countPosts, 'end page', endPage, 'page', page)
-            let sql = `select * from (select * from (select * from INFO_POST order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
+            let sql = `select *, DATE_FORMAT(test.post_time, '%d/%m/%Y') as post_date, DATE_FORMAT(test.post_time, '%H:%i') as post_time from (select * from (select * from INFO_POST order by post_time desc limit ${parseInt(page)*10} ) test join USER u on test.USER_user_id = u.user_id 
             JOIN INFO_POST_POST_IMAGE ippi ON test.post_id = ippi.INFO_POST_post_id 
             WHERE test.status = 1
-            order by post_time asc limit ${endPage}) test order by post_time desc;`
+            order by post_time asc limit ${endPage}) test order by test.post_time desc;`
 
             let rows = await conn.query(sql)
             console.log('all post test rows', rows[0])
 
-            await rows[0].map(data => {
+            let result = await rows[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = 'http://localhost:8888/' + data['image']
                 return data
             })
 
             //console.log(posts)
             conn.commit();
-            return rows[0]
+            return result
         } catch (err) {
             await conn.rollback();
             console.log(`rolback pst test`, err)
