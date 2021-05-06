@@ -159,7 +159,8 @@
                       editComment(
                         comment.comment_no,
                         comment.comment_desc,
-                        post.post_id
+                        post.post_id,
+                        comment.comment_image
                       )
                     "
                   ></button>
@@ -280,6 +281,18 @@
           ></button>
         </header>
         <section class="modal-card-body">
+          <div class="columns">
+            <div class="column is-2"></div>
+            <div class="column is-8">
+              <v-file-input
+                label="Change image"
+                filled
+                prepend-icon="mdi-image"
+                v-model="comment_image"
+              ></v-file-input>
+            </div>
+            <div class="column is-2"></div>
+          </div>
           <div class="columns" id="listedit">
             <div class="column is-12 is-size-2 has-text-centered">
               <input
@@ -337,7 +350,8 @@ export default {
       inputcomment: "",
       commentid: "",
       postid: "",
-      postImage: ""
+      postImage: "",
+      comment_image: "",
     };
   },
   created: async function () {
@@ -415,22 +429,23 @@ export default {
           break;
         }
       }
-      let payload = {
-        comment_no: id,
-        comment_desc: this.inputcomment,
-        post_id: this.postid,
-      };
-      await CommentService.editComment(payload).then((result) => {
+      const fd = new FormData()
+      fd.append('comment_no', id)
+      fd.append('comment_desc', this.inputcomment)
+      fd.append('post_id', this.postid)
+      fd.append('comment_image', this.comment_image)
+      await CommentService.editComment(fd).then((result) => {
         console.log(result);
         this.editcomment = false;
       });
     },
-    editComment(id, comment, postid) {
+    editComment(id, comment, postid, img) {
       console.log(id);
       this.editcomment = true;
       this.inputcomment = comment;
       this.commentid = id;
       this.postid = postid;
+      this.comment_image = img
     },
     async confrimEditPost(id) {
       let d = new Date();

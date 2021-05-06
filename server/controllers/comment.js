@@ -75,10 +75,19 @@ controller.get('/:postId', async (req, res) => {
     }
 })
 
-controller.post('/:postId/editcomment', async (req, res)=>{
+controller.post('/:postId/editcomment', upload.single('comment_image'), async (req, res)=>{
     comment_no = req.body.comment_no
     comment_desc = req.body.comment_desc
-    let payload = {comment_no: comment_no, comment_desc: comment_desc}
+    comment_image = ""
+    if(req.file){
+        comment_image = req.file.path
+        console.log(req.file)
+    }
+    else{
+        comment_image = req.body.comment_image
+        console.log(req.body.comment_image)
+    }
+    let payload = {comment_no: comment_no, comment_desc: comment_desc, comment_image: comment_image}
     try{
         await querySql.editComment(payload)
         res.status(200).send({

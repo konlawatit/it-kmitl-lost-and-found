@@ -920,6 +920,8 @@ class QuerySql {
         try {
             let sql = "UPDATE INFO_COMMENT SET comment_desc = ? WHERE comment_no = ?"
             let result = await conn.query(sql, [data.comment_desc, data.comment_no])
+            let sql2 = "UPDATE INFO_COMMENT_COMMENT_IMAGE SET comment_image = ? WHERE INFO_COMMENT_comment_no = ?"
+            await conn.query(sql2, [data.comment_image, data.comment_no])
             conn.commit()
             return {
                 result
