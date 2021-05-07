@@ -46,7 +46,7 @@ controller.post('/login', async (req, res) => {
                 //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
             });
             const payload = ticket.getPayload();
-            if ((payload.email).split('@')[1] === 'it.kmitl.ac.th') {
+            //if ((payload.email).split('@')[1] === 'it.kmitl.ac.th') {
                 if ((await querySql.exists('USER', 'email', payload.email)).exists) {
                     let user_info = await querySql.getUser(payload.email);
                     if (user_info.role == 'banned') {
@@ -97,15 +97,15 @@ controller.post('/login', async (req, res) => {
                         new_user: true
                     });
                 }
-            } else {
-                res.status(400).send({
-                    statusCode: '400',
-                    statusText: '',
-                    error: true,
-                    message: 'user invalid',
-                    it_kmitl: false
-                })
-            }
+            // } else {
+            //     res.status(400).send({
+            //         statusCode: '400',
+            //         statusText: '',
+            //         error: true,
+            //         message: 'user invalid',
+            //         it_kmitl: false
+            //     })
+            // }
 
             // If request specified a G Suite domain:
             // const domain = payload['hd'];
