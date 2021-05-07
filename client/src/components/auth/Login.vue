@@ -62,17 +62,17 @@ export default {
     },
     async onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      //let profile = await googleUser.getBasicProfile();
-      //let email = profile.getEmail();
-      // if (email.split("@")[1] == "it.kmitl.ac.th") { //ค่อยกลับมาแก้
-      //   this.$swal.fire({
-      //     icon: "error",
-      //     title: "ไม่สามารถเข้าระบบได้",
-      //     text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
-      //   });
-      //   this.onSignOut();
-      // }
-      //else {
+      let profile = await googleUser.getBasicProfile();
+      let email = profile.getEmail();
+      if (email.split("@")[1] == "it.kmitl.ac.th") { //ค่อยกลับมาแก้
+        this.$swal.fire({
+          icon: "error",
+          title: "ไม่สามารถเข้าระบบได้",
+          text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
+        });
+        this.onSignOut();
+      }
+      else {
       await AuthService.login(googleUser.getAuthResponse().id_token).then(
         (result) => {
           console.log(result)
@@ -85,7 +85,7 @@ export default {
                   text: "กรุณาลองติดต่อผู้ดูแลระบบ",
                 });
           } else {
-            //if (result.it_kmitl) {
+            if (result.it_kmitl) {
 
               if (result.statusCode == "200" && result.new_user) {
                 console.log("new user");
@@ -129,14 +129,14 @@ export default {
                   text: "กรุณาลองใหม่อีกครั้ง",
                 });
               }
-            // } else{
-            //   this.onSignOut();
-            //   this.$swal.fire({
-            //     icon: "error",
-            //     title: "ไม่สามารถเข้าระบบได้",
-            //     text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
-            //   });
-            // }
+            } else{
+              this.onSignOut();
+              this.$swal.fire({
+                icon: "error",
+                title: "ไม่สามารถเข้าระบบได้",
+                text: "กรุณาใช้ Email ของ IT KMITL ในการเข้าใช้งาน!",
+              });
+            }
           }
         }
       ).catch(() => {
