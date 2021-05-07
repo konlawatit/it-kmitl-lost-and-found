@@ -1,24 +1,22 @@
 # it-kmitl-lost-and-found
 
-## Project setup
+### Docker : ./ 
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+    |-> start : docker-compose up --build (หากครั้งหลังไม่มีการ Update package ไม่ต้อง --build)
+    |-> Frontend : http://localhost:8080
+    |-> Backend : http://localhost:8888
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Frontend : ./client (กณีไม่ได้ใช้ Docker)
+``` 
+    |-> Start server : npm run serve
+    |-> Path : http://localhost:8080
+    |-> Update package : npm install 
+``` 
 
-### Lints and fixes files
+### Backend : ./server (กณีไม่ได้ใช้ Docker)
 ```
-npm run lint
+    |-> Start server : npm start
+    |-> Path : http://localhost:8888 
+    |-> Update package : npm install
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
