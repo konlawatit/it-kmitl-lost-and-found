@@ -4,6 +4,8 @@ const cors = require('cors'); //Use cors to solve : No 'Access-Control-Allow-Ori
 const path = require('path')
 const http = require('http'); //user for socket.io
 
+const port = process.env.PORT || 8888; // set default port
+
 const app = express();
 
 const server = http.createServer(app);
@@ -100,6 +102,6 @@ io.on('connection', (socket) => {
 
 
 
-server.listen(8888, () => {
-    console.log('Listening to port 8888')
+server.listen(port, () => {
+    console.log('Listening to port', port)
 })
