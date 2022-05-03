@@ -141,27 +141,27 @@ CREATE TABLE CATEGORY_ITEM_INFO_POST (
     REFERENCES INFO_POST (post_id)
 );
 
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000001', 'bas007', 'Konlawat', 'Hutsaithong', '2000-04-17', '21', '0909573314', 'normal', 'student',  '64070001@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000001.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000002', 'eng027', 'CHANKRACHANG', 'LIMPANACHO', '2000-04-18', '21', '0909573327', 'normal', 'student',  '64070002@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000002.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000003', 'earth096', 'TEERAPAT', 'BOONCHUAYLAEW', '2000-04-19', '21', '0909573396', 'admin', 'student',  '64070003@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000003.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000004', 'newbeer126', 'PONGSAKORN', 'PRAWANNA', '2000-04-20', '21', '0909573126', 'admin', 'student',  '64070004@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000004.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000005', 'pammy0133', 'PORNSINEE', 'CHAIMEE', '2000-04-21', '21', '0909573133', 'normal', 'student',  '64070005@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000005.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000006', 'eve223', 'AMARIN', 'JUNBUMROONG', '2000-04-22', '21', '0909573223', 'normal', 'student',  '64070006@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000006.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000007', 'filme011', 'KANLAYA', 'POOTSUPHA', '2000-09-18', '21', '0909573001', 'admin', 'student',  '64070007@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000007.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000008', 'shoei130', 'PONGPERA', 'WONGSAMRAN', '2000-09-23', '21', '0968906111', 'normal', 'student',  '64070008@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000008.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000009', 'sun130', 'THANAYUT', 'KUNSUN', '2000-09-23', '21', '0968906130', 'normal', 'student',  '64070009@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000009.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000010', 'pobchang198', 'SIRAPOB', 'CHANG', '2000-09-23', '21', '0968906198', 'normal', 'student',  '64070010@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000010.jpg');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000001', 'bas007', 'Konlawat', 'Hutsaithong', '2000-04-17', '21', '0909573314', 'normal', 'student',  '64070001@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000002', 'eng027', 'CHANKRACHANG', 'LIMPANACHO', '2000-04-18', '21', '0909573327', 'normal', 'student',  '64070002@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000003', 'earth096', 'TEERAPAT', 'BOONCHUAYLAEW', '2000-04-19', '21', '0909573396', 'admin', 'student',  '64070003@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000004', 'newbeer126', 'PONGSAKORN', 'PRAWANNA', '2000-04-20', '21', '0909573126', 'admin', 'student',  '64070004@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000005', 'pammy0133', 'PORNSINEE', 'CHAIMEE', '2000-04-21', '21', '0909573133', 'normal', 'student',  '64070005@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000006', 'eve223', 'AMARIN', 'JUNBUMROONG', '2000-04-22', '21', '0909573223', 'normal', 'student',  '64070006@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000007', 'filme011', 'KANLAYA', 'POOTSUPHA', '2000-09-18', '21', '0909573001', 'admin', 'student',  '64070007@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000008', 'shoei130', 'PONGPERA', 'WONGSAMRAN', '2000-09-23', '21', '0968906111', 'normal', 'student',  '64070008@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000009', 'sun130', 'THANAYUT', 'KUNSUN', '2000-09-23', '21', '0968906130', 'normal', 'student',  '64070009@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000010', 'pobchang198', 'SIRAPOB', 'CHANG', '2000-09-23', '21', '0968906198', 'normal', 'student',  '64070010@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
 
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000011', 'personnel01', 'Pawaris', 'Wongsaied', '1996-10-17', '25', '0807511314', 'normal', 'personnel',  '64070011@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000011.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000012', 'personnel02', 'KRITSAKORN', 'AMNAJSATIT', '1996-04-18', '25', '0809571317', 'normal', 'personnel',  '64070012@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000012.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000013', 'personnel03', 'NATCHANON', 'AMNATTHONG', '1996-04-19', '25', '0809571196', 'admin', 'personnel',  '64070013@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000013.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000014', 'personnel04', 'KANASIN', 'AMORNKITTISARN', '1996-04-20', '25', '0801513126', 'normal', 'personnel',  '64070014@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000014.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000015', 'personnel05', 'KOMCHAN', 'AUMPONG', '1996-04-21', '25', '0809573111', 'normal', 'personnel',  '62040015t.kmitl.ac.th', 'static\\uploads\\profile\\profile-62040015pg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000016', 'personnel06', 'SUKIT', 'AUNTYOO', '1996-04-22', '25', '0809573113', 'normal', 'personnel',  '64070016@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000016.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000017', 'personnel07', 'SAKARN', 'BANTADJUN', '1996-09-18', '25', '0809513101', 'admin', 'personnel',  '64070017@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000017.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000018', 'personnel08', 'PATCHARAPON', 'BOONCHOOM', '1996-09-23', '25', '0861906111', 'admin', 'personnel',  '64070018@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000018.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000019', 'personnel09', 'THITIKORN', 'BOONLUMPHAN', '1996-09-23', '25', '0868106130', 'normal', 'personnel',  '64070019@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000019.jpg');
-INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000020', 'personnel10', 'THITIPOL', 'BOONLUMPHAN', '1996-09-23', '25', '0868106198', 'normal', 'personnel',  '64070020@it.kmitl.ac.th', 'static\\uploads\\profile\\profile-0000000020.jpg');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000011', 'personnel01', 'Pawaris', 'Wongsaied', '1996-10-17', '25', '0807511314', 'normal', 'personnel',  '64070011@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000012', 'personnel02', 'KRITSAKORN', 'AMNAJSATIT', '1996-04-18', '25', '0809571317', 'normal', 'personnel',  '64070012@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000013', 'personnel03', 'NATCHANON', 'AMNATTHONG', '1996-04-19', '25', '0809571196', 'admin', 'personnel',  '64070013@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000014', 'personnel04', 'KANASIN', 'AMORNKITTISARN', '1996-04-20', '25', '0801513126', 'normal', 'personnel',  '64070014@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000015', 'personnel05', 'KOMCHAN', 'AUMPONG', '1996-04-21', '25', '0809573111', 'normal', 'personnel',  '62040015t.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000016', 'personnel06', 'SUKIT', 'AUNTYOO', '1996-04-22', '25', '0809573113', 'normal', 'personnel',  '64070016@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000017', 'personnel07', 'SAKARN', 'BANTADJUN', '1996-09-18', '25', '0809513101', 'admin', 'personnel',  '64070017@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000018', 'personnel08', 'PATCHARAPON', 'BOONCHOOM', '1996-09-23', '25', '0861906111', 'admin', 'personnel',  '64070018@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000019', 'personnel09', 'THITIKORN', 'BOONLUMPHAN', '1996-09-23', '25', '0868106130', 'normal', 'personnel',  '64070019@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
+INSERT INTO USER (user_id, user_name, firstname, lastname, `birthday`, age, phone_number, `role`, `type`, `email`, `image`) VALUES('0000000020', 'personnel10', 'THITIPOL', 'BOONLUMPHAN', '1996-09-23', '25', '0868106198', 'normal', 'personnel',  '64070020@it.kmitl.ac.th', 'static\\uploads\\profile\\human.png');
 
 INSERT INTO STUDENT (USER_user_id, student_id, branch, degree, `year`) VALUES('0000000001', '62070007', 'IT', 'bachelor', '2');
 INSERT INTO STUDENT (USER_user_id, student_id, branch, degree, `year`) VALUES('0000000002', '62070027', 'IT', 'bachelor', '4');
@@ -233,16 +233,16 @@ INSERT INTO INFO_POST (`topic`, category_post, post_desc, `status`, place, post_
 INSERT INTO INFO_POST (`topic`, category_post, post_desc, `status`, place, post_time, USER_user_id, complete_time, user_found_or_own, noti_post, delete_by, update_time) VALUES ('Topic9', 'lost', 'Post description9', 1, "IT KMITL", "2021-01-01 11:00:00", 0000000009, "2021-02-02 12:00:00", null, null, null, null);
 INSERT INTO INFO_POST (`topic`, category_post, post_desc, `status`, place, post_time, USER_user_id, complete_time, user_found_or_own, noti_post, delete_by, update_time) VALUES ('Topic10', 'lost', 'Post description10', 1, "M23", "2021-01-01 10:00:00", 0000000010, "2021-02-02 11:00:00", 1, null, null, null);
 
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-1.jpg', 1);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-2.jpg', 2);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-3.jpg', 3);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-4.jpg', 4);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-5.jpg', 5);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-6.jpg', 6);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-7.jpg', 7);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-8.jpg', 8);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-9.jpg', 9);
-INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post-10.jpg', 10);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 1);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 2);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 3);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 4);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 5);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 6);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 7);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 8);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 9);
+INSERT INFO_POST_POST_IMAGE (post_image, INFO_POST_post_id) VALUES ('static\\uploads\\imagePost\\post.png', 10);
 
 INSERT INFO_COMMENT (comment_desc, comment_time, INFO_POST_post_id, USER_user_id) VALUES ('comment1', '2021-03-03 01:02:00', 1, 0000000003);
 INSERT INFO_COMMENT (comment_desc, comment_time, INFO_POST_post_id, USER_user_id) VALUES ('comment2', '2021-03-04 01:02:01', 2, 0000000002);
@@ -255,27 +255,27 @@ INSERT INFO_COMMENT (comment_desc, comment_time, INFO_POST_post_id, USER_user_id
 INSERT INFO_COMMENT (comment_desc, comment_time, INFO_POST_post_id, USER_user_id) VALUES ('comment9', '2021-03-11 01:02:08', 9, 0000000009);
 INSERT INFO_COMMENT (comment_desc, comment_time, INFO_POST_post_id, USER_user_id) VALUES ('comment10', '2021-03-12 01:02:09', 10, 0000000010);
 
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-1.jpg', 1);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-2.jpg', 2);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-3.jpg', 3);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-4.jpg', 4);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-5.jpg', 5);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-6.jpg', 6);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-7.jpg', 7);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-8.jpg', 8);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-9.jpg', 9);
-INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment-10.jpg', 10);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 1);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 2);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 3);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 4);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 5);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 6);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 7);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 8);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 9);
+INSERT INFO_COMMENT_COMMENT_IMAGE (comment_image, INFO_COMMENT_comment_no) VALUES ('static\\uploads\\imageComment\\comment.png', 10);
 
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item1', 0000000003, 'static\\uploads\\imageItem\\item-1.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item2', 0000000003, 'static\\uploads\\imageItem\\item-2.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item3', 0000000003, 'static\\uploads\\imageItem\\item-3.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item4', 0000000003, 'static\\uploads\\imageItem\\item-4.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item5', 0000000003, 'static\\uploads\\imageItem\\item-5.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item6', 0000000003, 'static\\uploads\\imageItem\\item-6.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item7', 0000000003, 'static\\uploads\\imageItem\\item-7.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item8', 0000000003, 'static\\uploads\\imageItem\\item-8.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item9', 0000000003, 'static\\uploads\\imageItem\\item-9.jpg');
-INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item10', 0000000003, 'static\\uploads\\imageItem\\item-10.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item1', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item2', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item3', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item4', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item5', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item6', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item7', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item8', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item9', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
+INSERT CATEGORY_ITEM (`name`, USER_user_id, image) VALUES ('Item10', 0000000003, 'static\\uploads\\imageItem\\item.jpg');
 
 -- INSERT CATEGORY_ITEM_INFO_POST (CATEGORY_ITEM_item_id, INFO_POST_post_id) VALUES (1, 1);
 -- INSERT CATEGORY_ITEM_INFO_POST (CATEGORY_ITEM_item_id, INFO_POST_post_id) VALUES (2, 2);

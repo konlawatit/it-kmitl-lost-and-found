@@ -160,6 +160,16 @@ controller.post('/login/confirm/:email', upload.single('file'), async (req, res)
         let sqlPayload = [
             [name, firstname, lastname, email, image, birthday, phone, type, 'normal'],
         ]
+        // if (email === '62070007@kmitl.ac.th') {
+        //     sqlPayload = [
+        //         [name, firstname, lastname, email, image, birthday, phone, type, 'admin'],
+        //     ]
+        // } else {
+            // sqlPayload = [
+            //     [name, firstname, lastname, email, image, birthday, phone, type, 'normal'],
+            // ]
+
+        // }
         console.log('payload', sqlPayload)
         await querySql.createUser(sqlPayload).then(async (result) => {
             console.log('create user', result.result)
