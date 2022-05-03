@@ -14,25 +14,25 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    volumes:
-      - ./client:/client
+    # volumes:
+    #   - ./client:/client
     ports: 
-      - 8080:8080
-    command:
-      sh -c 'npm i && npm run serve'
-  db:
-    image: mysql:8
-    cap_add:
-      - SYS_NICE
-    ports:
-      - 3999:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: it_lost_and_found
-      MYSQL_PASSWORD: 123456
-    volumes:
-      - mysql_db:/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    command: ['mysqld', '--default-authentication-plugin=mysql_native_password']
-volumes:
-  mysql_db: {}
+      - 80:80
+    # command:
+    #   sh -c 'npm i && npm run serve'
+#   db:
+#     image: mysql:8
+#     cap_add:
+#       - SYS_NICE
+#     ports:
+#       - 3999:3306
+#     environment:
+#       MYSQL_ROOT_PASSWORD: 123456
+#       MYSQL_DATABASE: it_lost_and_found
+#       MYSQL_PASSWORD: 123456
+#     volumes:
+#       - mysql_db:/mysql
+#       - ./mysql-init:/docker-entrypoint-initdb.d
+#     command: ['mysqld', '--default-authentication-plugin=mysql_native_password']
+# volumes:
+#   mysql_db: {}
