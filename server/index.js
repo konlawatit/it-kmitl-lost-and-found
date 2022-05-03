@@ -7,10 +7,12 @@ const http = require('http'); //user for socket.io
 
 const app = express();
 
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8080"
+
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: "http://localhost:8080",
+        origin: `${SERVER_URL}`,
         methods: ["GET", "POST"]
     }
 });
