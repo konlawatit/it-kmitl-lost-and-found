@@ -1,3 +1,5 @@
+require('dotenv').config();
+const SERVER_URL = process.env.SERVER_URL;
 const pool = require('../database/mysql')
 //const db = require('../database/mysql')
 class QuerySql {
@@ -102,7 +104,7 @@ class QuerySql {
                 "email": user_info.email,
                 "fname": user_info.firstname,
                 "lname": user_info.lastname,
-                "image": 'http://localhost:8888/' + user_info.image,
+                "image": `${SERVER_URL}/` + user_info.image,
                 'type': user_info.type,
                 'role': user_info.role,
                 'phone_number': user_info.phone_number,
@@ -125,7 +127,7 @@ class QuerySql {
             let sql = `SELECT * FROM USER WHERE role <> 'banned'`
             let users = await conn.query(sql)
             await users[0].map(data => {
-                data['image'] = 'http://localhost:8888/' + data['image']
+                data['image'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             conn.commit();
@@ -148,7 +150,7 @@ class QuerySql {
             let sql = `SELECT * FROM USER WHERE role = 'banned'`
             let users = await conn.query(sql)
             await users[0].map(data => {
-                data['image'] = 'http://localhost:8888/' + data['image']
+                data['image'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             conn.commit();
@@ -246,7 +248,7 @@ class QuerySql {
         try {
             let str = await conn.query("SELECT * FROM USER WHERE user_name like ?", ['%' + data + '%'])
             await str[0].map(data => {
-                data['picture'] = 'http://localhost:8888/' + data['picture']
+                data['picture'] = `${SERVER_URL}/` + data['picture']
                 return data
             })
             conn.commit()
@@ -267,7 +269,7 @@ class QuerySql {
         try {
             let str = await conn.query("SELECT * FROM USER WHERE user_name like ? && role = 'banned'", ['%' + data + '%'])
             await str[0].map(data => {
-                data['picture'] = 'http://localhost:8888/' + data['picture']
+                data['picture'] = `${SERVER_URL}/` + data['picture']
                 return data
             })
             conn.commit()
@@ -388,7 +390,7 @@ class QuerySql {
 
             let result = await rows[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
 
@@ -418,7 +420,7 @@ class QuerySql {
 
             await posts[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = `${SERVER_URL}/` + data['user_picture']
                 data['user'] = {
                     name: "bas"
                 }
@@ -461,7 +463,7 @@ class QuerySql {
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -500,7 +502,7 @@ class QuerySql {
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -576,7 +578,7 @@ class QuerySql {
             
             let myposts = await conn.query(sql)
             await myposts[0].map(data => {
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             conn.commit();
@@ -600,8 +602,8 @@ class QuerySql {
             wHERE INFO_POST.post_id = ?`
             let myposts = await conn.query(sql, [id])
             await myposts[0].map(data => {
-                data['post_image'] = `http://localhost:8888/${data['post_image']}`
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['post_image'] = `${SERVER_URL}/${data['post_image']}`
+                data['user_picture'] = `${SERVER_URL}/` + data['user_picture']
                 return data
             })
             conn.commit();
@@ -638,7 +640,7 @@ class QuerySql {
             
             let myposts = await conn.query(sql)
             await myposts[0].map(data => {
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             conn.commit();
@@ -674,7 +676,7 @@ class QuerySql {
             order by post_time asc limit ${endPage}) test order by test.post_time desc;`
             let myposts = await conn.query(sql)
             await myposts[0].map(data => {
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             conn.commit();
@@ -711,7 +713,7 @@ class QuerySql {
             let myposts = await conn.query(sql)
 
             await myposts[0].map(data => {
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             conn.commit();
@@ -750,7 +752,7 @@ class QuerySql {
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -789,7 +791,7 @@ class QuerySql {
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -939,7 +941,7 @@ class QuerySql {
             let result = await conn.query(sql)
             conn.commit();
             result = await result[0].map(data => {
-                data['image'] = 'http://localhost:8888/' + data['image']
+                data['image'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(result)
@@ -1212,7 +1214,7 @@ class QuerySql {
             let sql = "SELECT * from CATEGORY_ITEM"
             let result = (await conn.query(sql))[0]
             await result.map(data => {
-                data['image'] = `http://localhost:8888/${data['image']}`
+                data['image'] = `${SERVER_URL}/${data['image']}`
             })
             // for (let i in result) {
             //     result['image'] = `htto://localhost:8888/${items['image']}`
@@ -1272,7 +1274,7 @@ class QuerySql {
             let posts = await conn.query(sql)
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -1313,7 +1315,7 @@ class QuerySql {
 
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = `${SERVER_URL}/` + data['user_picture']
                 return data
             })
             //console.log(posts)
@@ -1353,7 +1355,7 @@ class QuerySql {
 
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -1395,7 +1397,7 @@ class QuerySql {
 
             await posts[0].map(data => {
                 //data['post_picture'] = 'http://localhost:8888/' + data['post_picture'] เปิดใช้ตอนที่แก้ให้อัพโหลดไฟล์ตอนโพสลงเครื่อง
-                data['user_picture'] = 'http://localhost:8888/' + data['image']
+                data['user_picture'] = `${SERVER_URL}/` + data['image']
                 return data
             })
             //console.log(posts)
@@ -1483,7 +1485,7 @@ class QuerySql {
 
             await posts[0].map(data => {
                 // data['post_image'] = 'http://localhost:8888/' + data['post_image']
-                data['user_picture'] = 'http://localhost:8888/' + data['user_picture']
+                data['user_picture'] = `${SERVER_URL}/` + data['user_picture']
                 data['user'] = {
                     name: "bas"
                 }

@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const controller = express.Router();
 
@@ -30,7 +31,7 @@ const {
     OAuth2Client
 } = require('google-auth-library');
 
-
+const SERVER_URL = process.env.SERVER_URL;
 
 controller.post('/login', async (req, res) => {
     try {
@@ -182,7 +183,7 @@ controller.post('/login/confirm/:email', upload.single('file'), async (req, res)
                 email: email,
                 fname: firstname,
                 lname: lastname,
-                image: `http://localhost:8888/${image}`,
+                image: `${SERVER_URL}/${image}`,
                 type: type,
                 role: 'normal',
                 phone_number: phone,

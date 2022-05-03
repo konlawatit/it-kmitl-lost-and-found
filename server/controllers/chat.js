@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const controller = express.Router();
 const path = require("path");
@@ -7,7 +8,7 @@ const multer = require('multer')
 const querySqlModel = require('../model/querySql')
 const querySql = new querySqlModel()
 
-
+const SERVER_URL = process.env.SERVER_URL;
 
 const app = express();
 
@@ -47,7 +48,7 @@ controller.get('/allconversations', async (req, res) => {
         //let user_id = (await querySql.getUser(email).user_id
         let result = (await querySql.getAllConversations(user_id))[0]
         result = await result.map(data => {
-            data['image'] = 'http://localhost:8888/' + data['image']
+            data['image'] = `${SERVER_URL}/` + data['image']
             return data
         })
         //req.io.to('room1').emit('event1', `${message}`) //ได้ละโว้ยยยยยยยยยยยยยย

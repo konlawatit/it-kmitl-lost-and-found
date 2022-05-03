@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const controller = express.Router();
 const multer = require('multer')
@@ -12,6 +13,8 @@ var storage = multer.diskStorage({
         callback(null, 'profile' + '-' + req.params.email + '.png')
     }
 })
+
+const SERVER_URL = process.env.SERVER_URL;
 
 const upload = multer({
     storage: storage
@@ -39,7 +42,7 @@ controller.put('/update/:email', upload.single('file'), async (req, res) => {
         if (req.file) {
             image = req.file.path
         } else {
-            image = (req.body.linkImage).split('http://localhost:8888/')[1]
+            image = (req.body.linkImage).split(`${SERVER_URL}/`)[1]
         }
         let sqlPayload = [
             user_name, fname, lname, image, birthday, phone_number, user_id

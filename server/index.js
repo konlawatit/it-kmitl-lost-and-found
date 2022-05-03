@@ -1,4 +1,5 @@
 //require library
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors'); //Use cors to solve : No 'Access-Control-Allow-Origin'
 const path = require('path')
@@ -63,6 +64,7 @@ app.use('/apis/chat', chat)
 
 
 app.get('/', (reg, res) => {
+    console.log(process.env)
     res.send('Hello World')
 })
 
