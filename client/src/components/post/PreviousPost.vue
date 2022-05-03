@@ -50,7 +50,7 @@
       </v-list-item>
       <div class="columns">
         <div class="column is-12">
-          <img :src="'http://localhost:8888/' + item.post_image" alt="John" />
+          <img :src="'http://54.198.4.207:8888/' + item.post_image" alt="John" />
         </div>
       </div>
       <div class="columns">

@@ -109,7 +109,7 @@
                 <p class="mt-3"><span class="has-text-weight-bold">รายละเอียด : </span>{{ post.post_desc }}</p>
               </div>
               <div class="column is-3 is-mobile">
-                <img :src="'http://localhost:8888/'+post.post_image" alt="John" />
+                <img :src="'http://54.198.4.207:8888/'+post.post_image" alt="John" />
               </div>
             </div>
             <div class="columns mb-6 mr-4">

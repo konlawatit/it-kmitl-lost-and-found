@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const url = 'http://localhost:8888/apis/chat';
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8888"
+const url = `${SERVER_URL}/apis/chat`;
 
 class ChatService {
     static async getMessages(payload) {

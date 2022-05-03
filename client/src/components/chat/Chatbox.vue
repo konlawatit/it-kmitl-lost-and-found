@@ -18,7 +18,7 @@
           /></v-avatar>
             </div> -->
             <div class="column is-4 mt-2" id="mes" v-if='message.is_image'>
-              <img :src="'http://localhost:8888/'+message.content" alt="">
+              <img :src="'http://54.198.4.207:8888/'+message.content" alt="">
             </div>
             <div class="column is-4 mt-2" id="mes" v-else>
               <p v-if="checkLink(message.content)" >
@@ -30,7 +30,7 @@
           <div class="columns mt-3 mr-6"  :key="index" v-else>
             <div class="column is-8"></div>
             <div class="column is-4 mt-2" id="mes2" v-if='message.is_image'>
-              <img :src="'http://localhost:8888/'+message.content" alt="">
+              <img :src="'http://54.198.4.207:8888/'+message.content" alt="">
             </div>
             <div class="column is-4 mt-2" id="mes2" v-else>
               <p v-if="checkLink(message.content)" rel="noopener noreferrer">
@@ -81,7 +81,8 @@
 <script>
 import { io } from "socket.io-client";
 import ChatService from "../../service/ChatService";
-const socket = io("http://localhost:8888");
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8888"
+const socket = io(SERVER_URL);
 import { mapGetters } from "vuex";
 export default {
   name: "Chatbox",

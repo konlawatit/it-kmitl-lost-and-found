@@ -14,7 +14,7 @@ import ChatRoom from '../views/ChatRoom.vue'
 import Detail from '../views/Detail.vue'
 import axios from 'axios'
 
-
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8888"
 // import {
 //   LoaderPlugin
 // } from 'vue-google-login';
@@ -36,7 +36,7 @@ const routes = [{
         const isSigned = auth2.isSignedIn.get()
         if (isSigned) {
           let email = await auth2.currentUser.get().getBasicProfile().getEmail() //เช็ค confirm ยัง
-          axios.get('http://localhost:8888/apis/auth/checkuser', {
+          axios.get(`${SERVER_URL}/apis/auth/checkuser`, {
             params: {
               email
             }
@@ -60,7 +60,7 @@ const routes = [{
       Vue.GoogleAuth.then(async auth2 => {
         if (auth2.isSignedIn.get()) {
           let email = await auth2.currentUser.get().getBasicProfile().getEmail()
-          axios.get('http://localhost:8888/apis/auth/checkuser', {
+          axios.get(`${SERVER_URL}/apis/auth/checkuser`, {
             params: {
               email
             }
@@ -98,7 +98,7 @@ const routes = [{
       Vue.GoogleAuth.then(async auth2 => {
         if (auth2.isSignedIn.get()) {
           let email = await auth2.currentUser.get().getBasicProfile().getEmail()
-          axios.get('http://localhost:8888/apis/auth/checkuser', {
+          axios.get(`${SERVER_URL}/apis/auth/checkuser`, {
             params: {
               email
             }
@@ -152,7 +152,7 @@ const routes = [{
         const isSigned = auth2.isSignedIn.get()
         if (isSigned) {
           let email = await auth2.currentUser.get().getBasicProfile().getEmail()
-          axios.get('http://localhost:8888/apis/profile/user', {
+          axios.get(`${SERVER_URL}/apis/profile/user`, {
             params: {
               email
             }
@@ -200,7 +200,7 @@ const routes = [{
         if (auth2.isSignedIn.get()) {
           //const isSigned = auth2.isSignedIn.get()
           let email = await auth2.currentUser.get().getBasicProfile().getEmail()
-          axios.get('http://localhost:8888/apis/profile/user', {
+          axios.get(`${SERVER_URL}/apis/profile/user`, {
             params: {
               email
             }

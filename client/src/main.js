@@ -15,6 +15,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 
 import ChatService from './service/ChatService'
 
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8888"
+
 Vue.use(VueSweetalert2);
 Vue.use(Vuelidate);
 
@@ -62,7 +64,7 @@ Vue.GoogleAuth.then(async auth2 => {
 
 
 Vue.config.productionTip = false
-Vue.prototype.API_URL = "http://localhost:8888"
+Vue.prototype.API_URL = SERVER_URL
 
 new Vue({
     store,

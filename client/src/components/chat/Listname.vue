@@ -35,7 +35,8 @@
 
 <script>
 import { io } from "socket.io-client";
-const socket = io("http://localhost:8888");
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8888"
+const socket = io(SERVER_URL);
 import ChatService from "../../service/ChatService";
 import { mapGetters } from "vuex";
 export default {

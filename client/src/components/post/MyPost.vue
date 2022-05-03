@@ -124,7 +124,7 @@
               </div>
               <div class="column is-3 is-mobile">
                 <img
-                  :src="'http://localhost:8888/' + post.post_image"
+                  :src="'http://54.198.4.207:8888/' + post.post_image"
                   alt="John"
                 />
               </div>

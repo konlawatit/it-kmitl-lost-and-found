@@ -169,7 +169,7 @@
                   <div class="columns">
                     <div class="column is-4" v-if="comment.comment_image !=''">
                       <img
-                        :src="'http://localhost:8888/'+comment.comment_image"
+                        :src="'http://54.198.4.207:8888/'+comment.comment_image"
                         alt="John"
                       />
                     </div>

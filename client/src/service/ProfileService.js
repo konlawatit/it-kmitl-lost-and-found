@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const url = 'http://localhost:8888/apis/profile';
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:8888"
+const url = `${SERVER_URL}/apis/profile`;
 
 class AuthService {
 
